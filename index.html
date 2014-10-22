@@ -18,49 +18,18 @@
   </head>
   <body>
 
-    <div class="container">
+    <div id="todo-app" class="container">
       <div class="row">
 	<div class="col-md-8 col-md-offset-2">
 	  <!-- Header -->
 	  <h3 class="text-center">做野啦柒頭</h3>
 	  <!-- Input box -->
-	  <form role="form">
-	    <div class="form-group">
-	      <input type="text" class="form-control input-lg text-center" placeholder="做乜撚野" />
-	    </div>
-	  </form>
+	  <div class="form-group">
+	    <input type="text" class="todo-input form-control input-lg text-center" placeholder="做乜撚野" />
+	  </div>
 	  <!-- List -->
 	  <div class="well">
-	    <div class="list-group">
-              <a href="#" class="list-group-item active">
-		COMP 3711 份功課
-	      </a>
-              <a href="#" class="list-group-item">
-		MGMT reflect 一下
-	      </a>
-              <a href="#" class="list-group-item">
-		ACCT 求其溫下頭幾課
-	      </a>
-              <a href="#" class="list-group-item">
-		十一點訓啊喂
-	      </a>
-	      <!--
-              <a href="#" class="list-group-item active">
-		屌
-              </a>
-              <a href="#" class="list-group-item">
-		仆街
-              </a>
-              <a href="#" class="list-group-item">
-		Hi Auntie
-              </a>
-              <a href="#" class="list-group-item">
-		傻的嗎
-              </a>
-              <a href="#" class="list-group-item">
-		戇鳩
-	      </a>
-	      -->
+	    <div class="list-group todo-list">
             </div>
 	  </div>
 	  <!-- Conclusion (progress bar, total time used) -->
@@ -68,7 +37,7 @@
             <div id="progress">
 	      <h4 class="progress-text">屌做唔撚完呀</h4>
 	      <div class="progress">
-		<div class="progress-bar" style="width: 20%;"></div>
+		<div class="progress-bar"></div>
               </div>
 	    </div>
           </div>
