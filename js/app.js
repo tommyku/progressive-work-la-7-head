@@ -24,6 +24,12 @@ Progress.prototype.set = function(percentage) {
 
     this.bar.css('width', percentage+'%');
     switch (true) {
+    case (percentage == 0):
+	this.statusText.html("戇鳩鳩發乜撚夢呀？");
+	break;
+    case (percentage <= 10):
+	this.statusText.html("屌廢嘅");
+	break;
     case (percentage <= 25):
 	this.statusText.html("做到2046呀屌");
 	break;
@@ -70,9 +76,6 @@ function Todo(appDOM, progress, l) {
   
     // internal class Item
     this.Item = function(todo, value) {
-	// replace string to foul language
-	// # later
-
 	this.item = $("<span>", {
 	    "class": "list-group-item",
 	    "html": value
@@ -133,7 +136,7 @@ function Todo(appDOM, progress, l) {
 		return div;
 	    }
 	});
-	
+
 	return this.item;
     }
 
@@ -158,6 +161,18 @@ function Todo(appDOM, progress, l) {
 	}
     }
 
+    // not the best way to implement this, 
+    // I should add data binding between the list and a variable, 
+    // then this sits in the handler for list change
+    if (this.taskCount == 0) {
+	this.list.append($("<h4>", {
+	    'id': "intro", 
+	    'html': "<em>加撚野做啦仆街</em>",
+	    'class': 'text-center text-muted'
+	}));
+	
+    }
+
     return this;
 }
 
@@ -167,15 +182,20 @@ Todo.prototype.addListItem = function(value) {
 	from: ['~d', '~p', '~o', '~l', '~7'],
 	to: ['屌', '仆街', '戇鳩', '撚', '柒頭']
     };
+    
     for (var i=0; i<foulLang.from.length; ++i) {
 	value = value.replace(new RegExp(foulLang.from[i], "g"), foulLang.to[i]);
     }
+
+    // not the best way to do this, 
+    // add data-binding and handler later
+    this.list.find("#intro").remove();
 
     // add to bottom of list
     var item = new this.Item(this, value);
     this.list.append(item);
 
-    if ((this.taskCount-this.doneCount) == 0) {
+    if (this.taskCount == 0) {
 	this.doing = $(item);
 	this.activate(item);
     }
@@ -245,6 +265,7 @@ Todo.prototype.updateProgress = function() {
     this.progress.set(100*this.doneCount/this.taskCount);
 }
 
+/*
 var a = new Todo(
     $("#todo-app"), 
     new Progress($("#progress")), 
@@ -256,3 +277,6 @@ var a = new Todo(
 	'戇鳩'
     ]
 );
+*/
+
+var app = new Todo($("#todo-app"), new Progress($("#progress")));
