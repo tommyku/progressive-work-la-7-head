@@ -1,3 +1,5 @@
+// walkthrough jquery: http://jquerypagewalkthrough.github.io/example/example.html
+
 /* Progress object */
 
 function Progress(progressDOM) {
@@ -10,7 +12,6 @@ function Progress(progressDOM) {
 }
 
 Progress.prototype.set = function(percentage) {
-    console.log(percentage);
     if (typeof percentage != "number") {
 	throw TypeError("Progress object accepts only number");
     }
@@ -60,10 +61,8 @@ function Todo(appDOM, progress, l) {
     this.input.on('keypress', function todoInputBoxHandler(e) {
 	var keycode = (e.keyCode ? e.keyCode : e.which);
 	var _this = $(this);
-	console.log('yo');
 	if (keycode == '13' && _this.val() != "") {
 	    // add list
-	    console.log(_this.val());
 	    _this.data('app').addListItem(_this.val());
 	    _this.val("");
 	}
@@ -163,6 +162,15 @@ function Todo(appDOM, progress, l) {
 }
 
 Todo.prototype.addListItem = function(value) {
+    // filter text
+    var foulLang = {
+	from: ['~d', '~p', '~o', '~l', '~7'],
+	to: ['屌', '仆街', '戇鳩', '撚', '柒頭']
+    };
+    for (var i=0; i<foulLang.from.length; ++i) {
+	value = value.replace(new RegExp(foulLang.from[i], "g"), foulLang.to[i]);
+    }
+
     // add to bottom of list
     var item = new this.Item(this, value);
     this.list.append(item);
