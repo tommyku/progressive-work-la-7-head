@@ -83,10 +83,58 @@ function Todo(appDOM, progress, l) {
 
 	this.item.click(function todoListItemHandler(e) {
 	    var _this = $(this);
-	    var app = _this.data('app');
-	    app.finishItem(this);
+	    if (_this.hasClass('disabled')) {
+		return;
+	    }
+	    if (_this.hasClass('active')) {
+		var app = _this.data('app');
+		app.finishItem(this);
+		_this.popover('destroy');
+		return;
+	    }
+	    _this.popover('toggle');
+	    _this.parent().children('.list-group-item').not(_this).popover('hide');
 	});
 
+	// add popover for functionalities
+	this.item.popover({
+	    trigger: 'manual',
+	    placement: 'bottom',
+	    html: 'true', 
+	    content: function () {
+		var ding = 
+		    $(
+			"<button>", 
+			{
+			    'class': "btn btn-default",
+			    'html': '頂'
+			}
+		    )
+		    .data('item', this)
+		    .click(function() {
+			var item = $(this).data('item');
+			$(item).data('app').dingItem(item);
+			$(item).popover('hide');
+		    });
+		var yiu = $(
+			"<button>", 
+			{
+			    'class': "btn btn-danger",
+			    'html': '妖'
+			}
+		    )
+		    .data('item', this)
+		    .click(function() {
+			var item = $(this).data('item');
+			$(item).data('app').yiuItem(item);
+			$(item).popover('hide');
+		    });
+		
+		var div = $("<div>", {'class': 'btn-group'}).append(ding, yiu);
+		return div;
+	    }
+	});
+	
 	return this.item;
     }
 
@@ -133,14 +181,46 @@ Todo.prototype.activate = function(dom) {
     $(dom).addClass('active');
 }
 
+Todo.prototype.deactivate = function(dom) {
+    $(dom).removeClass('active');
+}
+
+
 Todo.prototype.finish = function(dom) {
     $(dom).removeClass('active');
     $(dom).addClass('disabled');
 }
 
-Todo.prototype.finishItem = function(dom) {
-    console.log($(dom));
+Todo.prototype.dingItem = function(dom) {
+    // move up an item
+    dom = $(dom);
+    var prev = dom.prev('.list-group-item');
+    if (prev.hasClass('disabled')) {
+	return;
+    }
+    prev.before(dom);
+    if (prev.is(this.doing)) {
+	this.deactivate(prev);
+	this.activate(dom);
+	this.doing = dom;
+    }
+}
 
+Todo.prototype.yiuItem = function(dom) {
+    // delete an item
+    dom = $(dom);
+    dom.popover('destroy');
+    if (dom.is(this.doing)) {
+	this.doing = dom.nextAll('.list-group-item').first();
+	this.activate(this.doing);
+    }
+    --this.taskCount;
+    dom.remove();
+
+    this.updateProgress();
+}
+
+Todo.prototype.finishItem = function(dom) {
     if (!$(dom).is(this.doing)) {
 	// not active item
 	return;
@@ -148,7 +228,7 @@ Todo.prototype.finishItem = function(dom) {
 
     ++this.doneCount;
     this.finish(dom);
-    this.doing = $(dom).next();
+    this.doing = $(dom).nextAll('.list-group-item').first();
     this.activate(this.doing);
     this.updateProgress();
 }
