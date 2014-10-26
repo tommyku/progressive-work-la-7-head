@@ -63,6 +63,8 @@ function Todo(appDOM, progress, l) {
     this.input.data('app', this);
     this.list.data('app', this);
 
+    this.updateProgress();
+
     // handler of textbox
     this.input.on('keypress', function todoInputBoxHandler(e) {
 	var keycode = (e.keyCode ? e.keyCode : e.which);
@@ -86,7 +88,7 @@ function Todo(appDOM, progress, l) {
 	this.item.click(function todoListItemHandler(e) {
 	    var _this = $(this);
 	    if (_this.hasClass('disabled')) {
-		return;
+		_this.data('app').yiuItem(_this);
 	    }
 	    if (_this.hasClass('active')) {
 		var app = _this.data('app');
@@ -161,25 +163,13 @@ function Todo(appDOM, progress, l) {
 	}
     }
 
-    // not the best way to implement this, 
-    // I should add data binding between the list and a variable, 
-    // then this sits in the handler for list change
-    if (this.taskCount == 0) {
-	this.list.append($("<h4>", {
-	    'id': "intro", 
-	    'html': "<em>加撚野做啦仆街</em>",
-	    'class': 'text-center text-muted'
-	}));
-	
-    }
-
     return this;
 }
 
 Todo.prototype.addListItem = function(value) {
     // filter text
     var foulLang = {
-	from: ['~d', '~p', '~o', '~l', '~7'],
+	from: ['diu', 'pk', 'on9', 'lun', '7head'],
 	to: ['屌', '仆街', '戇鳩', '撚', '柒頭']
     };
     
@@ -195,7 +185,7 @@ Todo.prototype.addListItem = function(value) {
     var item = new this.Item(this, value);
     this.list.append(item);
 
-    if (this.taskCount == 0) {
+    if (this.taskCount-this.doneCount == 0) {
 	this.doing = $(item);
 	this.activate(item);
     }
@@ -242,6 +232,10 @@ Todo.prototype.yiuItem = function(dom) {
 	this.doing = dom.nextAll('.list-group-item').first();
 	this.activate(this.doing);
     }
+    if (dom.hasClass('disabled')) {
+	--this.doneCount;
+    }
+
     --this.taskCount;
     dom.remove();
 
@@ -262,7 +256,20 @@ Todo.prototype.finishItem = function(dom) {
 }
 
 Todo.prototype.updateProgress = function() {
-    this.progress.set(100*this.doneCount/this.taskCount);
+    if (this.taskCount == 0) {
+	// not the best way to implement this, 
+	// I should add data binding between the list and a variable, 
+	// then this sits in the handler for list change
+
+	this.list.append($("<h4>", {
+	    'id': "intro", 
+	    'html': "<em>加撚野做啦仆街</em>",
+	    'class': 'text-center text-muted'
+	}));
+	this.progress.set(0);
+    } else {
+	this.progress.set(100*this.doneCount/this.taskCount);
+    }
 }
 
 /*
