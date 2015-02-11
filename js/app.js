@@ -59,6 +59,7 @@ function Todo(appDOM, progress, l) {
     this.taskCount = 0;
     this.doneCount = 0;
     this.progress = progress;
+    this.storage = null;
 
     this.input.data('app', this);
     this.list.data('app', this);
@@ -143,19 +144,22 @@ function Todo(appDOM, progress, l) {
     }
 
     // localstorage
-    /*
     if (typeof(Storage) !== "undefined") {
 	// get item
-	var oldList = JSON.parse(localStorage.tasks);
-	for (i=0;i<oldList.length;++i) {
-	    this.addListItem(oldList[i]);
+	if (localStorage.getItem('tasks') != null) {
+	    var oldList = JSON.parse(localStorage.getItem('tasks'));
+	    for (var i=0;i<oldList.length;++i) {
+		this.addListItem(oldList[i].value);
+		if (oldList[i].done) {
+		    this.finishItem(this.doing);
+		}
+	    }
 	}
     }
-    */
 
     if (l !== undefined) {
 	if (Object.prototype.toString.call(l) === '[object Array]') {
-	    for (i=0;i<l.length;++i) {
+	    for (var i=0;i<l.length;++i) {
 		this.addListItem(l[i]);
 	    }    
 	} else {
@@ -190,9 +194,18 @@ Todo.prototype.addListItem = function(value) {
 	this.activate(item);
     }
 
+    if (this.storage != null) {
+	this.storage.push({'value': value, 'done': false});
+    } else {
+	this.storage = [
+	    {'value': value, 'done': false}
+	];
+    }
+
     // re-calculate progress
     ++this.taskCount;
     this.updateProgress();
+    this.save();
 }
 
 Todo.prototype.activate = function(dom) {
@@ -252,7 +265,22 @@ Todo.prototype.finishItem = function(dom) {
     this.finish(dom);
     this.doing = $(dom).nextAll('.list-group-item').first();
     this.activate(this.doing);
+
+    for (var i=0; i<this.storage.length; ++i) {
+	if (!this.storage[i].done) {
+	    this.storage[i].done = true;
+	    break;
+	}
+    }
+
     this.updateProgress();
+    this.save();
+}
+
+Todo.prototype.save = function() {
+    if (typeof(Storage) !== "undefined") {
+	localStorage.setItem('tasks', JSON.stringify(this.storage));
+    }
 }
 
 Todo.prototype.updateProgress = function() {
