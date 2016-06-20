@@ -67,8 +67,12 @@ gulp.task('publish', function(){
     .pipe(gulp.dest('./publish/js'));
   gulp.src(['res/**/*'], { base: 'res' })
     .pipe(gulp.dest('./publish/res'));
+  gulp.src(['vendor/**/*'], { base: 'vendor' })
+    .pipe(gulp.dest('./publish/vendor'));
   gulp.src(['bower_components/**/*'], { base: 'bower_components' })
     .pipe(gulp.dest('./publish/bower_components'));
+  gulp.src(['service-worker.js', 'manifest.json'], { base: './' })
+    .pipe(gulp.dest('./publish'))
 });
 
 gulp.task('build', ['jade', 'scss', 'scripts', 'service-worker']);
