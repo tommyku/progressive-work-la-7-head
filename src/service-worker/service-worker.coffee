@@ -1,12 +1,12 @@
 cacheName = 'pwa-wl7h-1'
 filesToCache = [
   '/'
-  '/index.html'
-  '/vendor/js/bootstrap.min.js'
-  '/vendor/js/jquery-1.11.1.min.js'
-  '/vendor/css/bootstrap.css'
-  '/css/todo.css'
-  '/js/app.js'
+  'index.html'
+  'vendor/js/bootstrap.min.js'
+  'vendor/js/jquery-1.11.1.min.js'
+  'vendor/css/bootstrap.css'
+  'css/todo.css'
+  'js/app.js'
 ]
 
 self.addEventListener 'install', (e)->
