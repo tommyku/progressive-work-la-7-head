@@ -11,6 +11,7 @@
       "type": "image/png"
     }],
   "display": "standalone",
+  "start_url": "/lab/pwl7h/index.html",
   "background_color": "#222222",
   "theme_color": "#303030"
 }
