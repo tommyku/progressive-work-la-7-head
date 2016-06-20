@@ -1,5 +1,5 @@
 # walkthrough jquery: http://jquerypagewalkthrough.github.io/example/example.html
-
+'use strict'
 ### Progress object ###
 
 Progress = (progressDOM) ->
@@ -260,3 +260,9 @@ Todo::updateProgress = ->
   return
 
 app = new Todo($('#todo-app'), new Progress($('#progress')))
+
+if(typeof navigator['serviceWorker'] != 'undefined')
+  navigator.serviceWorker
+    .register('./service-worker.js')
+    .then ->
+      console.log('Service Worker Registered')

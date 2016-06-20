@@ -34,6 +34,18 @@ gulp.task('scss', function(){
     .pipe(gulpif(argv.live, connect.reload()))
 });
 
+gulp.task('service-worker', function(){
+  return gulp.src('src/service-worker/service-worker.coffee')
+    .pipe(plumber({
+      errorHandler: function (error) {
+        console.log(error.message);
+        this.emit('end');
+    }}))
+    .pipe(coffee({bare: true}))
+    .pipe(gulp.dest('./'))
+    .pipe(gulpif(argv.live, connect.reload()))
+});
+
 gulp.task('scripts', function(){
   return gulp.src('src/coffee/**/*.coffee')
     .pipe(plumber({
@@ -59,7 +71,7 @@ gulp.task('publish', function(){
     .pipe(gulp.dest('./publish/bower_components'));
 });
 
-gulp.task('build', ['jade', 'scss', 'scripts']);
+gulp.task('build', ['jade', 'scss', 'scripts', 'service-worker']);
 
 gulp.task('serve', function() {
   connect.server({livereload: argv.live});
@@ -69,4 +81,5 @@ gulp.task('default', ['serve'], function(){
   gulp.watch("src/jade/**/*.jade", ['jade']);
   gulp.watch("src/sass/**/*.scss", ['scss']);
   gulp.watch("src/coffee/**/*.coffee", ['scripts']);
+  gulp.watch("src/service-worker/service-worker.coffee", ['service-worker']);
 });

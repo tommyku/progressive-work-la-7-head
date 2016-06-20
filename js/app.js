@@ -1,3 +1,4 @@
+'use strict';
 
 /* Progress object */
 var Progress, Todo, app;
@@ -284,3 +285,9 @@ Todo.prototype.updateProgress = function() {
 };
 
 app = new Todo($('#todo-app'), new Progress($('#progress')));
+
+if (typeof navigator['serviceWorker'] !== 'undefined') {
+  navigator.serviceWorker.register('./service-worker.js').then(function() {
+    return console.log('Service Worker Registered');
+  });
+}
