@@ -1,5 +1,6 @@
 # walkthrough jquery: http://jquerypagewalkthrough.github.io/example/example.html
 'use strict'
+
 ### Progress object ###
 
 Progress = (progressDOM) ->
@@ -14,6 +15,7 @@ Progress = (progressDOM) ->
 Todo = (appDOM, progress, l) ->
   `var i`
   # intialize properties
+  @header = appDOM.find('h3')
   @input = appDOM.find('.todo-input')
   @list = appDOM.find('.todo-list')
   @doing = null
@@ -21,7 +23,9 @@ Todo = (appDOM, progress, l) ->
   @doneCount = 0
   @progress = progress
   @storage = null
+  @header.text Accent.t('header')
   @input.data 'app', this
+  @input.attr 'placeholder', Accent.t('what')
   @list.data 'app', this
   @updateProgress()
   # handler of textbox
@@ -62,7 +66,7 @@ Todo = (appDOM, progress, l) ->
       content: ->
         ding = $('<button>',
           'class': 'btn btn-default'
-          'html': '頂').data('item', this).click(->
+          'html': Accent.t('push')).data('item', this).click(->
           item = $(this).data('item')
           $(item).data('app').dingItem item
           $(item).popover 'hide'
@@ -70,7 +74,7 @@ Todo = (appDOM, progress, l) ->
         )
         yiu = $('<button>',
           'class': 'btn btn-danger'
-          'html': '妖').data('item', this).click(->
+          'html': Accent.t('remove')).data('item', this).click(->
           item = $(this).data('item')
           $(item).data('app').yiuItem item
           $(item).popover 'hide'
@@ -110,20 +114,19 @@ Progress::set = (percentage) ->
   @bar.css 'width', percentage + '%'
   switch true
     when percentage == 0
-      @statusText.html '戇鳩鳩發乜撚夢呀？'
+      @statusText.html Accent.t('status_0')
     when percentage <= 10
-      @statusText.html '屌廢嘅'
+      @statusText.html Accent.t('status_1')
     when percentage <= 25
-      @statusText.html '做到2046呀屌'
+      @statusText.html Accent.t('status_2')
     when percentage <= 50
-      @statusText.html '屌做唔撚完呀'
+      @statusText.html Accent.t('status_3')
     when percentage <= 75
-      @statusText.html '屌有排先做撚完呀'
+      @statusText.html Accent.t('status_4')
     when percentage < 100
-      @statusText.html '就黎做完啦屌'
+      @statusText.html Accent.t('status_5')
     when percentage == 100
-      # this.statusText.html("做完訓啦");
-      @statusText.html '做完收皮啦'
+      @statusText.html Accent.t('status_6')
   return
 
 Todo::addListItem = (value) ->
@@ -234,13 +237,11 @@ Todo::finishItem = (dom) ->
 Todo::removeFromStorage = (id) ->
   index = -1
   @storage.forEach (item, index_)->
-    console.debug item
     if item.id == id
       index = index_
   @storage.splice(index, 1) unless index == -1
 
 Todo::save = ->
-  console.debug @storage
   if typeof Storage != 'undefined'
     localStorage.setItem 'tasks', JSON.stringify(@storage)
   return
@@ -252,14 +253,67 @@ Todo::updateProgress = ->
     # then this sits in the handler for list change
     @list.append $('<h4>',
       'id': 'intro'
-      'html': '<em>加撚野做啦仆街</em>'
+      'html': "<em>#{Accent.t('prompt')}</em>"
       'class': 'text-center text-muted')
     @progress.set 0
   else
     @progress.set 100 * @doneCount / @taskCount
   return
 
-app = new Todo($('#todo-app'), new Progress($('#progress')))
+### Accent object ###
+
+class Accent
+  @KEYS: [
+    'push'
+    'remove'
+    'prompt'
+    'status_0'
+    'status_1'
+    'status_2'
+    'status_3'
+    'status_4'
+    'status_5'
+    'status_6'
+  ]
+
+  @ACCENTS:
+    粗口:
+      push: '頂'
+      remove: '妖'
+      prompt: '加撚野做啦仆街'
+      what: '做乜撚野'
+      header: '做野啦柒頭'
+      status_0: '戇鳩鳩發乜撚夢呀？'
+      status_1: '屌廢嘅'
+      status_2: '做到2046呀屌'
+      status_3: '屌做唔撚完呀'
+      status_4: '屌有排先做撚完呀'
+      status_5: '就黎做完啦屌'
+      status_6: '做完收皮啦'
+    en:
+      push: 'Move up'
+      remove: 'Remove'
+      prompt: 'Add a task'
+      what: 'I need to do...'
+      header: 'Work'
+      status_0: 'Better start now than later'
+      status_1: 'Keep going'
+      status_2: 'You are doing good'
+      status_3: 'What will you do after finishing them all?'
+      status_4: 'Great progress'
+      status_5: 'Almost done!'
+      status_6: 'All done!'
+
+  @t: (key)->
+    lang = window.location.hash.slice(1)
+    lang = if @ACCENTS.hasOwnProperty(lang) then lang else '粗口'
+    @ACCENTS[lang][key]
+
+### Main object ###
+
+todoDom = $('#todo-app')
+progress = new Progress($('#progress'))
+app = new Todo(todoDom, progress)
 
 if(typeof navigator['serviceWorker'] != 'undefined')
   navigator.serviceWorker

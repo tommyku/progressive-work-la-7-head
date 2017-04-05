@@ -1,7 +1,7 @@
 'use strict';
 
 /* Progress object */
-var Progress, Todo, app;
+var Accent, Progress, Todo, app, progress, todoDom;
 
 Progress = function(progressDOM) {
   this.statusText = progressDOM.find('.progress-text');
@@ -17,6 +17,7 @@ Progress = function(progressDOM) {
 Todo = function(appDOM, progress, l) {
   var i;
   var i, oldList;
+  this.header = appDOM.find('h3');
   this.input = appDOM.find('.todo-input');
   this.list = appDOM.find('.todo-list');
   this.doing = null;
@@ -24,7 +25,9 @@ Todo = function(appDOM, progress, l) {
   this.doneCount = 0;
   this.progress = progress;
   this.storage = null;
+  this.header.text(Accent.t('header'));
   this.input.data('app', this);
+  this.input.attr('placeholder', Accent.t('what'));
   this.list.data('app', this);
   this.updateProgress();
   this.input.on('keypress', function(e) {
@@ -67,7 +70,7 @@ Todo = function(appDOM, progress, l) {
         var ding, div, yiu;
         ding = $('<button>', {
           'class': 'btn btn-default',
-          'html': '頂'
+          'html': Accent.t('push')
         }).data('item', this).click(function() {
           var item;
           item = $(this).data('item');
@@ -76,7 +79,7 @@ Todo = function(appDOM, progress, l) {
         });
         yiu = $('<button>', {
           'class': 'btn btn-danger',
-          'html': '妖'
+          'html': Accent.t('remove')
         }).data('item', this).click(function() {
           var item;
           item = $(this).data('item');
@@ -129,25 +132,25 @@ Progress.prototype.set = function(percentage) {
   this.bar.css('width', percentage + '%');
   switch (true) {
     case percentage === 0:
-      this.statusText.html('戇鳩鳩發乜撚夢呀？');
+      this.statusText.html(Accent.t('status_0'));
       break;
     case percentage <= 10:
-      this.statusText.html('屌廢嘅');
+      this.statusText.html(Accent.t('status_1'));
       break;
     case percentage <= 25:
-      this.statusText.html('做到2046呀屌');
+      this.statusText.html(Accent.t('status_2'));
       break;
     case percentage <= 50:
-      this.statusText.html('屌做唔撚完呀');
+      this.statusText.html(Accent.t('status_3'));
       break;
     case percentage <= 75:
-      this.statusText.html('屌有排先做撚完呀');
+      this.statusText.html(Accent.t('status_4'));
       break;
     case percentage < 100:
-      this.statusText.html('就黎做完啦屌');
+      this.statusText.html(Accent.t('status_5'));
       break;
     case percentage === 100:
-      this.statusText.html('做完收皮啦');
+      this.statusText.html(Accent.t('status_6'));
   }
 };
 
@@ -254,7 +257,6 @@ Todo.prototype.removeFromStorage = function(id) {
   var index;
   index = -1;
   this.storage.forEach(function(item, index_) {
-    console.debug(item);
     if (item.id === id) {
       return index = index_;
     }
@@ -265,7 +267,6 @@ Todo.prototype.removeFromStorage = function(id) {
 };
 
 Todo.prototype.save = function() {
-  console.debug(this.storage);
   if (typeof Storage !== 'undefined') {
     localStorage.setItem('tasks', JSON.stringify(this.storage));
   }
@@ -275,7 +276,7 @@ Todo.prototype.updateProgress = function() {
   if (this.taskCount === 0) {
     this.list.append($('<h4>', {
       'id': 'intro',
-      'html': '<em>加撚野做啦仆街</em>',
+      'html': "<em>" + (Accent.t('prompt')) + "</em>",
       'class': 'text-center text-muted'
     }));
     this.progress.set(0);
@@ -284,7 +285,64 @@ Todo.prototype.updateProgress = function() {
   }
 };
 
-app = new Todo($('#todo-app'), new Progress($('#progress')));
+
+/* Accent object */
+
+Accent = (function() {
+  function Accent() {}
+
+  Accent.KEYS = ['push', 'remove', 'prompt', 'status_0', 'status_1', 'status_2', 'status_3', 'status_4', 'status_5', 'status_6'];
+
+  Accent.ACCENTS = {
+    粗口: {
+      push: '頂',
+      remove: '妖',
+      prompt: '加撚野做啦仆街',
+      what: '做乜撚野',
+      header: '做野啦柒頭',
+      status_0: '戇鳩鳩發乜撚夢呀？',
+      status_1: '屌廢嘅',
+      status_2: '做到2046呀屌',
+      status_3: '屌做唔撚完呀',
+      status_4: '屌有排先做撚完呀',
+      status_5: '就黎做完啦屌',
+      status_6: '做完收皮啦'
+    },
+    en: {
+      push: 'Move up',
+      remove: 'Remove',
+      prompt: 'Add a task',
+      what: 'I need to do...',
+      header: 'Work',
+      status_0: 'Better start now than later',
+      status_1: 'Keep going',
+      status_2: 'You are doing good',
+      status_3: 'What will you do after finishing them all?',
+      status_4: 'Great progress',
+      status_5: 'Almost done!',
+      status_6: 'All done!'
+    }
+  };
+
+  Accent.t = function(key) {
+    var lang;
+    lang = window.location.hash.slice(1);
+    lang = this.ACCENTS.hasOwnProperty(lang) ? lang : '粗口';
+    return this.ACCENTS[lang][key];
+  };
+
+  return Accent;
+
+})();
+
+
+/* Main object */
+
+todoDom = $('#todo-app');
+
+progress = new Progress($('#progress'));
+
+app = new Todo(todoDom, progress);
 
 if (typeof navigator['serviceWorker'] !== 'undefined') {
   navigator.serviceWorker.register('./service-worker.js').then(function() {
