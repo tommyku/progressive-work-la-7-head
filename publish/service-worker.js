@@ -1,6 +1,6 @@
 var cacheName, filesToCache;
 
-cacheName = 'pwa-wl7h-2';
+cacheName = 'pwa-wl7h-3';
 
 filesToCache = ['/', 'index.html', 'vendor/js/bootstrap.min.js', 'vendor/js/jquery-1.11.1.min.js', 'vendor/css/bootstrap.css', 'css/todo.css', 'js/app.js'];
 

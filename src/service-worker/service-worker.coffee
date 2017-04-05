@@ -1,4 +1,4 @@
-cacheName = 'pwa-wl7h-2'
+cacheName = 'pwa-wl7h-3'
 filesToCache = [
   '/'
   'index.html'

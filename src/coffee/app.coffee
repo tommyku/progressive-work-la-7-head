@@ -316,7 +316,8 @@ progress = new Progress($('#progress'))
 app = new Todo(todoDom, progress)
 
 if(typeof navigator['serviceWorker'] != 'undefined')
-  navigator.serviceWorker
-    .register('./service-worker.js')
-    .then ->
-      console.log('Service Worker Registered')
+  window.addEventListener 'load', ->
+    navigator.serviceWorker
+      .register('./service-worker.js')
+      .then ->
+        console.log('Service Worker Registered')
