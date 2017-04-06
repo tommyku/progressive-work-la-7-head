@@ -304,9 +304,15 @@ class Accent
       status_5: 'Almost done!'
       status_6: 'All done!'
 
+  @isValidLanguage: (lang)->
+    @ACCENTS.hasOwnProperty(lang)
+
   @t: (key)->
-    lang = window.location.hash.slice(1)
-    lang = if @ACCENTS.hasOwnProperty(lang) then lang else '粗口'
+    lang = window.location.hash.slice(1) || Cookies.get('lang', lang)
+    if @isValidLanguage(lang)
+      Cookies.set('lang', lang)
+    else
+      lang = '粗口'
     @ACCENTS[lang][key]
 
 ### Main object ###

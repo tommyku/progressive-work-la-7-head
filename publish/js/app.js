@@ -324,10 +324,18 @@ Accent = (function() {
     }
   };
 
+  Accent.isValidLanguage = function(lang) {
+    return this.ACCENTS.hasOwnProperty(lang);
+  };
+
   Accent.t = function(key) {
     var lang;
-    lang = window.location.hash.slice(1);
-    lang = this.ACCENTS.hasOwnProperty(lang) ? lang : '粗口';
+    lang = window.location.hash.slice(1) || Cookies.get('lang', lang);
+    if (this.isValidLanguage(lang)) {
+      Cookies.set('lang', lang);
+    } else {
+      lang = '粗口';
+    }
     return this.ACCENTS[lang][key];
   };
 

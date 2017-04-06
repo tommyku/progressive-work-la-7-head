@@ -1,9 +1,10 @@
-cacheName = 'pwa-wl7h-3'
+cacheName = 'pwa-wl7h-4'
 filesToCache = [
   '/'
   'index.html'
   'vendor/js/bootstrap.min.js'
   'vendor/js/jquery-1.11.1.min.js'
+  'vendor/js/js.cookie.js'
   'vendor/css/bootstrap.css'
   'css/todo.css'
   'js/app.js'
