@@ -332,7 +332,9 @@ Accent = (function() {
     var lang;
     lang = window.location.hash.slice(1) || Cookies.get('lang', lang);
     if (this.isValidLanguage(lang)) {
-      Cookies.set('lang', lang);
+      Cookies.set('lang', lang, {
+        expires: 7
+      });
     } else {
       lang = '粗口';
     }

@@ -310,7 +310,7 @@ class Accent
   @t: (key)->
     lang = window.location.hash.slice(1) || Cookies.get('lang', lang)
     if @isValidLanguage(lang)
-      Cookies.set('lang', lang)
+      Cookies.set('lang', lang, {expires: 7})
     else
       lang = '粗口'
     @ACCENTS[lang][key]
