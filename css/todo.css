@@ -1,6 +1,0 @@
-.todo-list .active:hover,
-.todo-list .list-group-item:hover {
-  cursor: pointer; }
-
-.todo-list .disabled:hover {
-  cursor: not-allowed; }
