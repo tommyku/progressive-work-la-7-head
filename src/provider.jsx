@@ -3,8 +3,12 @@ import React from 'react';
 const ProviderStyle = {
   backgroundColor: '#222222',
   color: '#ffffff',
+  fontSize: 'x-large',
   fontFamily: '"Lato", "Helvetica Neue", Helvetica, Arial, sans-serif',
-  lineHeight: '1.42857143'
+  lineHeight: '1.42857143',
+  maxWidth: '48em',
+  padding: '0 .5em',
+  margin: 'auto'
 }
 
 const PageStyle = Object.assign(
