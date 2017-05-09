@@ -2,15 +2,27 @@ import React from 'react'
 import Provider from './provider.jsx'
 import TodoList from './todo_list.jsx'
 import AppBar from './app_bar.jsx'
+import Todo from './data/todo.js'
 
 const App = (props)=> {
+  let todo = {}
+  let todos = [
+    new Todo('Reply the comment on your blog', false),
+    new Todo('Check with cyberport whether you can lease', true),
+    new Todo('食龜苓膏', true),
+  ];
+  todos.forEach((item)=> {
+    todo[item.uuid] = item;
+  });
+
   const state = {
-    todo: [
-      {text: 'reply the comment on your blog', done: false, createdAt: (new Date()).toString()},
-      {text: 'Check with cyberport whether you can lease', done: false, createdAt: (new Date()).toString()},
-      {text: '食龜苓膏', done: true, createdAt: (new Date()).toString()},
-    ]
+    todo: todo
   };
+
+  const sortedTodos = ()=> {
+    return Object.values(state.todo);
+  }
+
   return (
     <Provider>
       <AppBar
@@ -18,7 +30,7 @@ const App = (props)=> {
         location='pool'
         homeName='做野啦柒頭'
         home='/' />
-      <TodoList values={state.todo} />
+      <TodoList values={sortedTodos()} />
     </Provider>
   );
 }

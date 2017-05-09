@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const AppBarMinHeight = '40px';
+const AppBarMinHeight = '60px';
 
 const AppBarStyle = {
   backgroundColor: '#0c0a66',
@@ -10,7 +10,9 @@ const AppBarStyle = {
   left: '0',
   right: '0',
   width: '100vw',
-  minHeight: AppBarMinHeight
+  minHeight: AppBarMinHeight,
+  display: 'flex',
+  alignItems: 'center'
 }
 
 const HomeLinkStyle = {
