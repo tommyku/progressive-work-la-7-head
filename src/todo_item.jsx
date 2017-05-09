@@ -27,7 +27,9 @@ const TodoTimeStyle = {
   float: 'right'
 };
 
-const TodoItemStyle = {};
+const TodoItemStyle = {
+  clear: 'both'
+};
 
 const TodoItem = (props)=> {
   const {
