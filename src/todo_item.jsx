@@ -1,8 +1,13 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const TodoDoneBase = {
   marginRight: '.5em',
   display: 'inline-block',
+  padding: 0,
+  fontSize: 'x-large',
+  background: 'none',
+  border: 'none',
 };
 
 const TodoDoneStyle = Object.assign(
@@ -31,19 +36,25 @@ const TodoItemStyle = {
   clear: 'both'
 };
 
-const TodoItem = (props)=> {
+const TodoItem = (props, context)=> {
   const {
     text,
     done,
     createdAt,
+    uuid,
     style,
     ...others
   } = props;
 
+  const handleDoneBoxClick = (e)=> {
+    context.update('toggle', {uuid: uuid});
+  }
+
   const DoneBox = (
-    <span style={(done ? TodoNotDoneStyle : TodoDoneStyle)}>
+    <button style={(done ? TodoNotDoneStyle : TodoDoneStyle)}
+      onClick={handleDoneBoxClick}>
       {(done ? '完' : '未')}
-    </span>
+    </button>
   );
 
   const TextBox = (
@@ -77,5 +88,9 @@ const TodoItem = (props)=> {
     </div>
   );
 };
+
+TodoItem.contextTypes = {
+  update: PropTypes.func
+}
 
 export default TodoItem;

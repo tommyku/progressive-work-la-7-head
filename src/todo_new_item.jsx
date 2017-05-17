@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const TodoItemStyle = {
   clear: 'both',
@@ -8,7 +9,7 @@ const TodoItemStyle = {
 };
 
 const TodoTextStyle = {
-  color: '#fff',
+  color: '#999',
   background: 'none',
   border: 'none',
   fontSize: 'x-large',
@@ -18,11 +19,12 @@ const TodoTextStyle = {
 };
 
 const TodoAddBase = {
+  color: '#999',
   marginRight: '.5em',
   display: 'inline-block',
 };
 
-const TodoNewItem = (props)=> {
+const TodoNewItem = (props, context)=> {
   const {
     placeholder,
     style,
@@ -33,9 +35,18 @@ const TodoNewItem = (props)=> {
     <span style={TodoAddBase}>加</span>
   );
 
+  const handleTextBoxKeyDown = (e)=> {
+    if (e.key === 'Enter') {
+      let text = e.target.value;
+      e.target.value = '';
+      context.update('add', {text: text});
+    }
+  };
+
   const TextBox = (
     <input
       type='text'
+      onKeyDown={handleTextBoxKeyDown}
       style={TodoTextStyle} />
   );
 
@@ -52,5 +63,9 @@ const TodoNewItem = (props)=> {
     </div>
   );
 };
+
+TodoNewItem.contextTypes = {
+  update: PropTypes.func
+}
 
 export default TodoNewItem;

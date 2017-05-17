@@ -15,6 +15,7 @@ class TodoList extends React.Component {
       text,
       done,
       createdAt,
+      uuid,
       ...other
     } = item;
 
@@ -23,6 +24,7 @@ class TodoList extends React.Component {
         key={index}
         text={text}
         done={done}
+        uuid={uuid}
         createdAt={createdAt}
         {...other}
       />
