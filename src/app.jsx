@@ -12,37 +12,53 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    const state = {
-      todo: {}
+    const stateTemplate = {
+      listKey: 'default',
+      lists: {
+        'default': 'Default List'
+      },
+      todo: {
+        'default': {}
+      }
     };
-    this.state = state;
+    this.state = stateTemplate;
+  }
+
+  currentTodoList() {
+    return this.state.todo[this.state.listKey];
   }
 
   sortedTodos() {
-    let todos = Object.values(this.state.todo).sort((a, b)=> {
+    let todos = Object.values(this.currentTodoList()).sort((a, b)=> {
       return (a.createdAt > b.createdAt) ? -1 : 1;
     });
     return todos;
   }
 
   handleAdd({text}) {
-    let newTodo = this.state.todo;
+    let newTodo = this.currentTodoList();
     let newItem = new Todo(text, false);
     newTodo[newItem.uuid] = newItem;
-    this.setState({todo: newTodo});
+    this.setState({todo: {
+      [this.state.listKey]: newTodo
+    }});
   }
 
   handleRemove({uuid}) {
-    let newTodo = this.state.todo;
+    let newTodo = this.currentTodoList();
     delete newTodo[uuid];
-    this.setState({todo: newTodo});
+    this.setState({todo: {
+      [this.state.listKey]: newTodo
+    }});
   }
 
   handleToggle({uuid}) {
-    let newTodo = this.state.todo;
+    let newTodo = this.currentTodoList();
     let updatedTodo = newTodo[uuid];
     updatedTodo.done = !updatedTodo.done;
-    this.setState({todo: newTodo});
+    this.setState({todo: {
+      [this.state.listKey]: newTodo
+    }});
   }
 
   update(action, payload) {
@@ -63,8 +79,8 @@ class App extends React.Component {
     return (
       <Provider>
         <AppBar
-          locationName='The Pool'
-          location='pool'
+          locationName={this.state.lists[this.state.listKey]}
+          location={this.state.listKey}
           homeName='要做的野'
           home='/' />
         <TodoList values={this.sortedTodos()} />
