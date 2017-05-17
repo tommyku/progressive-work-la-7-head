@@ -4,6 +4,11 @@ import TodoList from './todo_list.jsx'
 import AppBar from './app_bar.jsx'
 import Todo from './data/todo.js'
 import PropTypes from 'prop-types'
+import {
+  HashRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom'
 
 class App extends React.Component {
   getChildContext() {
@@ -15,7 +20,7 @@ class App extends React.Component {
     const stateTemplate = {
       listKey: 'default',
       lists: {
-        'default': 'Default List'
+        'default': 'Default List',
       },
       todo: {
         'default': {}
@@ -76,15 +81,35 @@ class App extends React.Component {
   }
 
   render() {
+    const Index = ({match})=> {
+      return (
+        <div>
+          {Object.keys(this.state.lists).map((key, index)=> {
+            return (<Link key={index} to={`/list/${key}`}>{key}</Link>);
+          })}
+        </div>
+      );
+    }
+    const List = ({match})=> {
+      let key = match.params.list;
+      return (
+        <div>
+          <AppBar
+            locationName={this.state.lists[key]}
+            location={key}
+            homeName='要做的野'
+            home='/' />
+          <TodoList values={this.sortedTodos()} />
+        </div>
+      );
+    }
     return (
-      <Provider>
-        <AppBar
-          locationName={this.state.lists[this.state.listKey]}
-          location={this.state.listKey}
-          homeName='要做的野'
-          home='/' />
-        <TodoList values={this.sortedTodos()} />
-      </Provider>
+      <Router>
+        <Provider>
+          <Route exact path="/" render={Index} />
+          <Route path="/list/:list" render={List} />
+        </Provider>
+      </Router>
     );
   }
 }

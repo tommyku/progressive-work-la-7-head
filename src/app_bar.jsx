@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 const AppBarMinHeight = '60px';
 
@@ -40,17 +41,17 @@ const AppBar = ({locationName, location, home, homeName, style, ...others})=> {
   );
 
   const HomeLink = (
-    <a href={home}
+    <Link to={home}
        style={HomeLinkStyle}>
       {homeName}
-    </a>
+    </Link>
   );
 
   const LocationLink = (
-    <a href={location}
+    <Link to={location}
        style={LocationLinkStyle}>
       {locationName}
-    </a>
+    </Link>
   );
 
   return (
