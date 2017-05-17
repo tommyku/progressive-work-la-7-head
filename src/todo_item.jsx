@@ -8,6 +8,7 @@ const TodoDoneBase = {
   fontSize: 'x-large',
   background: 'none',
   border: 'none',
+  lineHeight: '1.42857'
 };
 
 const TodoDoneStyle = Object.assign(
@@ -22,6 +23,11 @@ const TodoNotDoneStyle = Object.assign(
   {color: '#f66'}
 );
 
+const TodoRemoveBoxStyle = Object.assign(
+  {float: 'right'},
+  TodoNotDoneStyle
+);
+
 const TodoTextStyle = {
   color: '#990',
 };
@@ -29,7 +35,9 @@ const TodoTextStyle = {
 const TodoTimeStyle = {
   color: '#bbb',
   fontFamily: 'monospace',
-  float: 'right'
+  fontSize: 'x-large',
+  float: 'right',
+  lineHeight: '1.42857'
 };
 
 const TodoItemStyle = {
@@ -50,10 +58,21 @@ const TodoItem = (props, context)=> {
     context.update('toggle', {uuid: uuid});
   }
 
+  const handleRemoveBoxClick = (e)=> {
+    context.update('remove', {uuid: uuid});
+  }
+
   const DoneBox = (
     <button style={(done ? TodoNotDoneStyle : TodoDoneStyle)}
       onClick={handleDoneBoxClick}>
       {(done ? '完' : '未')}
+    </button>
+  );
+
+  const RemoveBox = (
+    <button style={TodoRemoveBoxStyle}
+      onClick={handleRemoveBoxClick}>
+      刪
     </button>
   );
 
@@ -85,6 +104,7 @@ const TodoItem = (props, context)=> {
       {DoneBox}
       {TextBox}
       {TimeBox}
+      {RemoveBox}
     </div>
   );
 };
