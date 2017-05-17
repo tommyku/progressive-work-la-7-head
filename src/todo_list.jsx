@@ -1,5 +1,6 @@
 import React from 'react'
 import TodoItem from './todo_item.jsx'
+import TodoNewItem from './todo_new_item.jsx'
 
 const TodoStyle = {
 };
@@ -38,6 +39,7 @@ class TodoList extends React.Component {
     return (
       <section {...other} style={todoStyle}>
         {this.props.values.map(this.prepareTodoItem)}
+        <TodoNewItem />
       </section>
     );
   }
