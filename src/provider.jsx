@@ -3,7 +3,7 @@ import React from 'react';
 const ProviderStyle = {
   backgroundColor: '#222222',
   color: '#ffffff',
-  fontSize: 'x-large',
+  fontSize: 'medium',
   fontFamily: '"Lato", "Helvetica Neue", Helvetica, Arial, sans-serif',
   lineHeight: '1.42857143',
   maxWidth: '48em',

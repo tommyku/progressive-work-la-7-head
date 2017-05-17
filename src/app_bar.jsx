@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
-const AppBarMinHeight = '60px';
+const AppBarMinHeight = '40px';
 
 const AppBarStyle = {
   backgroundColor: '#0c0a66',
@@ -48,10 +48,16 @@ const AppBar = ({locationName, location, home, homeName, style, ...others})=> {
   );
 
   const LocationLink = (
-    <Link to={location}
-       style={LocationLinkStyle}>
-      {locationName}
-    </Link>
+    <span>
+      <span style={{padding: '0 0.5em'}}>{'\u203A'}</span>
+      {
+        (location && locationName) &&
+        <Link to={location}
+           style={LocationLinkStyle}>
+          {locationName}
+        </Link>
+      }
+    </span>
   );
 
   return (
@@ -60,8 +66,7 @@ const AppBar = ({locationName, location, home, homeName, style, ...others})=> {
         style={appBarStyle}
         {...others} >
         {HomeLink}
-        <span style={{padding: '0 0.5em'}}>{'\u203A'}</span>
-        {LocationLink}
+        {(location && locationName) && LocationLink}
       </header>
       <div style={AppBarPlaceholderStyle}></div>
     </div>
@@ -70,10 +75,10 @@ const AppBar = ({locationName, location, home, homeName, style, ...others})=> {
 
 
 AppBar.propTypes = {
-   locationName: PropTypes.string.isRequired,
-   location: PropTypes.string.isRequired,
    home: PropTypes.string.isRequired,
    homeName: PropTypes.string.isRequired,
+   locationName: PropTypes.string,
+   location: PropTypes.string,
    style: PropTypes.object
 };
 

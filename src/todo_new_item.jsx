@@ -12,7 +12,7 @@ const TodoTextStyle = {
   color: '#999',
   background: 'none',
   border: 'none',
-  fontSize: 'x-large',
+  fontSize: 'medium',
   padding: 0,
   margin: 0,
   width: '100%'

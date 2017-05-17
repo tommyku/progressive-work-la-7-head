@@ -5,7 +5,7 @@ const TodoDoneBase = {
   marginRight: '.5em',
   display: 'inline-block',
   padding: 0,
-  fontSize: 'x-large',
+  fontSize: 'medium',
   background: 'none',
   border: 'none',
   lineHeight: '1.42857'
@@ -40,7 +40,7 @@ const TodoDoneTextStyle = Object.assign(
 const TodoTimeStyle = {
   color: '#bbb',
   fontFamily: 'monospace',
-  fontSize: 'x-large',
+  fontSize: 'medium',
   float: 'right',
   lineHeight: '1.42857'
 };

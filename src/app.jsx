@@ -84,9 +84,14 @@ class App extends React.Component {
     const Index = ({match})=> {
       return (
         <div>
-          {Object.keys(this.state.lists).map((key, index)=> {
-            return (<Link key={index} to={`/list/${key}`}>{key}</Link>);
-          })}
+          <AppBar
+            homeName='要做的野'
+            home='/' />
+          <div>
+            {Object.keys(this.state.lists).map((key, index)=> {
+              return (<Link key={index} to={`/list/${key}`}>{this.state.lists[key]}</Link>);
+            })}
+          </div>
         </div>
       );
     }
