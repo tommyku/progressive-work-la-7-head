@@ -12,24 +12,17 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    let todo = {}
-    let todos = [
-      new Todo('Reply the comment on your blog', false),
-      new Todo('Check with cyberport whether you can lease', true),
-      new Todo('食龜苓膏', true),
-    ];
-    todos.forEach((item)=> {
-      todo[item.uuid] = item;
-    });
-
     const state = {
-      todo: todo
+      todo: {}
     };
     this.state = state;
   }
 
   sortedTodos() {
-    return Object.values(this.state.todo);
+    let todos = Object.values(this.state.todo).sort((a, b)=> {
+      return (a.createdAt > b.createdAt) ? -1 : 1;
+    });
+    return todos;
   }
 
   handleAdd({text}) {

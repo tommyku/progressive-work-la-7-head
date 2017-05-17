@@ -40,8 +40,8 @@ class TodoList extends React.Component {
 
     return (
       <section {...other} style={todoStyle}>
-        {this.props.values.map(this.prepareTodoItem)}
         <TodoNewItem />
+        {this.props.values.map(this.prepareTodoItem)}
       </section>
     );
   }
