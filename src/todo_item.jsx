@@ -32,6 +32,11 @@ const TodoTextStyle = {
   color: '#990',
 };
 
+const TodoDoneTextStyle = Object.assign(
+  {textDecoration: 'line-through'},
+  TodoTextStyle
+);
+
 const TodoTimeStyle = {
   color: '#bbb',
   fontFamily: 'monospace',
@@ -77,7 +82,9 @@ const TodoItem = (props, context)=> {
   );
 
   const TextBox = (
-    <span style={TodoTextStyle}>{text}</span>
+    <span style={(done ? TodoDoneTextStyle : TodoTextStyle)}>
+      {text}
+    </span>
   );
 
   const lo = (num)=> {

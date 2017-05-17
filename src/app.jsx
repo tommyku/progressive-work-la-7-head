@@ -65,7 +65,7 @@ class App extends React.Component {
         <AppBar
           locationName='The Pool'
           location='pool'
-          homeName='做野啦柒頭'
+          homeName='要做的野'
           home='/' />
         <TodoList values={this.sortedTodos()} />
       </Provider>
