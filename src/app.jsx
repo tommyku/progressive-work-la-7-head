@@ -33,6 +33,13 @@ class App extends React.Component {
     this.state = stateTemplate;
   }
 
+  componentWillMount() {
+    let localStoredJSON = localStorage.getItem('state')
+    if (localStoredJSON !== null) {
+      this.setState(JSON.parse(localStoredJSON))
+    }
+  }
+
   currentTodoList() {
     return this.state.todo[this.state.listKey];
   }
@@ -92,6 +99,7 @@ class App extends React.Component {
         this.handleNewList(payload);
         break;
     }
+    localStorage.setItem('state', JSON.stringify(this.state))
   }
 
   render() {
