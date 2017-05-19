@@ -1,6 +1,7 @@
 import React from 'react'
 import TodoItem from './todo_item.jsx'
 import TodoNewItem from './todo_new_item.jsx'
+import TodoNewList from './todo_new_list.jsx'
 
 const TodoStyle = {
 };
@@ -33,6 +34,8 @@ class TodoList extends React.Component {
 
   render() {
     const {
+      persisted,
+      listKey,
       style,
       ...other
     } = this.props;
@@ -40,7 +43,8 @@ class TodoList extends React.Component {
 
     return (
       <section {...other} style={todoStyle}>
-        <TodoNewItem />
+        {persisted && <TodoNewItem />}
+        {!persisted && <TodoNewList listKey={listKey} />}
         {this.props.values.map(this.prepareTodoItem)}
       </section>
     );

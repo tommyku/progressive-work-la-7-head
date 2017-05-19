@@ -10,6 +10,10 @@ import {
   Link
 } from 'react-router-dom'
 
+const LinkStyle = {
+  color: '#999',
+};
+
 class App extends React.Component {
   getChildContext() {
     return {update: this.update.bind(this)}
@@ -20,7 +24,7 @@ class App extends React.Component {
     const stateTemplate = {
       listKey: 'default',
       lists: {
-        'default': 'Default List',
+        'default': '做咩啫你',
       },
       todo: {
         'default': {}
@@ -66,6 +70,13 @@ class App extends React.Component {
     }});
   }
 
+  handleNewList({key, name}) {
+    let newState = this.state;
+    this.state.lists[key] = name;
+    this.state.todo[key] = {};
+    this.setState(newState);
+  }
+
   update(action, payload) {
     switch (action) {
       case 'add':
@@ -77,6 +88,9 @@ class App extends React.Component {
       case 'toggle':
         this.handleToggle(payload);
         break;
+      case 'new_list':
+        this.handleNewList(payload);
+        break;
     }
   }
 
@@ -87,11 +101,18 @@ class App extends React.Component {
           <AppBar
             homeName='要做的野'
             home='/' />
-          <div>
+          <ul>
             {Object.keys(this.state.lists).map((key, index)=> {
-              return (<Link key={index} to={`/list/${key}`}>{this.state.lists[key]}</Link>);
+              return (
+                <li key={index}>
+                  <Link to={`/list/${key}`}
+                    style={LinkStyle}>
+                    {this.state.lists[key]}
+                  </Link>
+                </li>
+              );
             })}
-          </div>
+          </ul>
         </div>
       );
     }
@@ -104,7 +125,9 @@ class App extends React.Component {
             location={key}
             homeName='要做的野'
             home='/' />
-          <TodoList values={this.sortedTodos()} />
+          <TodoList values={this.sortedTodos()}
+            listKey={key}
+            persisted={this.state.lists.hasOwnProperty(key)} />
         </div>
       );
     }
