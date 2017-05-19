@@ -26,6 +26,7 @@ class TodoList extends React.Component {
         text={text}
         done={done}
         uuid={uuid}
+        listKey={this.props.listKey}
         createdAt={createdAt}
         {...other}
       />
@@ -37,15 +38,18 @@ class TodoList extends React.Component {
       persisted,
       listKey,
       style,
+      values,
       ...other
     } = this.props;
     let todoStyle = Object.assign({}, TodoStyle, style);
 
     return (
       <section {...other} style={todoStyle}>
-        {persisted && <TodoNewItem />}
+        {persisted && <TodoNewItem listKey={listKey} />}
         {!persisted && <TodoNewList listKey={listKey} />}
-        {this.props.values.map(this.prepareTodoItem)}
+        {values.map((item, index)=> {
+          return this.prepareTodoItem(item, index);
+        })}
       </section>
     );
   }

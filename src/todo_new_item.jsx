@@ -27,6 +27,7 @@ const TodoAddBase = {
 const TodoNewItem = (props, context)=> {
   const {
     placeholder,
+    listKey,
     style,
     ...others
   } = props;
@@ -39,7 +40,7 @@ const TodoNewItem = (props, context)=> {
     if (e.key === 'Enter' && e.target.value.length > 0) {
       let text = e.target.value;
       e.target.value = '';
-      context.update('add', {text: text});
+      context.update('add', {text: text, key: listKey});
     }
   };
 

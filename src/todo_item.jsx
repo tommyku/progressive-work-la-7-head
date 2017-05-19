@@ -55,16 +55,17 @@ const TodoItem = (props, context)=> {
     done,
     createdAt,
     uuid,
+    listKey,
     style,
     ...others
   } = props;
 
   const handleDoneBoxClick = (e)=> {
-    context.update('toggle', {uuid: uuid});
+    context.update('toggle', {uuid: uuid, key: listKey});
   }
 
   const handleRemoveBoxClick = (e)=> {
-    context.update('remove', {uuid: uuid});
+    context.update('remove', {uuid: uuid, key: listKey});
   }
 
   const DoneBox = (
