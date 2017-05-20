@@ -1,4 +1,5 @@
 import React from 'react'
+import AutoLinkText from 'react-autolink-text2'
 import PropTypes from 'prop-types'
 
 const TodoDoneBase = {
@@ -68,21 +69,23 @@ const TodoItem = (props, context)=> {
 
   const DoneBox = (
     <button style={(done ? TodoNotDoneStyle : TodoDoneStyle)}
-      onClick={handleDoneBoxClick}>
+      onClick={handleDoneBoxClick}
+      className='hover-pointer'>
       {(done ? '完' : '未')}
     </button>
   );
 
   const RemoveBox = (
     <button style={TodoRemoveBoxStyle}
-      onClick={handleRemoveBoxClick}>
+      onClick={handleRemoveBoxClick}
+      className='hover-pointer'>
       刪
     </button>
   );
 
   const TextBox = (
     <span style={(done ? TodoDoneTextStyle : TodoTextStyle)}>
-      {text}
+      <AutoLinkText text={text} />
     </span>
   );
 
