@@ -64,7 +64,9 @@ const TodoItem = (props, context)=> {
   }
 
   const handleRemoveBoxClick = (e)=> {
-    context.update('remove', {uuid: uuid, key: listKey});
+    if (confirm('真係要刪？')) {
+      context.update('remove', {uuid: uuid, key: listKey});
+    }
   }
 
   const DoneBox = (
