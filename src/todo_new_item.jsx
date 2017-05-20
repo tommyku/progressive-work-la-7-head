@@ -37,8 +37,8 @@ const TodoNewItem = (props, context)=> {
   );
 
   const handleTextBoxKeyDown = (e)=> {
-    if (e.key === 'Enter' && e.target.value.length > 0) {
-      let text = e.target.value;
+    if (e.key === 'Enter' && e.target.value.trim().length > 0) {
+      let text = e.target.value.trim();
       e.target.value = '';
       context.update('add', {text: text, key: listKey});
     }

@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "webpack-dev-server --devtool eval --progress --colors --hot --content-base public",
-    "build": "webpack -p"
+    "build": "webpack -p --config=webpack.production.config.js"
   },
   "bugs": {
     "url": "https://github.com/tommyku/material-todo-react/issues"

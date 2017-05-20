@@ -45,7 +45,7 @@ class App extends React.Component {
 
   sortedTodos(key) {
     let todos = Object.values(this.currentTodoList(key)).sort((a, b)=> {
-      return (a.createdAt > b.createdAt) ? -1 : 1;
+      return (a.done == b.done) ? ((a.createdAt > b.createdAt) ? -1 : 1) : (b.done) ? -1 : 1;
     });
     return todos;
   }

@@ -8,25 +8,22 @@ const TodoDoneBase = {
   fontSize: 'medium',
   background: 'none',
   border: 'none',
-  lineHeight: '1.42857'
+  lineHeight: '1.42857',
 };
 
 const TodoDoneStyle = Object.assign(
-  {},
-  TodoDoneBase,
-  {color: '#fff'}
+  {color: '#fff'},
+  TodoDoneBase
 );
 
 const TodoNotDoneStyle = Object.assign(
-  {},
-  TodoDoneBase,
-  {color: '#f66'}
+  {color: '#f66'},
+  TodoDoneBase
 );
 
-const TodoRemoveBoxStyle = Object.assign(
-  {float: 'right'},
-  TodoNotDoneStyle
-);
+const TodoRemoveBoxStyle = TodoNotDoneStyle;
+
+const TodoOperationBoxStyle = {float: 'right'};
 
 const TodoTextStyle = {
   color: '#990',
@@ -46,7 +43,8 @@ const TodoTimeStyle = {
 };
 
 const TodoItemStyle = {
-  clear: 'both'
+  clear: 'both',
+  marginBottom: '0.25em'
 };
 
 const TodoItem = (props, context)=> {
@@ -101,6 +99,12 @@ const TodoItem = (props, context)=> {
     <time style={TodoTimeStyle}>{humanizedTime(createdAt)}</time>
   );
 
+  const OperationBox = (
+    <span style={TodoOperationBoxStyle}>
+      {RemoveBox}
+    </span>
+  );
+
   const todoItemStyle = Object.assign(
     {},
     TodoItemStyle,
@@ -112,7 +116,7 @@ const TodoItem = (props, context)=> {
       {DoneBox}
       {TextBox}
       {TimeBox}
-      {RemoveBox}
+      {OperationBox}
     </div>
   );
 };

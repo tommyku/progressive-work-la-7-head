@@ -4,6 +4,7 @@ import TodoNewItem from './todo_new_item.jsx'
 import TodoNewList from './todo_new_list.jsx'
 
 const TodoStyle = {
+  marginBottom: '20px'
 };
 
 class TodoList extends React.Component {
