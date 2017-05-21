@@ -66,7 +66,7 @@ class App extends React.Component {
   sortedTodos(key) {
     let todos = Object.values(this.getTodoList(key));
     todos = todos.sort((a, b)=> {
-      return (a.index < b.index) ? 1 : -1;
+      return (a.index > b.index) ? -1 : 1;
     });
     return todos;
   }

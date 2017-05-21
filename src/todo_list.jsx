@@ -43,17 +43,21 @@ const TodoList = (props, context)=> {
     return (
       <section>
         {values.map((item, index)=> (
-          <SortableItem key={index} item={item} index={index} />
+          <SortableItem key={`item-${index}`} item={item} index={index} />
         ))}
       </section>
     );
   });
 
   const handleSortEnd = ({oldIndex, newIndex})=> {
-    let newValues = arrayMove(values, oldIndex, newIndex);
+    let reversedValue = values.map((value, index)=> {
+      value.index = index;
+      return value;
+    });
+    let newValues = arrayMove(reversedValue, oldIndex, newIndex);
     context.update('reorder', {
       key: listKey,
-      uuids: newValues.map((item)=> {return item.uuid})
+      uuids: newValues.map((item)=> {return item.uuid}).reverse()
     });
   };
 
