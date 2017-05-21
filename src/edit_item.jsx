@@ -42,6 +42,13 @@ const EditItem = (props, context)=> {
     });
   };
 
+  const handleTextBoxKeyDown = (e)=> {
+    if (e.key === 'Enter' && e.target.value.trim().length > 0) {
+      let text = e.target.value.trim();
+      context.update('update', {text: text, key: listKey, uuid: item.uuid});
+    }
+  };
+
   const MoveOption = (props)=> {
     return (
       <li key={props.index}
@@ -81,6 +88,7 @@ const EditItem = (props, context)=> {
       <input
         type='text'
         defaultValue={item ? item.text : ''}
+        onKeyDown={handleTextBoxKeyDown}
         style={TodoTextStyle} />
     </section>
   );

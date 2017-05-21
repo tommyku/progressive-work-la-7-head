@@ -84,6 +84,14 @@ class App extends React.Component {
     }});
   }
 
+  handleUpdate({uuid, text, key}) {
+    let newTodo = this.getTodoList(key);
+    newTodo[uuid].text = text;
+    this.setState({todo: {
+      [key]: newTodo
+    }});
+  }
+
   handleToggle({uuid, key}) {
     let newTodo = this.getTodoList(key);
     let updatedTodo = newTodo[uuid];
@@ -118,6 +126,9 @@ class App extends React.Component {
         break;
       case 'remove':
         this.handleRemove(payload);
+        break;
+      case 'update':
+        this.handleUpdate(payload);
         break;
       case 'toggle':
         this.handleToggle(payload);
