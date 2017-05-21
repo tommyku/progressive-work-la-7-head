@@ -1,6 +1,6 @@
 var cacheName, filesToCache;
 
-cacheName = 'pwa-wl7h-7';
+cacheName = 'pwa-wl7h-8';
 
 filesToCache = ['/', 'index.html', 'bundle.js'];
 
@@ -14,9 +14,11 @@ self.addEventListener('install', function(e) {
 
 self.addEventListener('fetch', function(e) {
   console.log('[ServiceWorker] Fetch', e.request.url);
-  return e.respondWith(caches.match(e.request).then(function(response) {
-    return response || fetch(e.request);
-  }));
+  return e.respondWith(
+    fetch(e.request).catch(function() {
+      return caches.match(e.request);
+    })
+  );
 });
 
 self.addEventListener('activate', function(e) {
