@@ -23,11 +23,7 @@ const TodoNotDoneStyle = Object.assign(
   TodoDoneBase
 );
 
-const TodoRemoveBoxStyle = Object.assign(
-  {},
-  TodoNotDoneStyle,
-  {marginRight: '0'}
-);
+const TodoRemoveBoxStyle = TodoNotDoneStyle;
 
 const TodoModificationBoxStyle = Object.assign(
   {textDecoration: 'none'},
@@ -37,7 +33,6 @@ const TodoModificationBoxStyle = Object.assign(
 
 const TodoOperationBoxStyle = {
   float: 'right',
-  marginRight: '.5em'
 };
 
 const TodoTextStyle = {
@@ -54,7 +49,6 @@ const TodoTimeStyle = {
   color: '#bbb',
   fontFamily: 'monospace',
   fontSize: 'medium',
-  float: 'right',
   lineHeight: '1.42857'
 };
 
@@ -131,6 +125,7 @@ const TodoItem = (props, context)=> {
     <span style={TodoOperationBoxStyle}>
       {ModificationBox}
       {RemoveBox}
+      {TimeBox}
     </span>
   );
 
@@ -144,7 +139,6 @@ const TodoItem = (props, context)=> {
     <div style={todoItemStyle}>
       {DoneBox}
       {TextBox}
-      {TimeBox}
       {OperationBox}
     </div>
   );

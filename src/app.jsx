@@ -3,6 +3,7 @@ import Provider from './provider.jsx'
 import TodoList from './todo_list.jsx'
 import AppBar from './app_bar.jsx'
 import EditItem from './edit_item.jsx'
+import ListNewList from './list_new_list.jsx'
 import Todo from './data/todo.js'
 import PropTypes from 'prop-types'
 import {
@@ -22,6 +23,7 @@ class App extends React.Component {
   getChildContext() {
     return {
       update: this.update.bind(this),
+      history: history
     }
   }
 
@@ -63,7 +65,7 @@ class App extends React.Component {
   sortedTodos(key) {
     let todos = Object.values(this.getTodoList(key));
     todos = todos.sort((a, b)=> {
-      return (a.index < b.index) ? -1 : 1;
+      return (a.index < b.index) ? 1 : -1;
     });
     return todos;
   }
@@ -167,6 +169,7 @@ class App extends React.Component {
               );
             })}
           </ul>
+          <ListNewList />
         </div>
       );
     }
@@ -218,6 +221,10 @@ class App extends React.Component {
 
 App.childContextTypes = {
   update: PropTypes.func,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired
+  })
 };
 
 export default App;
