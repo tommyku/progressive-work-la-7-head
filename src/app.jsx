@@ -39,19 +39,30 @@ class App extends React.Component {
     }
   }
 
-  currentTodoList(key) {
+  getTodoList(key) {
     return this.state.todo[key] || {};
   }
 
+  getDoneCount(key) {
+    let todo = Object.values(this.getTodoList(key));
+    return todo.reduce((count, item)=> {
+      return count += item.done ? 1 : 0;
+    }, 0);
+  }
+
+  getItemCount(key) {
+    return Object.values(this.getTodoList(key)).length;
+  }
+
   sortedTodos(key) {
-    let todos = Object.values(this.currentTodoList(key)).sort((a, b)=> {
+    let todos = Object.values(this.getTodoList(key)).sort((a, b)=> {
       return (a.done == b.done) ? ((a.createdAt > b.createdAt) ? -1 : 1) : (b.done) ? -1 : 1;
     });
     return todos;
   }
 
   handleAdd({text, key}) {
-    let newTodo = this.currentTodoList(key);
+    let newTodo = this.getTodoList(key);
     let newItem = new Todo(text, false);
     newTodo[newItem.uuid] = newItem;
     this.setState({todo: {
@@ -60,7 +71,7 @@ class App extends React.Component {
   }
 
   handleRemove({uuid, key}) {
-    let newTodo = this.currentTodoList(key);
+    let newTodo = this.getTodoList(key);
     delete newTodo[uuid];
     this.setState({todo: {
       [key]: newTodo
@@ -68,7 +79,7 @@ class App extends React.Component {
   }
 
   handleToggle({uuid, key}) {
-    let newTodo = this.currentTodoList(key);
+    let newTodo = this.getTodoList(key);
     let updatedTodo = newTodo[uuid];
     updatedTodo.done = !updatedTodo.done;
     this.setState({todo: {
@@ -110,11 +121,13 @@ class App extends React.Component {
             home='/' />
           <ul>
             {Object.keys(this.state.lists).map((key, index)=> {
+              let doneCount = this.getDoneCount(key);
+              let undoneCount = this.getItemCount(key) - doneCount;
               return (
                 <li key={index}>
                   <Link to={`/list/${key}`}
                     style={LinkStyle}>
-                    {this.state.lists[key]}
+                    {`${this.state.lists[key]}（${doneCount}完${undoneCount}未）`}
                   </Link>
                 </li>
               );
