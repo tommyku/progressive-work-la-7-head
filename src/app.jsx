@@ -61,15 +61,16 @@ class App extends React.Component {
   }
 
   sortedTodos(key) {
-    let todos = Object.values(this.getTodoList(key)).sort((a, b)=> {
-      return (a.done == b.done) ? ((a.createdAt > b.createdAt) ? -1 : 1) : (b.done) ? -1 : 1;
+    let todos = Object.values(this.getTodoList(key));
+    todos = todos.sort((a, b)=> {
+      return (a.index < b.index) ? -1 : 1;
     });
     return todos;
   }
 
   handleAdd({text, key}) {
     let newTodo = this.state.todo;
-    let newItem = new Todo(text, false);
+    let newItem = new Todo(text, false, Object.keys(newTodo[key]).length);
     newTodo[key][newItem.uuid] = newItem;
     this.setState({todo: newTodo});
   }
@@ -110,6 +111,14 @@ class App extends React.Component {
     this.handleRemove({key: from, uuid: uuid});
   };
 
+  handleReorder({key, uuids}) {
+    let newTodo = this.state.todo;
+    uuids.forEach((uuid, index)=> {
+      newTodo[key][uuid].index = index;
+    });
+    this.setState({todo: newTodo});
+  };
+
   update(action, payload) {
     switch (action) {
       case 'add':
@@ -129,6 +138,9 @@ class App extends React.Component {
         break;
       case 'move':
         this.handleMove(payload);
+        break;
+      case 'reorder':
+        this.handleReorder(payload);
         break;
     }
     localStorage.setItem('state', JSON.stringify(this.state))

@@ -1,18 +1,24 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import TodoItem from './todo_item.jsx'
 import TodoNewItem from './todo_new_item.jsx'
 import TodoNewList from './todo_new_list.jsx'
+import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc'
 
 const TodoStyle = {
   marginBottom: '20px'
 };
 
-class TodoList extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+const TodoList = (props, context)=> {
+  const {
+    persisted,
+    listKey,
+    style,
+    values,
+    ...other
+  } = props;
 
-  prepareTodoItem(item, index) {
+  const SortableItem = SortableElement(({item})=> {
     const {
       text,
       done,
@@ -23,37 +29,52 @@ class TodoList extends React.Component {
 
     return (
       <TodoItem
-        key={index}
         text={text}
         done={done}
         uuid={uuid}
-        listKey={this.props.listKey}
+        listKey={listKey}
         createdAt={createdAt}
         {...other}
       />
     );
-  }
+  });
 
-  render() {
-    const {
-      persisted,
-      listKey,
-      style,
-      values,
-      ...other
-    } = this.props;
-    let todoStyle = Object.assign({}, TodoStyle, style);
-
+  const SortableList = SortableContainer(({values})=> {
     return (
-      <section {...other} style={todoStyle}>
-        {persisted && <TodoNewItem listKey={listKey} />}
-        {!persisted && <TodoNewList listKey={listKey} />}
-        {values.map((item, index)=> {
-          return this.prepareTodoItem(item, index);
-        })}
+      <section>
+        {values.map((item, index)=> (
+          <SortableItem key={index} item={item} index={index} />
+        ))}
       </section>
     );
-  }
+  });
+
+  const handleSortEnd = ({oldIndex, newIndex})=> {
+    let newValues = arrayMove(values, oldIndex, newIndex);
+    context.update('reorder', {
+      key: listKey,
+      uuids: newValues.map((item)=> {return item.uuid})
+    });
+  };
+
+  let todoStyle = Object.assign({}, TodoStyle, style);
+
+  return (
+    <section {...other} style={todoStyle}>
+      {persisted && <TodoNewItem listKey={listKey} />}
+      {!persisted && <TodoNewList listKey={listKey} />}
+      <SortableList values={values}
+        axis='y'
+        pressDelay={100}
+        transitionDuration={0}
+        onSortEnd={handleSortEnd}
+        lockAxis='y' />
+    </section>
+  );
+}
+
+TodoList.contextTypes = {
+  update: PropTypes.func
 }
 
 export default TodoList;

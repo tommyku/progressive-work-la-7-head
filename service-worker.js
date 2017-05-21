@@ -1,6 +1,6 @@
 var cacheName, filesToCache;
 
-cacheName = 'pwa-wl7h-8';
+cacheName = 'pwa-wl7h-9';
 
 filesToCache = ['/', 'index.html', 'bundle.js'];
 
