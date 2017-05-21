@@ -4,6 +4,7 @@ import TodoList from './todo_list.jsx'
 import AppBar from './app_bar.jsx'
 import EditItem from './edit_item.jsx'
 import ListNewList from './list_new_list.jsx'
+import ListItem from './list_item.jsx'
 import Todo from './data/todo.js'
 import PropTypes from 'prop-types'
 import {
@@ -155,20 +156,22 @@ class App extends React.Component {
           <AppBar
             homeName='要做的野'
             home='/' />
-          <ul>
+          <div>
             {Object.keys(this.state.lists).map((key, index)=> {
               let doneCount = this.getDoneCount(key);
               let undoneCount = this.getItemCount(key) - doneCount;
+              let list = {
+                key: key,
+                displayName: this.state.lists[key]
+              };
               return (
-                <li key={index}>
-                  <Link to={`/list/${key}`}
-                    style={LinkStyle}>
-                    {`${this.state.lists[key]}（${doneCount}完${undoneCount}未）`}
-                  </Link>
-                </li>
+                <ListItem key={`list-${index}`}
+                  list={list}
+                  doneCount={doneCount}
+                  undoneCount={undoneCount} />
               );
             })}
-          </ul>
+          </div>
           <ListNewList />
         </div>
       );
