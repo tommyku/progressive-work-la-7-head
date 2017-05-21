@@ -42,7 +42,7 @@ const TodoOperationBoxStyle = {
 
 const TodoTextStyle = {
   color: '#990',
-  wordBreak: 'break-all'
+  wordBreak: 'break-word'
 };
 
 const TodoDoneTextStyle = Object.assign(

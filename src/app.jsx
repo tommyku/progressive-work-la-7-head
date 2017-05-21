@@ -80,10 +80,11 @@ class App extends React.Component {
     this.setState({todo: newTodo});
   }
 
-  handleUpdate({uuid, text, key}) {
+  handleUpdate({uuid, text, key, redirectTo}) {
     let newTodo = this.state.todo;
     newTodo[key][uuid].text = text;
     this.setState({todo: newTodo});
+    redirectTo && history.replace(redirectTo);
   }
 
   handleToggle({uuid, key}) {
@@ -130,7 +131,6 @@ class App extends React.Component {
         this.handleMove(payload);
         break;
     }
-    console.log(this.state);
     localStorage.setItem('state', JSON.stringify(this.state))
   }
 
