@@ -68,37 +68,29 @@ class App extends React.Component {
   }
 
   handleAdd({text, key}) {
-    let newTodo = this.getTodoList(key);
+    let newTodo = this.state.todo;
     let newItem = new Todo(text, false);
-    newTodo[newItem.uuid] = newItem;
-    this.setState({todo: {
-      [key]: newTodo
-    }});
+    newTodo[key][newItem.uuid] = newItem;
+    this.setState({todo: newTodo});
   }
 
   handleRemove({uuid, key}) {
-    let newTodo = this.getTodoList(key);
-    delete newTodo[uuid];
-    this.setState({todo: {
-      [key]: newTodo
-    }});
+    let newTodo = this.state.todo;
+    delete newTodo[key][uuid];
+    this.setState({todo: newTodo});
   }
 
   handleUpdate({uuid, text, key}) {
-    let newTodo = this.getTodoList(key);
-    newTodo[uuid].text = text;
-    this.setState({todo: {
-      [key]: newTodo
-    }});
+    let newTodo = this.state.todo;
+    newTodo[key][uuid].text = text;
+    this.setState({todo: newTodo});
   }
 
   handleToggle({uuid, key}) {
-    let newTodo = this.getTodoList(key);
-    let updatedTodo = newTodo[uuid];
+    let newTodo = this.state.todo;
+    let updatedTodo = newTodo[key][uuid];
     updatedTodo.done = !updatedTodo.done;
-    this.setState({todo: {
-      [key]: newTodo
-    }});
+    this.setState({todo: newTodo});
   }
 
   handleNewList({key, name}) {
@@ -114,9 +106,7 @@ class App extends React.Component {
     newState.todo[to][uuid] = todo;
     this.setState(newState);
     history.replace(redirectTo);
-    newState = this.state;
-    delete newState.todo[from][uuid]
-    this.setState(newState);
+    this.handleRemove({key: from, uuid: uuid});
   };
 
   update(action, payload) {
@@ -140,6 +130,7 @@ class App extends React.Component {
         this.handleMove(payload);
         break;
     }
+    console.log(this.state);
     localStorage.setItem('state', JSON.stringify(this.state))
   }
 
