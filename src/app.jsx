@@ -8,17 +8,21 @@ import PropTypes from 'prop-types'
 import {
   HashRouter as Router,
   Route,
-  IndexRoute,
   Link
 } from 'react-router-dom'
+import createHashHistory from 'history/createHashHistory';
 
 const LinkStyle = {
   color: '#999',
 };
 
+const history = createHashHistory();
+
 class App extends React.Component {
   getChildContext() {
-    return {update: this.update.bind(this)}
+    return {
+      update: this.update.bind(this),
+    }
   }
 
   constructor(props) {
@@ -96,12 +100,15 @@ class App extends React.Component {
     this.setState(newState);
   }
 
-  handleMove({from, to, uuid}) {
+  handleMove({from, to, uuid, redirectTo}) {
     let newState = this.state;
-    let todo = newState.todo[from][uuid];
-    this.state.todo[to][uuid] = todo;
+    let todo = Object.assign({}, newState.todo[from][uuid]);
+    newState.todo[to][uuid] = todo;
     this.setState(newState);
-    this.handleRemove({key: from, uuid: uuid});
+    history.replace(redirectTo);
+    newState = this.state;
+    delete newState.todo[from][uuid]
+    this.setState(newState);
   };
 
   update(action, payload) {
@@ -164,7 +171,7 @@ class App extends React.Component {
         </div>
       );
     }
-    const EditPage = ({match}) => {
+    const EditPage = ({match, history}) => {
       const {
         list,
         uuid
@@ -184,7 +191,7 @@ class App extends React.Component {
       );
     };
     return (
-      <Router>
+      <Router history={history}>
         <Provider>
           <Route exact path="/" render={Index} />
           <Route exact path="/list/:list" render={List} />
@@ -196,7 +203,7 @@ class App extends React.Component {
 }
 
 App.childContextTypes = {
-  update: PropTypes.func
+  update: PropTypes.func,
 };
 
 export default App;
