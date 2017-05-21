@@ -28,6 +28,7 @@ const TodoOperationBoxStyle = {float: 'right'};
 
 const TodoTextStyle = {
   color: '#990',
+  wordBreak: 'break-all'
 };
 
 const TodoDoneTextStyle = Object.assign(
