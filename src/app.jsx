@@ -2,11 +2,13 @@ import React from 'react'
 import Provider from './provider.jsx'
 import TodoList from './todo_list.jsx'
 import AppBar from './app_bar.jsx'
+import EditItem from './edit_item.jsx'
 import Todo from './data/todo.js'
 import PropTypes from 'prop-types'
 import {
   HashRouter as Router,
   Route,
+  IndexRoute,
   Link
 } from 'react-router-dom'
 
@@ -94,6 +96,14 @@ class App extends React.Component {
     this.setState(newState);
   }
 
+  handleMove({from, to, uuid}) {
+    let newState = this.state;
+    let todo = newState.todo[from][uuid];
+    this.state.todo[to][uuid] = todo;
+    this.setState(newState);
+    this.handleRemove({key: from, uuid: uuid});
+  };
+
   update(action, payload) {
     switch (action) {
       case 'add':
@@ -107,6 +117,9 @@ class App extends React.Component {
         break;
       case 'new_list':
         this.handleNewList(payload);
+        break;
+      case 'move':
+        this.handleMove(payload);
         break;
     }
     localStorage.setItem('state', JSON.stringify(this.state))
@@ -142,7 +155,7 @@ class App extends React.Component {
         <div>
           <AppBar
             locationName={this.state.lists[key]}
-            location={key}
+            location={`/list/${key}`}
             homeName='要做的野'
             home='/' />
           <TodoList values={this.sortedTodos(key)}
@@ -151,11 +164,31 @@ class App extends React.Component {
         </div>
       );
     }
+    const EditPage = ({match}) => {
+      const {
+        list,
+        uuid
+      } = match.params;
+      return (
+        <div>
+          <AppBar
+            locationName={this.state.lists[list]}
+            location={`/list/${list}`}
+            homeName='要做的野'
+            home='/' />
+          <EditItem
+            item={this.state.todo[list][uuid]}
+            lists={this.state.lists}
+            listKey={list} />
+        </div>
+      );
+    };
     return (
       <Router>
         <Provider>
           <Route exact path="/" render={Index} />
-          <Route path="/list/:list" render={List} />
+          <Route exact path="/list/:list" render={List} />
+          <Route exact path="/list/:list/item/:uuid" render={EditPage} />
         </Provider>
       </Router>
     );

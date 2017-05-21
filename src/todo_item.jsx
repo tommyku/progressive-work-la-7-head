@@ -1,6 +1,7 @@
 import React from 'react'
 import AutoLinkText from 'react-autolink-text2'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 const TodoDoneBase = {
   marginRight: '.5em',
@@ -22,9 +23,22 @@ const TodoNotDoneStyle = Object.assign(
   TodoDoneBase
 );
 
-const TodoRemoveBoxStyle = TodoNotDoneStyle;
+const TodoRemoveBoxStyle = Object.assign(
+  {},
+  TodoNotDoneStyle,
+  {marginRight: '0'}
+);
 
-const TodoOperationBoxStyle = {float: 'right'};
+const TodoModificationBoxStyle = Object.assign(
+  {textDecoration: 'none'},
+  TodoDoneStyle,
+  {marginRight: '.25em'}
+);
+
+const TodoOperationBoxStyle = {
+  float: 'right',
+  marginRight: '.5em'
+};
 
 const TodoTextStyle = {
   color: '#990',
@@ -78,6 +92,14 @@ const TodoItem = (props, context)=> {
     </button>
   );
 
+  const ModificationBox = (
+    <Link style={TodoModificationBoxStyle}
+      to={`/list/${listKey}/item/${uuid}`}
+      className='hover-pointer'>
+      改
+    </Link>
+  );
+
   const RemoveBox = (
     <button style={TodoRemoveBoxStyle}
       onClick={handleRemoveBoxClick}
@@ -107,6 +129,7 @@ const TodoItem = (props, context)=> {
 
   const OperationBox = (
     <span style={TodoOperationBoxStyle}>
+      {ModificationBox}
       {RemoveBox}
     </span>
   );
