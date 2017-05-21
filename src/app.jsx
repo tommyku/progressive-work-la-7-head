@@ -13,6 +13,23 @@ import {
   Link
 } from 'react-router-dom'
 import createHashHistory from 'history/createHashHistory';
+import Hoodie from '@hoodie/client'
+
+const hoodie = new Hoodie({
+  url: 'http://localhost:9129',
+  PouchDB: require('pouchdb-browser')
+});
+
+hoodie.account.get().then((a)=>{
+  console.log(a)
+});
+
+//hoodie.account.signIn({
+  //username: '12',
+  //password: '12'
+//}).then(function(accountAttributes) {
+  //console.log(accountAttributes);
+//});
 
 const LinkStyle = {
   color: '#999',
@@ -42,10 +59,13 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    let localStoredJSON = localStorage.getItem('state')
-    if (localStoredJSON !== null) {
-      this.setState(JSON.parse(localStoredJSON))
-    }
+    hoodie.store.find('state').then((a)=> {
+      this.setState(a);
+    });
+    //let localStoredJSON = localStorage.getItem('state')
+    //if (localStoredJSON !== null) {
+      //this.setState(JSON.parse(localStoredJSON))
+    //}
   }
 
   componentDidMount() {
@@ -164,6 +184,15 @@ class App extends React.Component {
         this.handleReorder(payload);
         break;
     }
+
+    hoodie.store.updateOrAdd('state', {
+      lists: this.state.lists,
+      todo: this.state.todo
+    }).then((a)=> {
+      console.log(a);
+    }).catch((c)=> {
+      console.log(c);
+    });
     localStorage.setItem('state', JSON.stringify(this.state))
   }
 
