@@ -103,7 +103,8 @@ const TodoItem = (props, context)=> {
   );
 
   const TextBox = (
-    <span style={(done ? TodoDoneTextStyle : TodoTextStyle)}>
+    <span style={(done ? TodoDoneTextStyle : TodoTextStyle)}
+      className='hover-default'>
       <AutoLinkText text={text} />
     </span>
   );
