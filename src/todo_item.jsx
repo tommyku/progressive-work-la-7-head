@@ -137,6 +137,7 @@ const TodoItem = (props, context)=> {
   const TimeBox = (
     <span style={TodoTimeStyle}>
       <TimeAgo
+        title={createdAt}
         datetime={createdAt}
         locale='zh_TW' />
     </span>
