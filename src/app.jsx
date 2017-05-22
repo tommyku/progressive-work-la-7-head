@@ -219,7 +219,13 @@ class App extends React.Component {
             locationName={this.state.lists[list]}
             location={`/list/${list}`}
             homeName='要做的野'
-            home='/' />
+            home='/'
+            extra={(
+              <span>
+                <span style={{padding: '0 0.5em'}}>{'\u203A'}</span>
+                <span style={{padding: '0 0.5em'}}>改野</span>
+              </span>
+            )}/>
           <EditItem
             item={this.state.todo[list][uuid]}
             lists={this.state.lists}

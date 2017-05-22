@@ -33,7 +33,7 @@ const AppBarPlaceholderStyle = {
   marginBottom: `calc(${AppBarMinHeight} / 2)`
 };
 
-const AppBar = ({locationName, location, home, homeName, style, ...others})=> {
+const AppBar = ({locationName, location, home, homeName, style, extra, ...others})=> {
   const appBarStyle = Object.assign(
     {},
     AppBarStyle,
@@ -64,9 +64,10 @@ const AppBar = ({locationName, location, home, homeName, style, ...others})=> {
     <div>
       <header
         style={appBarStyle}
-        {...others} >
+        {...others}>
         {HomeLink}
         {(location && locationName) && LocationLink}
+        {extra}
       </header>
       <div style={AppBarPlaceholderStyle}></div>
     </div>
@@ -75,11 +76,12 @@ const AppBar = ({locationName, location, home, homeName, style, ...others})=> {
 
 
 AppBar.propTypes = {
-   home: PropTypes.string.isRequired,
-   homeName: PropTypes.string.isRequired,
-   locationName: PropTypes.string,
-   location: PropTypes.string,
-   style: PropTypes.object
+  home: PropTypes.string.isRequired,
+  homeName: PropTypes.string.isRequired,
+  locationName: PropTypes.string,
+  location: PropTypes.string,
+  style: PropTypes.object,
+  extra: PropTypes.node
 };
 
 export default AppBar;
