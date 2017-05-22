@@ -48,6 +48,22 @@ class App extends React.Component {
     }
   }
 
+  componentDidMount() {
+    const migrateDoneValue = ()=> {
+      let todo = this.state.todo;
+      Object.keys(todo).forEach((key)=> {
+        Object.keys(todo[key]).forEach((itemKey)=> {
+          if (typeof todo[key][itemKey].done === 'boolean') {
+            todo[key][itemKey].done = todo[key][itemKey].done ? 1 : 0;
+          }
+        });
+      });
+      this.setState({todo: todo});
+    }
+
+    migrateDoneValue();
+  }
+
   getTodoList(key) {
     return this.state.todo[key] || {};
   }
@@ -94,7 +110,8 @@ class App extends React.Component {
   handleToggle({uuid, key}) {
     let newTodo = this.state.todo;
     let updatedTodo = newTodo[key][uuid];
-    updatedTodo.done = !updatedTodo.done;
+    // 0: 未, 1: 完, 2: 算
+    updatedTodo.done = (updatedTodo.done + 1) % 3;
     this.setState({todo: newTodo});
   }
 
