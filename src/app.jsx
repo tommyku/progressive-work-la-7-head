@@ -110,8 +110,8 @@ class App extends React.Component {
   handleToggle({uuid, key}) {
     let newTodo = this.state.todo;
     let updatedTodo = newTodo[key][uuid];
-    // 0: 未, 1: 完, 2: 算
-    updatedTodo.done = (updatedTodo.done + 1) % 3;
+    // 0: 未, 1: 做, 2: 完, 3: 算
+    updatedTodo.done = (updatedTodo.done + 1) % 4;
     this.setState({todo: newTodo});
   }
 

@@ -29,6 +29,11 @@ const TodoRejectedStyle = Object.assign(
   TodoDoneBase
 );
 
+const TodoDoingStyle = Object.assign(
+  {color: '#090'},
+  TodoDoneBase
+);
+
 const TodoRemoveBoxStyle = TodoNotDoneStyle;
 
 const TodoModificationBoxStyle = Object.assign(
@@ -95,10 +100,10 @@ const TodoItem = (props, context)=> {
   }
 
   const DoneBox = (
-    <button style={[TodoDoneStyle, TodoNotDoneStyle, TodoRejectedStyle][done]}
+    <button style={[TodoDoneStyle, TodoDoingStyle, TodoNotDoneStyle, TodoRejectedStyle][done]}
       onClick={handleDoneBoxClick}
       className='hover-pointer'>
-      {['未', '完', '算'][done]}
+      {['未', '做', '完', '算'][done]}
     </button>
   );
 
@@ -119,7 +124,7 @@ const TodoItem = (props, context)=> {
   );
 
   const TextBox = (
-    <span style={[TodoTextStyle, TodoDoneTextStyle, TodoRejectedTextStyle][done]}
+    <span style={[TodoTextStyle, TodoTextStyle, TodoDoneTextStyle, TodoRejectedTextStyle][done]}
       className='hover-default'>
       <AutoLinkText text={text} />
     </span>
