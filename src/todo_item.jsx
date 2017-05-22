@@ -1,6 +1,7 @@
 import React from 'react'
 import AutoLinkText from 'react-autolink-text2'
 import PropTypes from 'prop-types'
+import TimeAgo from 'timeago-react'
 import { Link } from 'react-router-dom'
 
 const TodoDoneBase = {
@@ -49,7 +50,10 @@ const TodoTimeStyle = {
   color: '#bbb',
   fontFamily: 'monospace',
   fontSize: 'medium',
-  lineHeight: '1.42857'
+  lineHeight: '1.42857',
+  minWidth: '4.25em',
+  display: 'inline-block',
+  textAlign: 'right'
 };
 
 const TodoItemStyle = {
@@ -119,7 +123,11 @@ const TodoItem = (props, context)=> {
   }
 
   const TimeBox = (
-    <time style={TodoTimeStyle}>{humanizedTime(createdAt)}</time>
+    <span style={TodoTimeStyle}>
+      <TimeAgo
+        datetime={createdAt}
+        locale='zh_TW' />
+    </span>
   );
 
   const OperationBox = (
