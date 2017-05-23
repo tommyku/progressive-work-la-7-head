@@ -36,7 +36,10 @@ class TodoNewItem extends React.PureComponent {
     const {update} = this.context;
 
     const AddBox = (
-      <span style={TodoAddBase}>加</span>
+      <label style={TodoAddBase}
+        htmlFor='new-task'>
+        加
+      </label>
     );
 
     const handleTextBoxKeyDown = (e)=> {
@@ -49,6 +52,7 @@ class TodoNewItem extends React.PureComponent {
 
     const TextBox = (
       <input
+        id='new-task'
         type='text'
         placeholder={placeholder}
         onKeyDown={handleTextBoxKeyDown}

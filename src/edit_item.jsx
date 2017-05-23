@@ -99,8 +99,11 @@ const EditItem = (props, context)=> {
 
   const EditText = (
     <section>
-      <h3>改內容</h3>
+      <h3>
+        <label htmlFor='edit-text'>改內容</label>
+      </h3>
       <input
+        id='edit-text'
         type='text'
         defaultValue={item ? item.text : ''}
         onKeyDown={handleTextBoxKeyDown}

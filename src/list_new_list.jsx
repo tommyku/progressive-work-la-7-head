@@ -32,7 +32,10 @@ const ListNewList = (props, context)=> {
   } = props;
 
   const AddBox = (
-    <span style={TodoAddBase}>新</span>
+    <label style={TodoAddBase}
+      htmlFor='new-list'>
+      新
+    </label>
   );
 
   const handleTextBoxKeyDown = (e)=> {
@@ -45,6 +48,7 @@ const ListNewList = (props, context)=> {
 
   const TextBox = (
     <input
+      id='new-list'
       type='text'
       onKeyDown={handleTextBoxKeyDown}
       style={TodoTextStyle} />
