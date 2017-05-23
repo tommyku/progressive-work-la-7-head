@@ -33,47 +33,58 @@ const AppBarPlaceholderStyle = {
   marginBottom: `calc(${AppBarMinHeight} / 2)`
 };
 
-const AppBar = ({locationName, location, home, homeName, style, extra, ...others})=> {
-  const appBarStyle = Object.assign(
-    {},
-    AppBarStyle,
-    style
-  );
+class AppBar extends React.PureComponent {
+  render() {
+    const {
+      locationName,
+      location,
+      home,
+      homeName,
+      style,
+      extra,
+      ...others
+    } = this.props;
 
-  const HomeLink = (
-    <Link to={home}
-       style={HomeLinkStyle}>
-      {homeName}
-    </Link>
-  );
+    const appBarStyle = Object.assign(
+      {},
+      AppBarStyle,
+      style
+    );
 
-  const LocationLink = (
-    <span>
-      <span style={{padding: '0 0.5em'}}>{'\u203A'}</span>
-      {
-        (location && locationName) &&
-        <Link to={location}
-           style={LocationLinkStyle}>
-          {locationName}
-        </Link>
-      }
-    </span>
-  );
+    const HomeLink = (
+      <Link to={home}
+         style={HomeLinkStyle}>
+        {homeName}
+      </Link>
+    );
 
-  return (
-    <div>
-      <header
-        style={appBarStyle}
-        {...others}>
-        {HomeLink}
-        {(location && locationName) && LocationLink}
-        {extra}
-      </header>
-      <div style={AppBarPlaceholderStyle}></div>
-    </div>
-  );
+    const LocationLink = (
+      <span>
+        <span style={{padding: '0 0.5em'}}>{'\u203A'}</span>
+        {
+          (location && locationName) &&
+          <Link to={location}
+             style={LocationLinkStyle}>
+            {locationName}
+          </Link>
+        }
+      </span>
+    );
+
+    return (
+      <div>
+        <header
+          style={appBarStyle}
+          {...others}>
+          {HomeLink}
+          {(location && locationName) && LocationLink}
+          {extra}
+        </header>
+        <div style={AppBarPlaceholderStyle}></div>
+      </div>
+    );
+  }
 }
-
 
 AppBar.propTypes = {
   home: PropTypes.string.isRequired,

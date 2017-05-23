@@ -24,46 +24,51 @@ const TodoAddBase = {
   display: 'inline-block',
 };
 
-const TodoNewItem = (props, context)=> {
-  const {
-    placeholder,
-    listKey,
-    style,
-    ...others
-  } = props;
+class TodoNewItem extends React.PureComponent {
+  render() {
+    const {
+      placeholder,
+      listKey,
+      style,
+      ...others
+    } = this.props;
 
-  const AddBox = (
-    <span style={TodoAddBase}>加</span>
-  );
+    const {update} = this.context;
 
-  const handleTextBoxKeyDown = (e)=> {
-    if (e.key === 'Enter' && e.target.value.trim().length > 0) {
-      let text = e.target.value.trim();
-      e.target.value = '';
-      context.update('add', {text: text, key: listKey});
-    }
-  };
+    const AddBox = (
+      <span style={TodoAddBase}>加</span>
+    );
 
-  const TextBox = (
-    <input
-      type='text'
-      onKeyDown={handleTextBoxKeyDown}
-      style={TodoTextStyle} />
-  );
+    const handleTextBoxKeyDown = (e)=> {
+      if (e.key === 'Enter' && e.target.value.trim().length > 0) {
+        let text = e.target.value.trim();
+        e.target.value = '';
+        update('add', {text: text, key: listKey});
+      }
+    };
 
-  const todoItemStyle = Object.assign(
-    {},
-    TodoItemStyle,
-    style
-  );
+    const TextBox = (
+      <input
+        type='text'
+        placeholder={placeholder}
+        onKeyDown={handleTextBoxKeyDown}
+        style={TodoTextStyle} />
+    );
 
-  return (
-    <div style={todoItemStyle}>
-      {AddBox}
-      {TextBox}
-    </div>
-  );
-};
+    const todoItemStyle = Object.assign(
+      {},
+      TodoItemStyle,
+      style
+    );
+
+    return (
+      <div style={todoItemStyle}>
+        {AddBox}
+        {TextBox}
+      </div>
+    );
+  }
+}
 
 TodoNewItem.contextTypes = {
   update: PropTypes.func
