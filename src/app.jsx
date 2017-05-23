@@ -15,8 +15,10 @@ import {
 import createHashHistory from 'history/createHashHistory';
 import Hoodie from '@hoodie/client'
 
+const hoodieHost = localStorage.getItem('hoodieHost') || 'localhost';
+
 const hoodie = new Hoodie({
-  url: localStorage.getItem('hoodieHost'),
+  url: hoodieHost,
   PouchDB: require('pouchdb-browser')
 });
 
