@@ -16,19 +16,21 @@ import createHashHistory from 'history/createHashHistory';
 import Hoodie from '@hoodie/client'
 
 const hoodie = new Hoodie({
-  url: 'http://localhost:9129',
+  url: localStorage.getItem('hoodieHost'),
   PouchDB: require('pouchdb-browser')
 });
 
-hoodie.account.get().then((a)=>{
-  console.log(a)
-});
+//hoodie.account.get().then((a)=>{
+  //console.log(a)
+//}).catch((e)=> {
+  //console.log(e)
+//});
 
-//hoodie.account.signIn({
-  //username: '12',
-  //password: '12'
-//}).then(function(accountAttributes) {
-  //console.log(accountAttributes);
+//hoodie.account.signUp({
+  //username: 'test@ck2ustudio.com',
+  //password: 'test'
+//}).then( a => {
+  //console.log(a);
 //});
 
 const LinkStyle = {
@@ -59,13 +61,33 @@ class App extends React.Component {
   }
 
   componentWillMount() {
-    hoodie.store.find('state').then((a)=> {
-      this.setState(a);
-    });
-    //let localStoredJSON = localStorage.getItem('state')
-    //if (localStoredJSON !== null) {
-      //this.setState(JSON.parse(localStoredJSON))
-    //}
+    const onSignInHandler = (a)=> {
+      console.log('handled signin');
+      hoodie.store.find('state').then((a)=> {
+        console.log(a);
+        this.setState(a);
+      }).catch(e => {
+        // do nothing
+      });
+    }
+
+    let localStoredJSON = localStorage.getItem('state')
+    if (localStoredJSON !== null) {
+      this.setState(JSON.parse(localStoredJSON));
+      localStorage.removeItem('state');
+    } else {
+      hoodie.account.get('session').then((session)=> {
+        if (session) {
+          onSignInHandler();
+        } else {
+          hoodie.account.on('signin', onSignInHandler);
+          hoodie.account.signIn({
+            username: localStorage.getItem('hoodieUser'),
+            password: localStorage.getItem('hoodiePass')
+          });
+        }
+      });
+    }
   }
 
   componentDidMount() {
@@ -191,9 +213,9 @@ class App extends React.Component {
     }).then((a)=> {
       console.log(a);
     }).catch((c)=> {
-      console.log(c);
+      alert('can\'t update');
     });
-    localStorage.setItem('state', JSON.stringify(this.state))
+    localStorage.setItem('stateBackup', JSON.stringify(this.state))
   }
 
   render() {
