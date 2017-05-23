@@ -69,7 +69,7 @@ const TodoList = (props, context)=> {
       {!persisted && <TodoNewList listKey={listKey} />}
       <SortableList values={values}
         axis='y'
-        pressDelay={100}
+        pressDelay={200}
         transitionDuration={0}
         onSortEnd={handleSortEnd}
         lockAxis='y' />
