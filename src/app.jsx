@@ -28,8 +28,8 @@ const hoodie = new Hoodie({
   //console.log(e)
 //});
 
-//hoodie.account.signUp({
-  //username: 'test@ck2ustudio.com',
+//hoodie.account.signIn({
+  //username: 'test',
   //password: 'test'
 //}).then( a => {
   //console.log(a);
@@ -64,9 +64,7 @@ class App extends React.Component {
 
   componentWillMount() {
     const onSignInHandler = (a)=> {
-      console.log('handled signin');
       hoodie.store.find('state').then((a)=> {
-        console.log(a);
         this.setState(a);
       }).catch(e => {
         // do nothing
@@ -219,8 +217,6 @@ class App extends React.Component {
     hoodie.store.updateOrAdd('state', {
       lists: this.state.lists,
       todo: this.state.todo
-    }).then((a)=> {
-      console.log(a);
     }).catch((c)=> {
       alert('can\'t update');
     });

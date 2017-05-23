@@ -140,7 +140,7 @@ const TodoItem = (props, context)=> {
 
   const DoingTextBox = (
     <span style={DoingTextBoxStyle}>
-      （<TimeAgo datetime={startedAt} locale='zh_TW' />開始）
+      （<TimeAgo datetime={startedAt || (new Date()).toString()} locale='zh_TW' />開始）
     </span>
   );
 

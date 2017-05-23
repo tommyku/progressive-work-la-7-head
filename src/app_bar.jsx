@@ -13,25 +13,33 @@ const AppBarStyle = {
   width: '100vw',
   minHeight: AppBarMinHeight,
   display: 'flex',
-  alignItems: 'center'
+  alignItems: 'center',
+  padding: '0 0.5em',
 }
 
 const HomeLinkStyle = {
   textDecoration: 'none',
   color: '#ff6',
-  padding: '0 0.5em'
+  paddingRight: '.5em',
 };
 
 const LocationLinkStyle = {
   textDecoration: 'none',
   color: '#fff',
-  padding: '0 0.5em'
+  padding: '0 .5em'
 };
 
 const AppBarPlaceholderStyle = {
   paddingTop: AppBarMinHeight,
   marginBottom: `calc(${AppBarMinHeight} / 2)`
 };
+
+const AppBarContainerStyle = {
+  width: '100%',
+  maxWidth: '48em',
+  margin: 'auto',
+  padding: '0 .5em',
+}
 
 class AppBar extends React.PureComponent {
   render() {
@@ -76,9 +84,11 @@ class AppBar extends React.PureComponent {
         <header
           style={appBarStyle}
           {...others}>
-          {HomeLink}
-          {(location && locationName) && LocationLink}
-          {extra}
+          <div style={AppBarContainerStyle}>
+            {HomeLink}
+            {(location && locationName) && LocationLink}
+            {extra}
+          </div>
         </header>
         <div style={AppBarPlaceholderStyle}></div>
       </div>
