@@ -68,12 +68,6 @@ const TodoRejectedTextStyle = Object.assign(
   {color: '#999'}
 );
 
-const DoingTextBoxStyle = Object.assign(
-  {},
-  TodoDoingStyle,
-  {marginRight: '0'}
-);
-
 const TodoTimeStyle = {
   color: '#bbb',
   fontFamily: 'monospace',
@@ -82,6 +76,15 @@ const TodoTimeStyle = {
   display: 'inline-block',
   textAlign: 'right'
 };
+
+const DoingTextBoxStyle = Object.assign(
+  {},
+  TodoTimeStyle,
+  {
+    marginRight: '0',
+    color: '#090'
+  }
+);
 
 const TodoItemStyle = {
   clear: 'both',
