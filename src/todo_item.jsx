@@ -68,6 +68,12 @@ const TodoRejectedTextStyle = Object.assign(
   {color: '#999'}
 );
 
+const DoingTextBoxStyle = Object.assign(
+  {},
+  TodoDoingStyle,
+  {marginRight: '0'}
+);
+
 const TodoTimeStyle = {
   color: '#bbb',
   fontFamily: 'monospace',
@@ -88,6 +94,7 @@ const TodoItem = (props, context)=> {
     done,
     dropped,
     createdAt,
+    startedAt,
     uuid,
     listKey,
     style,
@@ -128,10 +135,17 @@ const TodoItem = (props, context)=> {
     </button>
   );
 
+  const DoingTextBox = (
+    <span style={DoingTextBoxStyle}>
+      （<TimeAgo datetime={startedAt} locale='zh_TW' />開始）
+    </span>
+  );
+
   const TextBox = (
     <span style={[TodoTextStyle, TodoDoingTextStyle, TodoDoneTextStyle, TodoRejectedTextStyle][done]}
       className='hover-default'>
       <AutoLinkText text={text} />
+      {done == 1 && startedAt && DoingTextBox}
     </span>
   );
 

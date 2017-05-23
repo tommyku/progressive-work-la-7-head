@@ -156,6 +156,13 @@ class App extends React.Component {
     let updatedTodo = newTodo[key][uuid];
     // 0: 未, 1: 做, 2: 完, 3: 算
     updatedTodo.done = (updatedTodo.done + 1) % 4;
+    switch (updatedTodo.done) {
+      case 1:
+        updatedTodo.startedAt = (new Date()).toString();
+        break;
+      default:
+        updatedTodo.startAt = null;
+    }
     this.setState({todo: newTodo});
   }
 
@@ -174,7 +181,7 @@ class App extends React.Component {
     this.setState(newState);
     history.replace(redirectTo);
     this.handleRemove({key: from, uuid: uuid});
-  };
+  }
 
   handleReorder({key, uuids}) {
     let newTodo = this.state.todo;
@@ -182,7 +189,7 @@ class App extends React.Component {
       newTodo[key][uuid].index = index;
     });
     this.setState({todo: newTodo});
-  };
+  }
 
   update(action, payload) {
     switch (action) {
