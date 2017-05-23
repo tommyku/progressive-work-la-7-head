@@ -125,6 +125,7 @@ class App extends React.Component {
   handleMove({from, to, uuid, redirectTo}) {
     let newState = this.state;
     let todo = Object.assign({}, newState.todo[from][uuid]);
+    todo.index = Object.keys(newState.todo[to]).length;
     newState.todo[to][uuid] = todo;
     this.setState(newState);
     history.replace(redirectTo);

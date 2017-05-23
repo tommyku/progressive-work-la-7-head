@@ -8,7 +8,7 @@ const TodoDoneBase = {
   marginRight: '.5em',
   display: 'inline-block',
   padding: 0,
-  fontSize: 'medium',
+  fontSize: 'inherit',
   background: 'none',
   border: 'none',
   lineHeight: '1.42857',
@@ -56,6 +56,12 @@ const TodoDoneTextStyle = Object.assign(
   TodoTextStyle
 );
 
+const TodoDoingTextStyle = Object.assign(
+  {},
+  TodoTextStyle,
+  {color: '#ff0'}
+);
+
 const TodoRejectedTextStyle = Object.assign(
   {textDecoration: 'line-through'},
   TodoTextStyle,
@@ -65,7 +71,6 @@ const TodoRejectedTextStyle = Object.assign(
 const TodoTimeStyle = {
   color: '#bbb',
   fontFamily: 'monospace',
-  fontSize: 'medium',
   lineHeight: '1.42857',
   minWidth: '4.25em',
   display: 'inline-block',
@@ -124,7 +129,7 @@ const TodoItem = (props, context)=> {
   );
 
   const TextBox = (
-    <span style={[TodoTextStyle, TodoTextStyle, TodoDoneTextStyle, TodoRejectedTextStyle][done]}
+    <span style={[TodoTextStyle, TodoDoingTextStyle, TodoDoneTextStyle, TodoRejectedTextStyle][done]}
       className='hover-default'>
       <AutoLinkText text={text} />
     </span>
