@@ -1,34 +1,32 @@
-var cacheName, filesToCache;
+importScripts('workbox-sw.prod.v1.0.0.js');
 
-cacheName = 'pwa-wl7h-14';
+/**
+ * DO NOT EDIT THE FILE MANIFEST ENTRY
+ *
+ * The method precache() does the following:
+ * 1. Cache URLs in the manifest to a local cache.
+ * 2. When a network request is made for any of these URLs the response
+ *    will ALWAYS comes from the cache, NEVER the network.
+ * 3. When the service worker changes ONLY assets with a revision change are
+ *    updated, old cache entries are left as is.
+ *
+ * By changing the file manifest manually, your users may end up not receiving
+ * new versions of files because the revision hasn't changed.
+ *
+ * Please use workbox-build or some other tool / approach to generate the file
+ * manifest which accounts for changes to local files and update the revision
+ * accordingly.
+ */
+const fileManifest = [
+  {
+    "url": "/bundle.js",
+    "revision": "fd09853b5002db90a0a7a831907554e1"
+  },
+  {
+    "url": "/index.html",
+    "revision": "62169e9b6b98713e92ed462f9efb7407"
+  }
+];
 
-filesToCache = ['/', 'index.html', 'bundle.js'];
-
-self.addEventListener('install', function(e) {
-  console.log('[ServiceWorker] Install');
-  return e.waitUntil(caches.open(cacheName).then(function(cache) {
-    console.log('[ServiceWorker] Caching app shell');
-    return cache.addAll(filesToCache);
-  }));
-});
-
-self.addEventListener('fetch', function(e) {
-  console.log('[ServiceWorker] Fetch', e.request.url);
-  return e.respondWith(
-    fetch(e.request).catch(function() {
-      return caches.match(e.request);
-    })
-  );
-});
-
-self.addEventListener('activate', function(e) {
-  console.log('[ServiceWorker] Activate');
-  return e.waitUntil(caches.keys().then(function(keyList) {
-    return Promise.all(keyList.map(function(key) {
-      if (key !== cacheName) {
-        console.log('[ServiceWorker] Removing old cache', key);
-        return caches["delete"](key);
-      }
-    }));
-  }));
-});
+const workboxSW = new self.WorkboxSW();
+workboxSW.precache(fileManifest);

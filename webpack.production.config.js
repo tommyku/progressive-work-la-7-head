@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var path = require('path');
+var workboxPlugin = require('workbox-webpack-plugin');
 
 var BUILD_DIR = path.resolve(__dirname, '.');
 var APP_DIR = path.resolve(__dirname, 'src');
@@ -25,7 +26,14 @@ var config = {
         }
       }
     ]
-  }
+  },
+  plugins: [
+    new workboxPlugin({
+      globDirectory: BUILD_DIR,
+      staticFileGlobs: ['bundle.js', 'index.html'],
+      swDest: path.join(BUILD_DIR, 'service-worker.js'),
+    }),
+  ]
 };
 
 module.exports = config;
