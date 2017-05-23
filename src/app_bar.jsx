@@ -14,7 +14,6 @@ const AppBarStyle = {
   minHeight: AppBarMinHeight,
   display: 'flex',
   alignItems: 'center',
-  padding: '0 0.5em',
 }
 
 const HomeLinkStyle = {
