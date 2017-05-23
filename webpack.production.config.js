@@ -22,17 +22,7 @@ var config = {
         query: {
           babelrc: false,
           presets: ['es2015', 'react'],
-          plugins: [
-            'transform-object-rest-spread',
-            ["transform-react-jsx", { "pragma":"h" }],
-            ["module-resolver", {
-            "root": ["."],
-            "alias": {
-                "react": "preact-compat",
-                "react-dom": "preact-compat",
-            }
-            }]
-          ]
+          plugins: ['transform-object-rest-spread']
         }
       }
     ]
