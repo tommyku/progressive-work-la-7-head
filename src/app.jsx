@@ -148,9 +148,10 @@ class App extends React.Component {
     this.setState({todo: newTodo});
   }
 
-  handleUpdate({uuid, text, key, redirectTo}) {
+  handleUpdate({uuid, text, details, key, redirectTo}) {
     let newTodo = this.state.todo;
     newTodo[key][uuid].text = text;
+    newTodo[key][uuid].details = details;
     this.setState({todo: newTodo});
     redirectTo && history.replace(redirectTo);
   }
