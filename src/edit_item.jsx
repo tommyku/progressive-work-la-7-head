@@ -140,7 +140,7 @@ class EditItem extends React.Component {
           style={TodoDetailsStyle}
           minRows={3}
           maxRows={10}
-          defaultValue={item.details || ''} />
+          value={item.details} />
         <button onClick={handleTextEditClick.bind(this)}
           style={TodoSubmitButtonStyle}>
           改完
