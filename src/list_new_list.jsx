@@ -41,7 +41,8 @@ const ListNewList = (props, context)=> {
   const handleTextBoxKeyDown = (e)=> {
     if (e.key === 'Enter' && e.target.value.trim().length > 0) {
       let text = encodeURIComponent(e.target.value.trim());
-      let redirectTo = `/list/${text}`
+      let redirectTo = `/list/${text}`;
+      e.target.value = '';
       context.history.push(redirectTo);
     }
   };
