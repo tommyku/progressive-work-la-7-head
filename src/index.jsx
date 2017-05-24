@@ -1,6 +1,8 @@
-import React from 'react';
-import {render} from 'react-dom';
-import App from './app.jsx';
+import React from 'react'
+import {render} from 'react-dom'
+import App from './app.jsx'
+import 'preact/devtools'
+
 
 render(<App/>, document.getElementById('app'));
 
