@@ -88,6 +88,12 @@ class App extends React.Component {
         }
       });
     }
+
+    hoodie.store.on('change', (event, object)=> {
+      if (object._id === 'state') {
+        this.setState(object);
+      }
+    });
   }
 
   componentDidMount() {
