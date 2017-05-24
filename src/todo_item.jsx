@@ -104,14 +104,24 @@ const TodoItem = (props, context)=> {
     ...others
   } = props;
 
+  const {
+    update,
+    history
+  } = context;
+
   const handleDoneBoxClick = (e)=> {
-    context.update('toggle', {uuid: uuid, key: listKey});
+    update('toggle', {uuid: uuid, key: listKey});
   }
 
   const handleRemoveBoxClick = (e)=> {
     if (confirm('真係要刪？')) {
-      context.update('remove', {uuid: uuid, key: listKey});
+      update('remove', {uuid: uuid, key: listKey});
     }
+  }
+
+  const handleModificationBoxClick = (e)=> {
+    console.log(e);
+    history.push(`/list/${listKey}/item/${uuid}`)
   }
 
   const DoneBox = (
@@ -123,11 +133,11 @@ const TodoItem = (props, context)=> {
   );
 
   const ModificationBox = (
-    <Link style={TodoModificationBoxStyle}
-      to={`/list/${listKey}/item/${uuid}`}
-      className='hover-pointer'>
+    <button style={TodoModificationBoxStyle}
+      className='hover-pointer'
+      onClick={handleModificationBoxClick}>
       改
-    </Link>
+    </button>
   );
 
   const RemoveBox = (
@@ -194,7 +204,10 @@ const TodoItem = (props, context)=> {
 };
 
 TodoItem.contextTypes = {
-  update: PropTypes.func
+  update: PropTypes.func.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired
+  })
 }
 
 export default TodoItem;
