@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Todo from './data/todo.js'
-import Textarea from 'react-textarea-autosize'
 
 const MoveItemButtonBase = {
   padding: 0,
@@ -79,7 +78,7 @@ class EditItem extends React.Component {
     const handleTextEditClick = (e)=> {
       let text = editText.value.trim();
       if (text.length === 0) return;
-      let details = editDetails.base.value.trim();
+      let details = editDetails.value.trim();
       let redirectTo = `/list/${listKey}`;
       update('update', {
         text: text,
@@ -136,11 +135,10 @@ class EditItem extends React.Component {
           type='text'
           defaultValue={item ? item.text : ''}
           style={TodoTextStyle} />
-        <Textarea ref={ el => editDetails = el }
+        <textarea ref={ el => editDetails = el }
           style={TodoDetailsStyle}
-          minRows={3}
-          maxRows={10}
-          value={item.details} />
+          rows={10}
+          defaultValue={item.details} />
         <button onClick={handleTextEditClick.bind(this)}
           style={TodoSubmitButtonStyle}>
           改完
