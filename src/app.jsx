@@ -195,6 +195,17 @@ class App extends React.Component {
     this.setState({todo: newTodo});
   }
 
+  handleRemoveList({key}) {
+    if (Object.keys(this.state.todo[key]).length > 0) {
+      alert(`${this.state.lists[key]}仲有野唔刪得喎`);
+    } else {
+      let newState = this.state;
+      delete newState.todo[key];
+      delete newState.lists[key];
+      this.setState(newState);
+    }
+  }
+
   update(action, payload) {
     switch (action) {
       case 'add':
@@ -217,6 +228,9 @@ class App extends React.Component {
         break;
       case 'reorder':
         this.handleReorder(payload);
+        break;
+      case 'remove_list':
+        this.handleRemoveList(payload);
         break;
     }
 

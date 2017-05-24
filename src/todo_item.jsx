@@ -120,7 +120,6 @@ const TodoItem = (props, context)=> {
   }
 
   const handleModificationBoxClick = (e)=> {
-    console.log(e);
     history.push(`/list/${listKey}/item/${uuid}`)
   }
 

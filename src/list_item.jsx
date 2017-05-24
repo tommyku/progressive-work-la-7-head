@@ -12,6 +12,11 @@ const TodoDoneBase = {
   lineHeight: '1.42857',
 };
 
+const TodoRemoveBoxStyle = Object.assign(
+  {color: '#f66'},
+  TodoDoneBase
+);
+
 const TodoTextStyle = {
   color: '#990',
   wordBreak: 'break-word'
@@ -22,6 +27,10 @@ const TodoItemStyle = {
   marginBottom: '0.25em'
 };
 
+const TodoOperationBoxStyle = {
+  float: 'right',
+};
+
 const ListItem = (props, context)=> {
   const {
     list,
@@ -30,6 +39,8 @@ const ListItem = (props, context)=> {
     style,
     ...others
   } = props;
+
+  const { update } = context;
 
   const DoneBox = (
     <span style={TodoDoneBase}
@@ -46,6 +57,26 @@ const ListItem = (props, context)=> {
     </span>
   );
 
+  const handleRemoveBoxClick = (e)=> {
+    if (confirm('真係要刪？')) {
+      update('remove_list', {key: list.key});
+    }
+  }
+
+  const RemoveBox = (
+    <button style={TodoRemoveBoxStyle}
+      onClick={handleRemoveBoxClick}
+      className='hover-pointer'>
+      刪
+    </button>
+  );
+
+  const OperationBox = (
+    <span style={TodoOperationBoxStyle}>
+      {RemoveBox}
+    </span>
+  );
+
   const todoItemStyle = Object.assign(
     {},
     TodoItemStyle,
@@ -56,8 +87,13 @@ const ListItem = (props, context)=> {
     <div style={todoItemStyle}>
       {DoneBox}
       {TextBox}
+      {OperationBox}
     </div>
   );
 };
+
+ListItem.contextTypes = {
+  update: PropTypes.func
+}
 
 export default ListItem;
