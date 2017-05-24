@@ -10,6 +10,7 @@ const TodoDoneBase = {
   background: 'none',
   border: 'none',
   lineHeight: '1.42857',
+  userSelect: 'none'
 };
 
 const TodoRemoveBoxStyle = Object.assign(
@@ -29,6 +30,7 @@ const TodoItemStyle = {
 
 const TodoOperationBoxStyle = {
   float: 'right',
+  userSelect: 'none'
 };
 
 const ListItem = (props, context)=> {

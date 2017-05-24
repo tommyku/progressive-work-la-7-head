@@ -12,6 +12,7 @@ const TodoDoneBase = {
   background: 'none',
   border: 'none',
   lineHeight: '1.42857',
+  userSelect: 'none'
 };
 
 const TodoDoneStyle = Object.assign(
@@ -44,6 +45,7 @@ const TodoModificationBoxStyle = Object.assign(
 
 const TodoOperationBoxStyle = {
   float: 'right',
+  userSelect: 'none'
 };
 
 const TodoTextStyle = {
@@ -74,7 +76,7 @@ const TodoTimeStyle = {
   lineHeight: '1.42857',
   minWidth: '4.25em',
   display: 'inline-block',
-  textAlign: 'right'
+  textAlign: 'right',
 };
 
 const DoingTextBoxStyle = Object.assign(
