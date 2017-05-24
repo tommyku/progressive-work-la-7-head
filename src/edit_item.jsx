@@ -69,7 +69,8 @@ const EditItem = (props, context)=> {
         <button className={(props.canMove) ? 'hover-pointer': ''}
           style={(props.canMove) ? MoveItemButtonCanMove : MoveItemButtonCannotMove}
           onClick={handleMoveOptionClick}
-          data-list-key={props.listKey}>
+          data-list-key={props.listKey}
+          disabled={!props.canMove}>
           {props.displayName}
           {!props.canMove && ' \u21d0 而家呢度'}
         </button>
