@@ -343,6 +343,14 @@ class App extends React.Component {
         list,
         uuid
       } = match.params;
+      let item;
+      try {
+        item = this.state.todo[list][uuid];
+      } catch(err) {
+        if (err instanceof TypeError) {
+          history.replace(`/list/${list}`);
+        }
+      }
       return (
         <div>
           <AppBar
@@ -357,7 +365,7 @@ class App extends React.Component {
               </span>
             )}/>
           <EditItem
-            item={this.state.todo[list][uuid]}
+            item={item}
             lists={this.state.lists}
             listKey={list} />
         </div>

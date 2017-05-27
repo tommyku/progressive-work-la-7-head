@@ -43,7 +43,7 @@ const TodoList = (props, context)=> {
   const SortableList = SortableContainer(({values, orders})=> {
     return (
       <section>
-        {orders.map((item, index)=> (
+        {(orders || []).map((item, index)=> (
           <SortableItem key={`item-${index}`} item={values[item]} index={index} />
         ))}
       </section>
