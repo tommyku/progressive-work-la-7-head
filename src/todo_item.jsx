@@ -116,7 +116,7 @@ const TodoItem = (props, context)=> {
   }
 
   const handleRemoveBoxClick = (e)=> {
-    if (confirm('真係要刪？')) {
+    if (confirm(`真係要刪「${text.substring(0, 32)}...」？`)) {
       update('remove', {uuid: uuid, key: listKey});
     }
   }
