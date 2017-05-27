@@ -7,6 +7,7 @@ import ListNewList from './list_new_list.jsx'
 import ListItem from './list_item.jsx'
 import Todo from './data/todo.js'
 import PropTypes from 'prop-types'
+import LocalStorage from 'store'
 import {
   HashRouter as Router,
   Route,
@@ -15,7 +16,7 @@ import {
 import createHashHistory from 'history/createHashHistory';
 import Hoodie from '@hoodie/client'
 
-const hoodieHost = localStorage.getItem('hoodieHost') || 'localhost';
+const hoodieHost = LocalStorage.get('hoodieHost') || 'localhost';
 
 const hoodie = new Hoodie({
   url: hoodieHost,
@@ -67,17 +68,31 @@ class App extends React.Component {
 
   componentWillMount() {
     const onSignInHandler = (a)=> {
-      hoodie.store.find('state').then((a)=> {
-        this.setState(a);
+      hoodie.store.find('state').then((object)=> {
+        const {lists, orders, todo} = object;
+        this.setState({
+          lists: lists,
+          orders: orders,
+          todo: todo
+        }, ()=> {
+          this.dataMigrations();
+        });
       }).catch(e => {
         // do nothing
       });
     }
 
-    let localStoredJSON = localStorage.getItem('state')
-    if (localStoredJSON !== null) {
-      this.setState(JSON.parse(localStoredJSON));
-      localStorage.removeItem('state');
+    let localStored = LocalStorage.get('state')
+    if (localStored) {
+      const {lists, orders, todo} = localStored;
+      this.setState({
+        lists: lists,
+        orders: orders,
+        todo: todo
+      }, ()=> {
+        this.dataMigrations();
+      });
+      LocalStorage.remove('state');
     } else {
       hoodie.account.get('session').then((session)=> {
         if (session) {
@@ -85,8 +100,8 @@ class App extends React.Component {
         } else {
           hoodie.account.on('signin', onSignInHandler);
           hoodie.account.signIn({
-            username: localStorage.getItem('hoodieUser'),
-            password: localStorage.getItem('hoodiePass')
+            username: LocalStorage.get('hoodieUser'),
+            password: LocalStorage.get('hoodiePass')
           });
         }
       });
@@ -94,16 +109,24 @@ class App extends React.Component {
 
     hoodie.store.on('change', (event, object)=> {
       if (object._id === 'state') {
-        this.setState(object);
+        const {lists, orders, todo} = object;
+        this.setState({
+          lists: lists,
+          orders: orders,
+          todo: todo
+        });
       }
     });
   }
 
-  componentDidMount() {
+  dataMigrations() {
     // To patch:
     // 1. logout of hoodie
     // 2. set localStage 'state'
     // 3. refresh
+
+    LocalStorage.set('beforeMigration', this.state);
+
     const migrateDoneValue = ()=> {
       let todo = this.state.todo;
       Object.keys(todo).forEach((key)=> {
@@ -113,12 +136,14 @@ class App extends React.Component {
           }
         });
       });
-      this.setState({todo: todo});
+      this.setState({todo: todo}, ()=> {
+        LocalStorage.set('afterMigration', this.state);
+      });
     }
 
     const migrateOrders = ()=> {
       let todo = this.state.todo;
-      let orders = this.state.orders;
+      let orders = this.state.orders || {};
       Object.keys(todo).forEach((key)=> {
         if (!orders[key] || Object.keys(todo[key]).length != Object.keys(orders[key]).length) {
           let todos = Object.values(todo[key]);
@@ -131,7 +156,9 @@ class App extends React.Component {
           orders[key] = todos.map(item => item.uuid);
         }
       });
-      this.setState({todo: todo, orders: orders});
+      this.setState({todo: todo, orders: orders}, ()=> {
+        LocalStorage.set('afterMigration', this.state);
+      });
     }
 
     migrateDoneValue();
@@ -264,7 +291,7 @@ class App extends React.Component {
     }).catch((c)=> {
       alert('can\'t update');
     });
-    localStorage.setItem('stateBackup', JSON.stringify(this.state))
+    LocalStorage.set('stateBackup', this.state)
   }
 
   render() {
