@@ -50,6 +50,25 @@ const TodoSubmitButtonStyle = {
 };
 
 class EditItem extends React.Component {
+  constructor(props) {
+    super(props);
+    const {item} = this.props;
+    this.state = {
+      text: item ? item.text : '',
+      details: item ? item.details : '',
+    }
+    this.handleTextChange = this.handleTextChange.bind(this);
+    this.handleTextareaChange = this.handleTextareaChange.bind(this);
+  }
+
+  handleTextChange(e) {
+    this.setState({text: e.target.value});
+  }
+
+  handleTextareaChange(e) {
+    this.setState({details: e.target.value});
+  }
+
   render() {
     const {
       lists,
@@ -76,9 +95,9 @@ class EditItem extends React.Component {
     };
 
     const handleTextEditClick = (e)=> {
-      let text = editText.value.trim();
+      let text = this.state.text.trim();
       if (text.length === 0) return;
-      let details = editDetails.value.trim();
+      let details = this.state.details.trim();
       let redirectTo = `/list/${listKey}`;
       update('update', {
         text: text,
@@ -134,12 +153,14 @@ class EditItem extends React.Component {
           ref={ el => editText = el }
           type='text'
           autocapitalize='none'
-          defaultValue={item ? item.text : ''}
+          onChange={this.handleTextChange}
+          value={this.state.text}
           style={TodoTextStyle} />
         <textarea ref={ el => editDetails = el }
           style={TodoDetailsStyle}
           rows={10}
-          defaultValue={item.details} />
+          onChange={this.handleTextareaChange}
+          value={this.state.details} />
         <button onClick={handleTextEditClick.bind(this)}
           style={TodoSubmitButtonStyle}>
           改完
