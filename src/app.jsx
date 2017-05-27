@@ -182,7 +182,7 @@ class App extends React.Component {
 
   handleAdd({text, key}) {
     let newTodo = this.state.todo;
-    let newOrders = this.state.orders
+    let newOrders = this.state.orders;
     let newItem = new Todo(text, false);
     newTodo[key][newItem.uuid] = newItem;
     newOrders[key].unshift(newItem.uuid);
@@ -286,6 +286,7 @@ class App extends React.Component {
     }
 
     hoodie.store.updateOrAdd('state', {
+      orders: this.state.orders,
       lists: this.state.lists,
       todo: this.state.todo
     }).catch((c)=> {
