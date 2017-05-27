@@ -133,6 +133,7 @@ class EditItem extends React.Component {
           id='edit-text'
           ref={ el => editText = el }
           type='text'
+          autocapitalize='none'
           defaultValue={item ? item.text : ''}
           style={TodoTextStyle} />
         <textarea ref={ el => editDetails = el }

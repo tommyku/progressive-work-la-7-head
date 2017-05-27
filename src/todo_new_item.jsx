@@ -55,6 +55,7 @@ class TodoNewItem extends React.PureComponent {
         id='new-task'
         type='text'
         placeholder={placeholder}
+        autocapitalize='none'
         onKeyDown={handleTextBoxKeyDown}
         style={TodoTextStyle} />
     );
