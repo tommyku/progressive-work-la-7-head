@@ -12,6 +12,7 @@ const TodoStyle = {
 const TodoList = (props, context)=> {
   const {
     persisted,
+    orders,
     listKey,
     style,
     values,
@@ -39,25 +40,21 @@ const TodoList = (props, context)=> {
     );
   });
 
-  const SortableList = SortableContainer(({values})=> {
+  const SortableList = SortableContainer(({values, orders})=> {
     return (
       <section>
-        {values.map((item, index)=> (
-          <SortableItem key={`item-${index}`} item={item} index={index} />
+        {orders.map((item, index)=> (
+          <SortableItem key={`item-${index}`} item={values[item]} index={index} />
         ))}
       </section>
     );
   });
 
   const handleSortEnd = ({oldIndex, newIndex})=> {
-    let reversedValue = values.map((value, index)=> {
-      value.index = index;
-      return value;
-    });
-    let newValues = arrayMove(reversedValue, oldIndex, newIndex);
+    let newValues = arrayMove(orders, oldIndex, newIndex);
     context.update('reorder', {
       key: listKey,
-      uuids: newValues.map((item)=> {return item.uuid}).reverse()
+      uuids: newValues
     });
   };
 
@@ -68,6 +65,7 @@ const TodoList = (props, context)=> {
       {persisted && <TodoNewItem listKey={listKey} />}
       {!persisted && <TodoNewList listKey={listKey} />}
       <SortableList values={values}
+        orders={orders}
         axis='y'
         pressDelay={300}
         helperClass='sorted'

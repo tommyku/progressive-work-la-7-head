@@ -1,10 +1,9 @@
 import {v4 as guid} from 'uuid';
 
 class Todo {
-  constructor(text, done = null, index = null, details = null, status = null, uuid = null, createdAt = null, startedAt = null) {
+  constructor(text, done = null, details = null, status = null, uuid = null, createdAt = null, startedAt = null) {
     this.text = text;
     this.done = done || 0;
-    this.index = index || 0;
     this.details = details || '';
     this.uuid = uuid || guid();
     this.status = status || '';

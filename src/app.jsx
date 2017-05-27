@@ -57,6 +57,9 @@ class App extends React.Component {
       },
       todo: {
         'default': {}
+      },
+      orders: {
+        'default': []
       }
     };
     this.state = stateTemplate;
@@ -97,6 +100,10 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    // To patch:
+    // 1. logout of hoodie
+    // 2. set localStage 'state'
+    // 3. refresh
     const migrateDoneValue = ()=> {
       let todo = this.state.todo;
       Object.keys(todo).forEach((key)=> {
@@ -109,7 +116,26 @@ class App extends React.Component {
       this.setState({todo: todo});
     }
 
+    const migrateOrders = ()=> {
+      let todo = this.state.todo;
+      let orders = this.state.orders;
+      Object.keys(todo).forEach((key)=> {
+        if (!orders[key] || Object.keys(todo[key]).length != Object.keys(orders[key]).length) {
+          let todos = Object.values(todo[key]);
+          todos = todos.sort((a, b)=> {
+            return (a.index > b.index) ? -1 : 1;
+          });
+          todos.forEach((item)=> {
+            delete todo[key][item.uuid].index;
+          });
+          orders[key] = todos.map(item => item.uuid);
+        }
+      });
+      this.setState({todo: todo, orders: orders});
+    }
+
     migrateDoneValue();
+    migrateOrders();
   }
 
   getTodoList(key) {
@@ -127,25 +153,22 @@ class App extends React.Component {
     return Object.values(this.getTodoList(key)).length;
   }
 
-  sortedTodos(key) {
-    let todos = Object.values(this.getTodoList(key));
-    todos = todos.sort((a, b)=> {
-      return (a.index > b.index) ? -1 : 1;
-    });
-    return todos;
-  }
-
   handleAdd({text, key}) {
     let newTodo = this.state.todo;
-    let newItem = new Todo(text, false, Object.keys(newTodo[key]).length);
+    let newOrders = this.state.orders
+    let newItem = new Todo(text, false);
     newTodo[key][newItem.uuid] = newItem;
-    this.setState({todo: newTodo});
+    newOrders[key].unshift(newItem.uuid);
+    this.setState({todo: newTodo, orders: newOrders});
   }
 
   handleRemove({uuid, key}) {
     let newTodo = this.state.todo;
+    let newOrders = this.state.orders;
+    let orderIndex = newOrders[key].indexOf(uuid);
     delete newTodo[key][uuid];
-    this.setState({todo: newTodo});
+    newOrders[key].splice(orderIndex, 1);
+    this.setState({todo: newTodo, orders: newOrders});
   }
 
   handleUpdate({uuid, text, details, key, redirectTo}) {
@@ -175,25 +198,24 @@ class App extends React.Component {
     let newState = this.state;
     this.state.lists[key] = name;
     this.state.todo[key] = {};
+    this.state.orders[key] = [];
     this.setState(newState);
   }
 
   handleMove({from, to, uuid, redirectTo}) {
     let newState = this.state;
     let todo = Object.assign({}, newState.todo[from][uuid]);
-    todo.index = Object.keys(newState.todo[to]).length;
     newState.todo[to][uuid] = todo;
+    newState.orders[to].unshift(uuid);
     this.setState(newState);
     history.replace(redirectTo);
     this.handleRemove({key: from, uuid: uuid});
   }
 
   handleReorder({key, uuids}) {
-    let newTodo = this.state.todo;
-    uuids.forEach((uuid, index)=> {
-      newTodo[key][uuid].index = index;
-    });
-    this.setState({todo: newTodo});
+    let newOrders = this.state.orders;
+    newOrders[key] = uuids;
+    this.setState({orders: newOrders});
   }
 
   handleRemoveList({key}) {
@@ -203,6 +225,7 @@ class App extends React.Component {
       let newState = this.state;
       delete newState.todo[key];
       delete newState.lists[key];
+      delete newState.orders[key];
       this.setState(newState);
     }
   }
@@ -280,7 +303,8 @@ class App extends React.Component {
             location={`/list/${key}`}
             homeName='要做的野'
             home='/' />
-          <TodoList values={this.sortedTodos(key)}
+          <TodoList values={this.state.todo[key]}
+            orders={this.state.orders[key]}
             listKey={key}
             persisted={this.state.lists.hasOwnProperty(key)} />
         </div>
