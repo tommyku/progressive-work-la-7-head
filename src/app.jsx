@@ -23,19 +23,6 @@ const hoodie = new Hoodie({
   PouchDB: require('pouchdb-browser')
 });
 
-//hoodie.account.get().then((a)=>{
-  //console.log(a)
-//}).catch((e)=> {
-  //console.log(e)
-//});
-
-//hoodie.account.signIn({
-  //username: 'test',
-  //password: 'test'
-//}).then( a => {
-  //console.log(a);
-//});
-
 const LinkStyle = {
   color: '#999',
 };
@@ -68,7 +55,11 @@ class App extends React.Component {
 
   componentWillMount() {
     const onSignInHandler = (a)=> {
-      hoodie.store.find('state').then((object)=> {
+      const onPullHandler = (object)=> {
+        if (object._id !== 'state')
+          return
+        else
+          hoodie.store.off('pull', onPullHandler);
         const {lists, orders, todo} = object;
         this.setState({
           lists: lists,
@@ -77,8 +68,9 @@ class App extends React.Component {
         }, ()=> {
           this.dataMigrations();
         });
-      }).catch(e => {
-        // do nothing
+      }
+      hoodie.store.find('state').then(onPullHandler).catch((e)=>{
+        hoodie.store.on('pull', onPullHandler);
       });
     }
 
