@@ -60,7 +60,8 @@ const ListItem = (props, context)=> {
   );
 
   const handleRemoveBoxClick = (e)=> {
-    if (confirm('真係要刪？')) {
+    const displayName = `${list.displayName.substring(0, 32)}${(list.displayName.length > 32) ? '...' : ''}`;
+    if (confirm(`真係要刪「${displayName}」？`)) {
       update('remove_list', {key: list.key});
     }
   }

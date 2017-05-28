@@ -116,7 +116,8 @@ const TodoItem = (props, context)=> {
   }
 
   const handleRemoveBoxClick = (e)=> {
-    if (confirm(`真係要刪「${text.substring(0, 32)}...」？`)) {
+    const displayName = `${text.substring(0, 32)}${(text.length > 32) ? '...' : ''}`;
+    if (confirm(`真係要刪「${displayName}」？`)) {
       update('remove', {uuid: uuid, key: listKey});
     }
   }

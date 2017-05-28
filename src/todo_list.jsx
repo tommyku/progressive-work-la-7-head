@@ -66,6 +66,7 @@ const TodoList = (props, context)=> {
       {!persisted && <TodoNewList listKey={listKey} />}
       <SortableList values={values}
         orders={orders}
+        lockToContainerEdges={true}
         axis='y'
         pressDelay={300}
         helperClass='sorted'
