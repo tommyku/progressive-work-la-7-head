@@ -20,7 +20,7 @@ importScripts('workbox-sw.prod.v1.0.0.js');
 const fileManifest = [
   {
     "url": "/bundle.js",
-    "revision": "60cc493497a79a479a73c746fe4bd085"
+    "revision": "c9fcb08efbd34d4f855356ac66c62b45"
   },
   {
     "url": "/index.html",
