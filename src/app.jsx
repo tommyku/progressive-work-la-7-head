@@ -96,6 +96,8 @@ class App extends React.Component {
             password: LocalStorage.get('hoodiePass')
           });
         }
+        LocalStorage.remove('hoodieUser');
+        LocalStorage.remove('hoodiePass');
       });
     }
 
