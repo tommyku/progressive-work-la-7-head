@@ -5,12 +5,14 @@ import EditItem from './edit_item.jsx'
 import ListNewList from './list_new_list.jsx'
 import ListItem from './list_item.jsx'
 import Todo from './data/todo.js'
+import LoginPage from './pages/login_page.jsx'
 import PropTypes from 'prop-types'
 import LocalStorage from 'store'
 import {
   HashRouter as Router,
   Route,
-  Link
+  Link,
+  Redirect
 } from 'react-router-dom'
 import createHashHistory from 'history/createHashHistory';
 import Hoodie from '@hoodie/client'
@@ -18,7 +20,7 @@ import './app.css'
 
 const hoodieHost = LocalStorage.get('hoodieHost') || 'localhost';
 
-const hoodie = new Hoodie({
+let hoodie = new Hoodie({
   url: hoodieHost,
   PouchDB: require('pouchdb-browser')
 });
@@ -53,16 +55,22 @@ class App extends React.Component {
       },
       orders: {
         'default': []
-      }
+      },
+      login: false
     };
     this.state = stateTemplate;
   }
 
   componentWillMount() {
     const onSignInHandler = (a)=> {
+      this.setState({login: true});
       hoodie.store.find('state').then(onPullHandler).catch((e)=>{
         hoodie.store.on('pull', onPullHandler);
       });
+    }
+
+    const onSignOutHandler = ()=> {
+      this.setState({login: false});
     }
 
     const onPullHandler = (event, object)=> {
@@ -110,6 +118,10 @@ class App extends React.Component {
       });
     }
 
+    hoodie.account.on('unauthenticate', onSignOutHandler);
+    hoodie.account.on('signout', onSignOutHandler);
+    hoodie.account.on('reauthenticate', onSignInHandler);
+    hoodie.account.on('signin', onSignInHandler);
     hoodie.store.on('change', onPullHandler);
   }
 
@@ -254,6 +266,17 @@ class App extends React.Component {
     }
   }
 
+  handleLogin({host, user, pass}) {
+    hoodie = new Hoodie({
+      url: host,
+      PouchDB: require('pouchdb-browser')
+    });
+    hoodie.account.signIn({
+      username: user,
+      password: pass
+    });
+  }
+
   update(action, payload) {
     switch (action) {
       case 'add':
@@ -280,6 +303,9 @@ class App extends React.Component {
       case 'remove_list':
         this.handleRemoveList(payload);
         break;
+      case 'login':
+        this.handleLogin(payload);
+        break;
     }
 
     hoodie.store.updateOrAdd('state', {
@@ -293,8 +319,10 @@ class App extends React.Component {
   }
 
   render() {
-    const Index = ({match})=> {
-      return (
+    const Index = ({match})=> (
+      (!this.state.login) ? (
+        <Redirect to='/login' />
+      ) : (
         <div>
           <AppBar
             homeName='要做的野'
@@ -317,8 +345,9 @@ class App extends React.Component {
           </div>
           <ListNewList />
         </div>
-      );
-    }
+      )
+    );
+
     const List = ({match})=> {
       let key = match.params.list;
       return (
@@ -368,9 +397,23 @@ class App extends React.Component {
         </div>
       );
     };
+
+    const renderLoginPage = ()=> (
+      (this.state.login === true) ? (
+        <Redirect to='/' />
+      ) : (
+        <div>
+          <AppBar
+            homeName='要做的野' />
+          <LoginPage />
+        </div>
+      )
+    );
+
     return (
       <Router history={history}>
         <div style={appStyle}>
+          <Route exact path="/login" render={renderLoginPage} />
           <Route exact path="/" render={Index} />
           <Route exact path="/list/:list" render={List} />
           <Route exact path="/list/:list/item/:uuid" render={EditPage} />

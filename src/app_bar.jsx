@@ -59,7 +59,7 @@ class AppBar extends React.PureComponent {
     );
 
     const HomeLink = (
-      <Link to={home}
+      <Link to={home || '/'}
          style={HomeLinkStyle}>
         {homeName}
       </Link>
@@ -96,7 +96,7 @@ class AppBar extends React.PureComponent {
 }
 
 AppBar.propTypes = {
-  home: PropTypes.string.isRequired,
+  home: PropTypes.string,
   homeName: PropTypes.string.isRequired,
   locationName: PropTypes.string,
   location: PropTypes.string,
