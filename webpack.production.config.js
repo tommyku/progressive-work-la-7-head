@@ -24,6 +24,13 @@ var config = {
           presets: ['es2015', 'react'],
           plugins: ['transform-object-rest-spread']
         }
+      },
+      {
+        test: /\.css$/,
+        loader: [
+          {loader: 'style-loader'},
+          {loader: 'css-loader', options: {minimize: true}}
+        ]
       }
     ]
   },

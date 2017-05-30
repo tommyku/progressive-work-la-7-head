@@ -1,5 +1,4 @@
 import React from 'react'
-import Provider from './provider.jsx'
 import TodoList from './todo_list.jsx'
 import AppBar from './app_bar.jsx'
 import EditItem from './edit_item.jsx'
@@ -15,6 +14,7 @@ import {
 } from 'react-router-dom'
 import createHashHistory from 'history/createHashHistory';
 import Hoodie from '@hoodie/client'
+import './app.css'
 
 const hoodieHost = LocalStorage.get('hoodieHost') || 'localhost';
 
@@ -28,6 +28,11 @@ const LinkStyle = {
 };
 
 const history = createHashHistory();
+
+const appStyle = {
+  margin: 0,
+  padding: 0
+}
 
 class App extends React.Component {
   getChildContext() {
@@ -365,11 +370,11 @@ class App extends React.Component {
     };
     return (
       <Router history={history}>
-        <Provider>
+        <div style={appStyle}>
           <Route exact path="/" render={Index} />
           <Route exact path="/list/:list" render={List} />
           <Route exact path="/list/:list/item/:uuid" render={EditPage} />
-        </Provider>
+        </div>
       </Router>
     );
   }

@@ -1,0 +1,10 @@
+body {
+  background-color: #222222;
+  color: #ffffff;
+  font-size: medium;
+  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.42857143;
+  max-width: 48em;
+  padding: 0 .5em;
+  margin: auto
+}
