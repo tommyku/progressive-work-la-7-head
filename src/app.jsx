@@ -55,22 +55,26 @@ class App extends React.Component {
 
   componentWillMount() {
     const onSignInHandler = (a)=> {
-      const onPullHandler = (object)=> {
-        if (object._id !== 'state')
-          return
-        else
-          hoodie.store.off('pull', onPullHandler);
-        const {lists, orders, todo} = object;
-        this.setState({
-          lists: lists,
-          orders: orders,
-          todo: todo
-        }, ()=> {
-          this.dataMigrations();
-        });
-      }
       hoodie.store.find('state').then(onPullHandler).catch((e)=>{
         hoodie.store.on('pull', onPullHandler);
+      });
+    }
+
+    const onPullHandler = (event, object)=> {
+      if (typeof event === 'object' && typeof object === 'undefined') {
+        object = event; // so that both store.change event and pull event can use
+      }
+      if (object._id !== 'state')
+        return
+      else
+        hoodie.store.off('pull', onPullHandler);
+      const {lists, orders, todo} = object;
+      this.setState({
+        lists: lists,
+        orders: orders,
+        todo: this.transformTodoCollection(todo)
+      }, ()=> {
+        this.dataMigrations();
       });
     }
 
@@ -101,16 +105,18 @@ class App extends React.Component {
       });
     }
 
-    hoodie.store.on('change', (event, object)=> {
-      if (object._id === 'state') {
-        const {lists, orders, todo} = object;
-        this.setState({
-          lists: lists,
-          orders: orders,
-          todo: todo
-        });
-      }
+    hoodie.store.on('change', onPullHandler);
+  }
+
+  transformTodoCollection(todo) {
+    const todos = {};
+    Object.keys(todo).forEach((key)=> {
+      todos[key] = {};
+      Object.keys(todo[key]).forEach((uuid)=> {
+        todos[key][uuid] = new Todo(todo[key][uuid]);
+      });
     });
+    return todos;
   }
 
   dataMigrations() {
@@ -177,7 +183,7 @@ class App extends React.Component {
   handleAdd({text, key}) {
     let newTodo = this.state.todo;
     let newOrders = this.state.orders;
-    let newItem = new Todo(text, false);
+    let newItem = new Todo({text: text, done: false});
     newTodo[key][newItem.uuid] = newItem;
     newOrders[key].unshift(newItem.uuid);
     this.setState({todo: newTodo, orders: newOrders});
@@ -203,15 +209,7 @@ class App extends React.Component {
   handleToggle({uuid, key}) {
     let newTodo = this.state.todo;
     let updatedTodo = newTodo[key][uuid];
-    // 0: 未, 1: 做, 2: 完, 3: 算
-    updatedTodo.done = (updatedTodo.done + 1) % 4;
-    switch (updatedTodo.done) {
-      case 1:
-        updatedTodo.startedAt = (new Date()).toString();
-        break;
-      default:
-        updatedTodo.startAt = null;
-    }
+    updatedTodo.nextDoneState();
     this.setState({todo: newTodo});
   }
 
@@ -225,7 +223,7 @@ class App extends React.Component {
 
   handleMove({from, to, uuid, redirectTo}) {
     let newState = this.state;
-    let todo = Object.assign({}, newState.todo[from][uuid]);
+    let todo = new Todo(newState.todo[from][uuid]);
     newState.todo[to][uuid] = todo;
     newState.orders[to].unshift(uuid);
     this.setState(newState);
