@@ -275,6 +275,7 @@ class App extends React.Component {
       username: user,
       password: pass
     });
+    LocalStorage.set('hoodieHost', host);
   }
 
   update(action, payload) {
