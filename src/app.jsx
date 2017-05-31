@@ -278,6 +278,24 @@ class App extends React.Component {
     LocalStorage.set('hoodieHost', host);
   }
 
+  handleSort({key}) {
+    let newOrders = this.state.orders;
+    let categorizedOrder = [[], [], [], []];
+    newOrders[key].forEach((uuid)=> {
+      const done = this.state.todo[key][uuid].done;
+      categorizedOrder[done].push(uuid);
+    });
+    // swap 0 and 1 for 'doing' and 'default' tasks
+    let tmp;
+    tmp = categorizedOrder[0];
+    categorizedOrder[0] = categorizedOrder[1];
+    categorizedOrder[1] = tmp;
+    newOrders[key] = categorizedOrder.reduce((sum, val)=> {
+      return sum.concat(val);
+    }, []);
+    this.setState({orders: newOrders});
+  }
+
   update(action, payload) {
     switch (action) {
       case 'add':
@@ -306,6 +324,9 @@ class App extends React.Component {
         break;
       case 'login':
         this.handleLogin(payload);
+        break;
+      case 'sort':
+        this.handleSort(payload);
         break;
     }
 
