@@ -5,6 +5,7 @@ import EditItem from './edit_item.jsx'
 import ListNewList from './list_new_list.jsx'
 import ListItem from './list_item.jsx'
 import Todo from './data/todo.js'
+import List from './data/list.js'
 import LoginPage from './pages/login_page.jsx'
 import PropTypes from 'prop-types'
 import LocalStorage from 'store'
@@ -48,7 +49,10 @@ class App extends React.Component {
     super(props);
     const stateTemplate = {
       lists: {
-        'default': '做咩啫你',
+        'default': {
+          name: '做咩啫你',
+          showAll: true
+        },
       },
       todo: {
         'default': {}
@@ -83,7 +87,7 @@ class App extends React.Component {
         hoodie.store.off('pull', onPullHandler);
       const {lists, orders, todo} = object;
       this.setState({
-        lists: lists,
+        lists: this.transformListCollection(lists),
         orders: orders,
         todo: this.transformTodoCollection(todo)
       }, ()=> {
@@ -123,6 +127,12 @@ class App extends React.Component {
     hoodie.account.on('reauthenticate', onSignInHandler);
     hoodie.account.on('signin', onSignInHandler);
     hoodie.store.on('change', onPullHandler);
+  }
+
+  transformListCollection(lists) {
+    const newLists = {};
+    Object.keys(lists).forEach((key)=> newLists[key] = new List(lists[key]));
+    return newLists;
   }
 
   transformTodoCollection(todo) {
@@ -172,9 +182,6 @@ class App extends React.Component {
           });
           orders[key] = todos.map(item => item.uuid);
         }
-      });
-      this.setState({todo: todo, orders: orders}, ()=> {
-        LocalStorage.set('afterMigration', this.state);
       });
     }
 
@@ -232,7 +239,7 @@ class App extends React.Component {
 
   handleNewList({key, name}) {
     let newState = this.state;
-    this.state.lists[key] = name;
+    this.state.lists[key] = new List({name: name});
     this.state.todo[key] = {};
     this.state.orders[key] = [];
     this.setState(newState);
@@ -256,7 +263,7 @@ class App extends React.Component {
 
   handleRemoveList({key}) {
     if (Object.keys(this.state.todo[key]).length > 0) {
-      alert(`${this.state.lists[key]}仲有野唔刪得喎`);
+      alert(`${this.state.lists[key].name}仲有野唔刪得喎`);
     } else {
       let newState = this.state;
       delete newState.todo[key];
@@ -355,7 +362,7 @@ class App extends React.Component {
               let undoneCount = this.getItemCount(key) - doneCount;
               let list = {
                 key: key,
-                displayName: this.state.lists[key]
+                displayName: this.state.lists[key].name
               };
               return (
                 <ListItem key={`list-${index}`}
@@ -372,10 +379,11 @@ class App extends React.Component {
 
     const List = ({match})=> {
       let key = match.params.list;
+      let locationName = (this.state.lists[key]) ? this.state.lists[key].name : ''
       return (
         <div>
           <AppBar
-            locationName={this.state.lists[key]}
+            locationName={locationName}
             location={`/list/${key}`}
             homeName='要做的野'
             home='/' />
@@ -386,6 +394,7 @@ class App extends React.Component {
         </div>
       );
     }
+
     const EditPage = ({match, history}) => {
       const {
         list,
@@ -402,7 +411,7 @@ class App extends React.Component {
       return (
         <div>
           <AppBar
-            locationName={this.state.lists[list]}
+            locationName={this.state.lists[list].name}
             location={`/list/${list}`}
             homeName='要做的野'
             home='/'

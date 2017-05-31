@@ -129,7 +129,7 @@ class EditItem extends React.Component {
         <ul>
           {
             Object.keys(lists).map((key, index)=> {
-              let displayName = lists[key];
+              let displayName = lists[key].name;
               let canMove = listKey !== key;
               return MoveOption({
                 index: index,
