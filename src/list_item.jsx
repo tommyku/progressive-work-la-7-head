@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
+import { SortableHandle } from 'react-sortable-hoc'
 
 const TodoDoneBase = {
-  marginRight: '.5em',
+  marginRight: '.25em',
   display: 'inline-block',
   padding: 0,
   fontSize: 'medium',
@@ -17,6 +18,8 @@ const TodoRemoveBoxStyle = Object.assign(
   {color: '#f66'},
   TodoDoneBase
 );
+
+const TodoMoveBoxStyle = TodoDoneBase;
 
 const TodoTextStyle = {
   color: '#990',
@@ -64,6 +67,12 @@ const ListItem = (props, context)=> {
     }
   }
 
+  const MoveBox = SortableHandle(()=> {
+    return (
+      <span className='hover-pointer' style={TodoMoveBoxStyle}>移</span>
+    );
+  });
+
   const RemoveBox = (
     <button style={TodoRemoveBoxStyle}
       onClick={handleRemoveBoxClick}
@@ -74,6 +83,7 @@ const ListItem = (props, context)=> {
 
   const OperationBox = (
     <span style={TodoOperationBoxStyle}>
+      <MoveBox />
       {RemoveBox}
     </span>
   );

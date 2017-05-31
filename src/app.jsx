@@ -59,6 +59,7 @@ class App extends React.Component {
       orders: {
         'default': []
       },
+      listOrders: ['default'],
       login: false
     };
     this.state = stateTemplate;
@@ -84,11 +85,12 @@ class App extends React.Component {
         return
       else
         hoodie.store.off('pull', onPullHandler);
-      const {lists, orders, todo} = object;
+      const {lists, orders, todo, listOrders} = object;
       this.setState({
         lists: this.transformListCollection(lists),
         orders: orders,
-        todo: this.transformTodoCollection(todo)
+        todo: this.transformTodoCollection(todo),
+        listOrders: listOrders
       }, ()=> {
         this.dataMigrations();
       });
@@ -182,10 +184,24 @@ class App extends React.Component {
           orders[key] = todos.map(item => item.uuid);
         }
       });
+      this.setState({todo: todo, orders: orders}, ()=> {
+        LocalStorage.set('afterMigration', this.state);
+      });
     }
+
+    const migrateListOrders = ()=> {
+      if (this.state.listOrders.length != Object.keys(this.state.lists).length) {
+        const lists = this.state.lists;
+        const listOrders = Object.keys(lists);
+        this.setState({listOrders: listOrders}, ()=> {
+          LocalStorage.set('afterMigration', this.state);
+        });
+      }
+    };
 
     migrateDoneValue();
     migrateOrders();
+    migrateListOrders();
   }
 
   getTodoList(key) {
@@ -209,7 +225,7 @@ class App extends React.Component {
     let newItem = new Todo({text: text, done: false});
     newTodo[key][newItem.uuid] = newItem;
     newOrders[key].unshift(newItem.uuid);
-    this.setState({todo: newTodo, orders: newOrders});
+    return {todo: newTodo, orders: newOrders};
   }
 
   handleRemove({uuid, key}) {
@@ -218,22 +234,24 @@ class App extends React.Component {
     let orderIndex = newOrders[key].indexOf(uuid);
     delete newTodo[key][uuid];
     newOrders[key].splice(orderIndex, 1);
-    this.setState({todo: newTodo, orders: newOrders});
+    return {todo: newTodo, orders: newOrders};
   }
 
   handleUpdate({uuid, text, details, key, redirectTo}) {
     let newTodo = this.state.todo;
     newTodo[key][uuid].text = text;
     newTodo[key][uuid].details = details;
-    this.setState({todo: newTodo});
-    redirectTo && history.replace(redirectTo);
+    this.setState({todo: newTodo}, ()=> {
+      redirectTo && history.replace(redirectTo);
+    });
+    return {}; // force afterUpdate
   }
 
   handleToggle({uuid, key}) {
     let newTodo = this.state.todo;
     let updatedTodo = newTodo[key][uuid];
     updatedTodo.nextDoneState();
-    this.setState({todo: newTodo});
+    return {todo: newTodo};
   }
 
   handleNewList({key, name}) {
@@ -241,7 +259,8 @@ class App extends React.Component {
     this.state.lists[key] = new List({name: name});
     this.state.todo[key] = {};
     this.state.orders[key] = [];
-    this.setState(newState);
+    this.state.listOrders.push(key);
+    return newState;
   }
 
   handleMove({from, to, uuid, redirectTo}) {
@@ -251,24 +270,31 @@ class App extends React.Component {
     newState.orders[to].unshift(uuid);
     this.setState(newState);
     history.replace(redirectTo);
-    this.handleRemove({key: from, uuid: uuid});
+    return this.handleRemove({key: from, uuid: uuid});
   }
 
   handleReorder({key, uuids}) {
     let newOrders = this.state.orders;
     newOrders[key] = uuids;
-    this.setState({orders: newOrders});
+    return {orders: newOrders};
+  }
+
+  handleReorderList({orders}) {
+    return {listOrders: orders};
   }
 
   handleRemoveList({key}) {
     if (Object.keys(this.state.todo[key]).length > 0) {
       alert(`${this.state.lists[key].name}仲有野唔刪得喎`);
+      return null;
     } else {
       let newState = this.state;
+      let orderIndex = newState.listOrders.indexOf(key);
       delete newState.todo[key];
       delete newState.lists[key];
       delete newState.orders[key];
-      this.setState(newState);
+      newState.listOrders.splice(orderIndex, 1);
+      return newState;
     }
   }
 
@@ -282,6 +308,7 @@ class App extends React.Component {
       password: pass
     });
     LocalStorage.set('hoodieHost', host);
+    return null;
   }
 
   handleSort({key}) {
@@ -299,60 +326,72 @@ class App extends React.Component {
     newOrders[key] = categorizedOrder.reduce((sum, val)=> {
       return sum.concat(val);
     }, []);
-    this.setState({orders: newOrders});
+    return {orders: newOrders};
   }
 
   handleToggleShowAll({key}) {
     let newLists = this.state.lists;
     newLists[key].showAll = !newLists[key].showAll;
-    this.setState({lists: newLists});
+    return {lists: newLists};
   }
 
   update(action, payload) {
+    const afterUpdate = ()=> {
+      hoodie.store.updateOrAdd('state', {
+        orders: this.state.orders,
+        lists: this.state.lists,
+        todo: this.state.todo,
+        listOrders: this.state.listOrders
+      }).catch((c)=> {
+        alert('can\'t update');
+      });
+      LocalStorage.set('stateBackup', this.state)
+    }
+
+    let newState = null;
+
     switch (action) {
       case 'add':
-        this.handleAdd(payload);
+        newState = this.handleAdd(payload);
         break;
       case 'remove':
-        this.handleRemove(payload);
+        newState = this.handleRemove(payload);
         break;
       case 'update':
-        this.handleUpdate(payload);
+        newState = this.handleUpdate(payload);
         break;
       case 'toggle':
-        this.handleToggle(payload);
+        newState = this.handleToggle(payload);
         break;
       case 'new_list':
-        this.handleNewList(payload);
+        newState = this.handleNewList(payload);
         break;
       case 'move':
-        this.handleMove(payload);
+        newState = this.handleMove(payload);
         break;
       case 'reorder':
-        this.handleReorder(payload);
+        newState = this.handleReorder(payload);
+        break;
+      case 'reorder_list':
+        newState = this.handleReorderList(payload);
         break;
       case 'remove_list':
-        this.handleRemoveList(payload);
+        newState = this.handleRemoveList(payload);
         break;
       case 'login':
-        this.handleLogin(payload);
+        newState = this.handleLogin(payload);
         break;
       case 'sort':
-        this.handleSort(payload);
+        newState = this.handleSort(payload);
         break;
       case 'toggle_showall':
-        this.handleToggleShowAll(payload);
+        newState = this.handleToggleShowAll(payload);
         break;
     }
 
-    hoodie.store.updateOrAdd('state', {
-      orders: this.state.orders,
-      lists: this.state.lists,
-      todo: this.state.todo
-    }).catch((c)=> {
-      alert('can\'t update');
-    });
-    LocalStorage.set('stateBackup', this.state)
+    if (newState) {
+      this.setState(newState, afterUpdate);
+    }
   }
 
   render() {
@@ -364,7 +403,7 @@ class App extends React.Component {
           <AppBar
             homeName='要做的野'
             home='/' />
-          <IndexPage lists={this.state.lists} />
+          <IndexPage lists={this.state.lists} orders={this.state.listOrders} />
         </div>
       )
     );
