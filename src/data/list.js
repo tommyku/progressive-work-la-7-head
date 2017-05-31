@@ -21,7 +21,7 @@ class List {
 
   constructAsObject({name, showAll}) {
     this.name = name;
-    this.showAll = showAll || true;
+    this.showAll = showAll === true;
   }
 
   serialize() {

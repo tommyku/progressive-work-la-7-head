@@ -25,15 +25,23 @@ const TodoAddBase = {
 };
 
 const SortButtonStyle = {
+  display: 'inline-block',
   padding: '0 .25em',
   fontSize: 'inherit',
   background: 'none',
   border: 'none',
   lineHeight: '1.42857',
-  backgroundColor: '#999'
+  backgroundColor: '#ff0'
 };
 
+const ShowAllButtonStyle = Object.assign(
+  {},
+  SortButtonStyle,
+  {backgroundColor: '#999'}
+);
+
 const UtilityBarStyle = {
+  display: 'flex',
   textAlign: 'right'
 };
 
@@ -42,6 +50,7 @@ class TodoNewItem extends React.PureComponent {
     const {
       placeholder,
       listKey,
+      showAll,
       style,
       ...others
     } = this.props;
@@ -67,6 +76,10 @@ class TodoNewItem extends React.PureComponent {
       update('sort', {key: listKey});
     }
 
+    const handleShowAllButtonClick = (e)=> {
+      update('toggle_showall', {key: listKey});
+    }
+
     const TextBox = (
       <input
         id='new-task'
@@ -90,8 +103,16 @@ class TodoNewItem extends React.PureComponent {
       </button>
     );
 
+    const ShowAllButton = (
+      <button style={ShowAllButtonStyle}
+        onClick={handleShowAllButtonClick}>
+        {showAll ? '全' : '半'}
+      </button>
+    );
+
     const UtilityBar = (
       <span style={UtilityBarStyle}>
+        {ShowAllButton}
         {SortButton}
       </span>
     );

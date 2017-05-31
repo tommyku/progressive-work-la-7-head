@@ -14,6 +14,7 @@ const TodoList = (props, context)=> {
     persisted,
     orders,
     listKey,
+    showAll,
     style,
     values,
     ...other
@@ -41,9 +42,10 @@ const TodoList = (props, context)=> {
   });
 
   const SortableList = SortableContainer(({values, orders})=> {
+    const listToShow = (orders || []).filter((uuid)=> (values[uuid].done <= 1 || showAll));
     return (
       <section>
-        {(orders || []).map((item, index)=> (
+        {listToShow.map((item, index)=> (
           <SortableItem key={`item-${index}`} item={values[item]} index={index} />
         ))}
       </section>
@@ -62,7 +64,7 @@ const TodoList = (props, context)=> {
 
   return (
     <section {...other} style={todoStyle}>
-      {persisted && <TodoNewItem listKey={listKey} />}
+      {persisted && <TodoNewItem listKey={listKey} showAll={showAll} />}
       {!persisted && <TodoNewList listKey={listKey} />}
       <SortableList values={values}
         orders={orders}

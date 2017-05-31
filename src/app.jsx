@@ -303,6 +303,12 @@ class App extends React.Component {
     this.setState({orders: newOrders});
   }
 
+  handleToggleShowAll({key}) {
+    let newLists = this.state.lists;
+    newLists[key].showAll = !newLists[key].showAll;
+    this.setState({lists: newLists});
+  }
+
   update(action, payload) {
     switch (action) {
       case 'add':
@@ -334,6 +340,9 @@ class App extends React.Component {
         break;
       case 'sort':
         this.handleSort(payload);
+        break;
+      case 'toggle_showall':
+        this.handleToggleShowAll(payload);
         break;
     }
 
@@ -380,6 +389,7 @@ class App extends React.Component {
     const List = ({match})=> {
       let key = match.params.list;
       let locationName = (this.state.lists[key]) ? this.state.lists[key].name : ''
+      let showAll = (this.state.lists[key]) ? this.state.lists[key].showAll : true
       return (
         <div>
           <AppBar
@@ -390,6 +400,7 @@ class App extends React.Component {
           <TodoList values={this.state.todo[key]}
             orders={this.state.orders[key]}
             listKey={key}
+            showAll={showAll}
             persisted={this.state.lists.hasOwnProperty(key)} />
         </div>
       );
