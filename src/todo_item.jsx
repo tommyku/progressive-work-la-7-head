@@ -1,8 +1,21 @@
 import React from 'react'
-import AutoLinkText from 'react-autolink-text2'
 import PropTypes from 'prop-types'
 import TimeAgo from 'timeago-react'
+import marked from 'marked'
 import { Link } from 'react-router-dom'
+
+const renderer = new marked.Renderer();
+
+renderer.blockquote = (quote)=> quote;
+renderer.heading = (text)=> text;
+renderer.hr = ()=> '';
+renderer.list = (body)=> body;
+renderer.listitem = (text)=> text;
+renderer.paragraph = (text)=> `<span>${text}</span>`;
+
+marked.setOptions({
+  renderer: renderer
+});
 
 const TodoDoneBase = {
   marginRight: '.5em',
@@ -176,7 +189,7 @@ const TodoItem = (props, context)=> {
   const TextBox = (
     <span style={[TodoTextStyle, TodoDoingTextStyle, TodoDoneTextStyle, TodoRejectedTextStyle][done]}
       className='hover-default'>
-      <AutoLinkText text={text} />
+      <span dangerouslySetInnerHTML={{__html: marked(text)}}></span>
       {done == 1 && startedAt && DoingTextBox}
     </span>
   );
