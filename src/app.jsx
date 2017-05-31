@@ -190,7 +190,7 @@ class App extends React.Component {
     }
 
     const migrateListOrders = ()=> {
-      if (this.state.listOrders.length != Object.keys(this.state.lists).length) {
+      if (!this.state.listOrders || this.state.listOrders.length != Object.keys(this.state.lists).length) {
         const lists = this.state.lists;
         const listOrders = Object.keys(lists);
         this.setState({listOrders: listOrders}, ()=> {
