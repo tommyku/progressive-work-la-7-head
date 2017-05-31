@@ -36,8 +36,6 @@ const TodoOperationBoxStyle = {
 const ListItem = (props, context)=> {
   const {
     list,
-    doneCount,
-    undoneCount,
     style,
     ...others
   } = props;

@@ -2,11 +2,10 @@ import React from 'react'
 import TodoList from './todo_list.jsx'
 import AppBar from './app_bar.jsx'
 import EditItem from './edit_item.jsx'
-import ListNewList from './list_new_list.jsx'
-import ListItem from './list_item.jsx'
 import Todo from './data/todo.js'
 import List from './data/list.js'
 import LoginPage from './pages/login_page.jsx'
+import IndexPage from './pages/index_page.jsx'
 import PropTypes from 'prop-types'
 import LocalStorage from 'store'
 import {
@@ -365,23 +364,7 @@ class App extends React.Component {
           <AppBar
             homeName='要做的野'
             home='/' />
-          <div>
-            {Object.keys(this.state.lists).map((key, index)=> {
-              let doneCount = this.getDoneCount(key);
-              let undoneCount = this.getItemCount(key) - doneCount;
-              let list = {
-                key: key,
-                displayName: this.state.lists[key].name
-              };
-              return (
-                <ListItem key={`list-${index}`}
-                  list={list}
-                  doneCount={doneCount}
-                  undoneCount={undoneCount} />
-              );
-            })}
-          </div>
-          <ListNewList />
+          <IndexPage lists={this.state.lists} />
         </div>
       )
     );
