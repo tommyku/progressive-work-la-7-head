@@ -85,9 +85,11 @@ class EditItem extends Component {
     this.state = {
       text: item ? item.text : '',
       details: item ? item.details : '',
-      mode: this.modes.EDIT
+      mode: this.modes.EDIT,
+      alertAt: this.formatDateToDatePickerFormat(item.alertAt ? new Date(item.alertAt) : null)
     }
     this.handleTextChange = this.handleTextChange.bind(this);
+    this.handleAlertChange = this.handleAlertChange.bind(this);
     this.handleTextareaChange = this.handleTextareaChange.bind(this);
   }
 
@@ -97,6 +99,19 @@ class EditItem extends Component {
 
   handleTextareaChange(e) {
     this.setState({details: e.target.value});
+  }
+
+  handleAlertChange(e) {
+    this.setState({alertAt: e.target.value});
+  }
+
+  formatDateToDatePickerFormat(date) {
+    if (date instanceof Date) {
+      const lo = (num)=> (num < 10 ? '0'+num : num.toString());
+      return `${date.getFullYear()}-${lo(date.getMonth()+1)}-${lo(date.getDate())}T${lo(date.getHours())}:${lo(date.getMinutes())}`;
+    } else {
+      return null;
+    }
   }
 
   render() {
@@ -109,7 +124,7 @@ class EditItem extends Component {
 
     const { update, listOrders } = this.context;
 
-    let editText, editDetails;
+    let editText, editDetails, editAlert;
 
     const handleMoveOptionClick = (e)=> {
       let from = listKey;
@@ -128,10 +143,14 @@ class EditItem extends Component {
       let text = this.state.text.trim();
       if (text.length === 0) return;
       let details = this.state.details.trim();
+      let alertAt = this.state.alertAt && this.state.alertAt.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/)
+        ? this.state.alertAt
+        : null;
       let redirectTo = `/list/${listKey}`;
       update('update', {
         text: text,
         details: details,
+        alertAt: alertAt,
         key: listKey,
         uuid: item.uuid,
         redirectTo: redirectTo
@@ -157,6 +176,10 @@ class EditItem extends Component {
       const newMode = (this.state.mode === this.modes.PREVIEW) ?
         this.modes.EDIT : this.modes.PREVIEW;
       this.setState({mode: newMode});
+    };
+
+    const handleToggleNotificationModeClick = ()=> {
+      this.setState({alertAt: (this.state.alertAt ? null : this.formatDateToDatePickerFormat(new Date()))});
     };
 
     const MoveItem = (
@@ -218,17 +241,47 @@ class EditItem extends Component {
           style={TodoTextStyle} />
         { this.state.mode === this.modes.PREVIEW && ShowDetails}
         { this.state.mode === this.modes.EDIT && EditDetails}
-        <button onClick={handleTextEditClick.bind(this)}
-          style={TodoSubmitButtonStyle}>
-          改完
-        </button>
+      </section>
+    );
+
+    const SubmitButton = (
+      <button onClick={handleTextEditClick.bind(this)}
+        style={TodoSubmitButtonStyle}>
+        改完
+      </button>
+    );
+
+    const ToggleNotificationMode = (
+      <button style={ToggleDetailsModeStyle}
+        onClick={handleToggleNotificationModeClick}>
+        { this.state.alertAt ? '開' : '關' }
+      </button>
+    );
+
+    const EditAlert = (
+      <section>
+        <h3>
+          <label htmlFor='edit-alert'>提醒</label>
+          {ToggleNotificationMode}
+        </h3>
+        {
+          this.state.alertAt && (<input type='datetime-local'
+            id='edit-alert'
+            name='edit-alert'
+            style={TodoTextStyle}
+            ref={ el => editAlert = el }
+            onChange={this.handleAlertChange}
+            value={this.state.alertAt} />)
+        }
       </section>
     );
 
     return (
       <div>
         {MoveItem}
+        {EditAlert}
         {EditText}
+        {SubmitButton}
       </div>
     );
   }

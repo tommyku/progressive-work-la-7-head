@@ -63,6 +63,9 @@ class App extends React.Component {
         'default': []
       },
       listOrders: ['default'],
+      notifications: {
+        'default': []
+      },
       login: false,
       loading: false
     };
@@ -70,6 +73,8 @@ class App extends React.Component {
   }
 
   componentWillMount() {
+    setInterval(()=> this.notificationRun(), 5000);
+
     const onSignInHandler = (a)=> {
       this.setState({login: true});
       hoodie.store.find('state').then(onPullHandler).catch((e)=>{
@@ -89,11 +94,12 @@ class App extends React.Component {
         return
       else
         hoodie.store.off('pull', onPullHandler);
-      const {lists, orders, todo, listOrders} = object;
+      const {lists, orders, todo, listOrders, notifications} = Object.assign({}, this.state, object);
       this.setState({
         lists: this.transformListCollection(lists),
         orders: orders,
         todo: this.transformTodoCollection(todo),
+        notifications: notifications,
         listOrders: listOrders
       }, ()=> {
         this.dataMigrations();
@@ -132,6 +138,30 @@ class App extends React.Component {
     hoodie.account.on('reauthenticate', onSignInHandler);
     hoodie.account.on('signin', onSignInHandler);
     hoodie.store.on('change', onPullHandler);
+  }
+
+  notificationRun() {
+    const now = new Date();
+    const shouldAlert = (alertAt)=> {
+      const alertDate = new Date(alertAt);
+      return Math.abs(now.getTime() - alertDate.getTime()) < 30000; // prev/next 30 seconds
+    };
+
+    Object.keys(this.state.notifications).forEach((key)=> {
+      this.state.notifications[key].forEach((uuid)=> {
+        const todo = this.state.todo[key][uuid];
+        if (todo.alertAt && shouldAlert(todo.alertAt)) {
+          this.handleUpdate({
+            text: todo.text,
+            details: todo.details,
+            alertAt: null,
+            key: key,
+            uuid: todo.uuid,
+          });
+          alert(todo.text);
+        }
+      });
+    });
   }
 
   transformListCollection(lists) {
@@ -203,9 +233,21 @@ class App extends React.Component {
       }
     };
 
+    const migrateNotifications = ()=> {
+      let containsAllLists = Object.keys(this.state.notifications).length !== Object.keys(this.state.lists).length;
+      if (!this.state.notifications || containsAllLists) {
+        const notifications = {};
+        Object.keys(this.state.lists).forEach((key)=> notifications[key] = []);
+        this.setState({notifications: notifications}, ()=> {
+          LocalStorage.set('afterMigration', this.state);
+        });
+      }
+    };
+
     migrateDoneValue();
     migrateOrders();
     migrateListOrders();
+    migrateNotifications();
   }
 
   getTodoList(key) {
@@ -235,20 +277,33 @@ class App extends React.Component {
   handleRemove({uuid, key}) {
     let newTodo = this.state.todo;
     let newOrders = this.state.orders;
+    let newNotifications = this.state.notifications;
     let orderIndex = newOrders[key].indexOf(uuid);
+    let notificationIndex = newNotifications[key].indexOf(uuid);
     delete newTodo[key][uuid];
     newOrders[key].splice(orderIndex, 1);
-    return {todo: newTodo, orders: newOrders};
+    newNotifications[key].splice(notificationIndex, notificationIndex === -1 ? 0 : 1);
+    return {todo: newTodo, orders: newOrders, notifications: newNotifications};
   }
 
-  handleUpdate({uuid, text, details, key, redirectTo}) {
+  handleUpdate({uuid, text, details, alertAt, key, redirectTo}) {
     let newTodo = this.state.todo;
+    let newNotifications = this.state.notifications;
     newTodo[key][uuid].text = text;
     newTodo[key][uuid].details = details;
+    newTodo[key][uuid].alertAt = alertAt;
+    let notificationIndex = newNotifications[key].indexOf(uuid);
+    if (newTodo[key][uuid].alertAt) {
+      if (notificationIndex === -1) {
+        newNotifications[key].push(uuid);
+      }
+    } else {
+      newNotifications[key].splice(notificationIndex, notificationIndex === -1 ? 0 : 1);
+    }
     this.setState({todo: newTodo}, ()=> {
       redirectTo && history.replace(redirectTo);
     });
-    return {}; // force afterUpdate
+    return {notifications: newNotifications};
   }
 
   handleUpdateList({key, name, redirectTo}) {
@@ -269,10 +324,11 @@ class App extends React.Component {
 
   handleNewList({key, name}) {
     let newState = this.state;
-    this.state.lists[key] = new List({name: name});
-    this.state.todo[key] = {};
-    this.state.orders[key] = [];
-    this.state.listOrders.push(key);
+    newState.lists[key] = new List({name: name});
+    newState.notifications[key] = [];
+    newState.todo[key] = {};
+    newState.orders[key] = [];
+    newState.listOrders.push(key);
     return newState;
   }
 
@@ -281,6 +337,11 @@ class App extends React.Component {
     let todo = new Todo(newState.todo[from][uuid]);
     newState.todo[to][uuid] = todo;
     newState.orders[to].unshift(uuid);
+    if (todo.alertAt) {
+      const notificationIndex = newState.notifications[from].indexOf(uuid);
+      newState.notifications[to].push(uuid);
+      newState.notifications[from].splice(notificationIndex, 1);
+    }
     this.setState(newState);
     history.replace(redirectTo);
     return this.handleRemove({key: from, uuid: uuid});
@@ -306,6 +367,7 @@ class App extends React.Component {
       delete newState.todo[key];
       delete newState.lists[key];
       delete newState.orders[key];
+      delete newState.notifications[key];
       newState.listOrders.splice(orderIndex, 1);
       return newState;
     }
@@ -355,6 +417,7 @@ class App extends React.Component {
         orders: this.state.orders,
         lists: this.state.lists,
         todo: this.state.todo,
+        notifications: this.state.notifications,
         listOrders: this.state.listOrders
       }).catch((c)=> {
         alert('can\'t update');

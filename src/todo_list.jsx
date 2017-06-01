@@ -26,6 +26,7 @@ const TodoList = (props, context)=> {
       done,
       createdAt,
       uuid,
+      alertAt,
       ...other
     } = item;
 
@@ -36,6 +37,7 @@ const TodoList = (props, context)=> {
         uuid={uuid}
         listKey={listKey}
         createdAt={createdAt}
+        alertAt={alertAt}
         {...other}
       />
     );

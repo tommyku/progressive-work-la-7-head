@@ -18,7 +18,7 @@ class Todo {
     this.constructAsObject(todo.serialize());
   }
 
-  constructAsObject({text, done, details, status, uuid, createdAt, startedAt}) {
+  constructAsObject({text, done, details, status, uuid, createdAt, startedAt, alertAt}) {
     this.text = text;
     this.done = done || 0;
     this.details = details || '';
@@ -26,6 +26,7 @@ class Todo {
     this.status = status || '';
     this.createdAt = createdAt || (new Date()).toString();
     this.startedAt = startedAt;
+    this.alertAt = alertAt;
   }
 
   serialize() {
@@ -37,6 +38,7 @@ class Todo {
       status: this.status,
       createdAt: this.createdAt,
       startedAt: this.startedAt,
+      alertAt: this.alertAt
     };
   }
 
