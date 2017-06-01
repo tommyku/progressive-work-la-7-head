@@ -85,7 +85,7 @@ class EditItem extends Component {
     this.state = {
       text: item ? item.text : '',
       details: item ? item.details : '',
-      mode: this.modes.PREVIEW
+      mode: this.modes.EDIT
     }
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleTextareaChange = this.handleTextareaChange.bind(this);
