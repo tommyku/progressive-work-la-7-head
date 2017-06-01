@@ -6,6 +6,7 @@ import Todo from './data/todo.js'
 import List from './data/list.js'
 import LoginPage from './pages/login_page.jsx'
 import IndexPage from './pages/index_page.jsx'
+import Spinner from './components/spinner.jsx'
 import PropTypes from 'prop-types'
 import LocalStorage from 'store'
 import {
@@ -60,7 +61,8 @@ class App extends React.Component {
         'default': []
       },
       listOrders: ['default'],
-      login: false
+      login: false,
+      loading: false
     };
     this.state = stateTemplate;
   }
@@ -337,6 +339,7 @@ class App extends React.Component {
 
   update(action, payload) {
     const afterUpdate = ()=> {
+      this.setState({loading: true});
       hoodie.store.updateOrAdd('state', {
         orders: this.state.orders,
         lists: this.state.lists,
@@ -344,7 +347,9 @@ class App extends React.Component {
         listOrders: this.state.listOrders
       }).catch((c)=> {
         alert('can\'t update');
-      });
+      }).then(()=> setTimeout(()=> {
+        this.setState({loading: false})
+      }, 250));
       LocalStorage.set('stateBackup', this.state)
     }
 
@@ -481,6 +486,7 @@ class App extends React.Component {
           <Route exact path="/" render={Index} />
           <Route exact path="/list/:list" render={List} />
           <Route exact path="/list/:list/item/:uuid" render={EditPage} />
+          <Spinner visible={this.state.loading} />
         </div>
       </Router>
     );
