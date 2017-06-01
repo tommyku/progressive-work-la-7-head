@@ -457,7 +457,7 @@ class App extends React.Component {
         item = this.state.todo[list][uuid];
       } catch(err) {
         if (err instanceof TypeError) {
-          history.replace(`/list/${list}`);
+          return (<Redirect to={`/list/${list}`} />);
         }
       }
       return (

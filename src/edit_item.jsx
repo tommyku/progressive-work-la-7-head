@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { Component } from 'react'
+import AutoLinkText from 'react-autolink-text2'
 import PropTypes from 'prop-types'
 import Todo from './data/todo.js'
 
@@ -36,7 +37,8 @@ const TodoDetailsStyle = {
   fontSize: 'medium',
   margin: '.5em 0',
   resize: 'none',
-  width: '100%'
+  width: '100%',
+  boxSizing: 'border-box'
 };
 
 const TodoSubmitButtonStyle = {
@@ -49,13 +51,41 @@ const TodoSubmitButtonStyle = {
   color: '#ff6'
 };
 
-class EditItem extends React.Component {
+const ToggleDetailsModeStyle = Object.assign(
+  {},
+  TodoSubmitButtonStyle,
+  {
+    backgroundColor: '#999',
+    color: '#000',
+    padding: '0 .25em',
+    marginLeft: '.5em',
+    fontSize: 'medium'
+  }
+);
+
+const TodoShowDetailsStyle = {
+  backgroundColor: '#000',
+  color: '#999',
+  fontFamily: 'monospace',
+  wordSpacing: '0',
+  padding: '2px',
+  wordWrap: 'break-word',
+  fontSize: 'medium',
+  margin: '.5em 0',
+  width: '100%',
+  whiteSpace: 'pre-wrap',
+  overflowX: 'auto',
+  boxSizing: 'border-box'
+};
+
+class EditItem extends Component {
   constructor(props) {
     super(props);
     const {item} = this.props;
     this.state = {
       text: item ? item.text : '',
       details: item ? item.details : '',
+      mode: this.modes.PREVIEW
     }
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleTextareaChange = this.handleTextareaChange.bind(this);
@@ -123,6 +153,12 @@ class EditItem extends React.Component {
       );
     };
 
+    const handleToggleDetailsModeClick = ()=> {
+      const newMode = (this.state.mode === this.modes.PREVIEW) ?
+        this.modes.EDIT : this.modes.PREVIEW;
+      this.setState({mode: newMode});
+    };
+
     const MoveItem = (
       <section>
         <h3>移去第度</h3>
@@ -143,10 +179,34 @@ class EditItem extends React.Component {
       </section>
     );
 
+    const EditDetails = (
+      <textarea ref={ el => editDetails = el }
+        style={TodoDetailsStyle}
+        rows={15}
+        onChange={this.handleTextareaChange}
+        value={this.state.details} />
+    );
+
+    const ShowDetails = (
+      <div style={TodoShowDetailsStyle}>
+        <AutoLinkText text={this.state.details} />
+      </div>
+    );
+
+    const ToggleDetailsMode = (
+      <button style={ToggleDetailsModeStyle}
+        onClick={handleToggleDetailsModeClick}>
+        { this.state.mode === this.modes.PREVIEW ? '改' : '睇' }
+      </button>
+    );
+
     const EditText = (
       <section>
         <h3>
-          <label htmlFor='edit-text'>改內容</label>
+          <label htmlFor='edit-text'>
+            { this.state.mode === this.modes.PREVIEW ? '睇' : '改' }內容
+          </label>
+          {ToggleDetailsMode}
         </h3>
         <input
           id='edit-text'
@@ -156,11 +216,8 @@ class EditItem extends React.Component {
           onChange={this.handleTextChange}
           value={this.state.text}
           style={TodoTextStyle} />
-        <textarea ref={ el => editDetails = el }
-          style={TodoDetailsStyle}
-          rows={10}
-          onChange={this.handleTextareaChange}
-          value={this.state.details} />
+        { this.state.mode === this.modes.PREVIEW && ShowDetails}
+        { this.state.mode === this.modes.EDIT && EditDetails}
         <button onClick={handleTextEditClick.bind(this)}
           style={TodoSubmitButtonStyle}>
           改完
@@ -180,6 +237,11 @@ class EditItem extends React.Component {
 EditItem.contextTypes = {
   update: PropTypes.func,
   listOrders: PropTypes.array
+}
+
+EditItem.prototype.modes = {
+  PREVIEW: 'preview',
+  EDIT: 'edit'
 }
 
 export default EditItem;
