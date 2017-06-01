@@ -18,6 +18,7 @@ import {
 } from 'react-router-dom'
 import createHashHistory from 'history/createHashHistory';
 import Hoodie from '@hoodie/client'
+import Push from 'push.js'
 import './app.css'
 
 const hoodieHost = LocalStorage.get('hoodieHost') || 'localhost';
@@ -144,21 +145,27 @@ class App extends React.Component {
     const now = new Date();
     const shouldAlert = (alertAt)=> {
       const alertDate = new Date(alertAt);
-      return Math.abs(now.getTime() - alertDate.getTime()) < 30000; // prev/next 30 seconds
+      return now.getTime() - alertDate.getTime() < 10000;
+    };
+
+    const expiredAlert = (alertAt)=> {
+      const alertDate = new Date(alertAt);
+      return now.getTime() - alertDate.getTime() > 10000;
     };
 
     Object.keys(this.state.notifications).forEach((key)=> {
       this.state.notifications[key].forEach((uuid)=> {
         const todo = this.state.todo[key][uuid];
-        if (todo.alertAt && shouldAlert(todo.alertAt)) {
-          this.handleUpdate({
+        const showAlert = todo.alertAt && shouldAlert(todo.alertAt);
+        if (showAlert || expiredAlert(todo.alertAt)) {
+          this.update('update', {
             text: todo.text,
             details: todo.details,
             alertAt: null,
             key: key,
             uuid: todo.uuid,
           });
-          alert(todo.text);
+          showAlert && Push.create(todo.text);
         }
       });
     });

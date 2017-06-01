@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import AutoLinkText from 'react-autolink-text2'
 import PropTypes from 'prop-types'
 import Todo from './data/todo.js'
+import Push from 'push.js'
 
 const MoveItemButtonBase = {
   padding: 0,
@@ -146,6 +147,7 @@ class EditItem extends Component {
       let alertAt = this.state.alertAt && this.state.alertAt.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/)
         ? this.state.alertAt
         : null;
+      alertAt && !Push.Permission.has() && Push.Permission.request();
       let redirectTo = `/list/${listKey}`;
       update('update', {
         text: text,
