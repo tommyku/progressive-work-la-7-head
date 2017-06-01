@@ -37,6 +37,15 @@ const TodoDoingStyle = Object.assign(
 
 const TodoRemoveBoxStyle = TodoNotDoneStyle;
 
+const TodoAlertAtBoxStyle = Object.assign(
+  {},
+  TodoNotDoneStyle,
+  {
+    color: '#090',
+    marginRight: '.25em'
+  }
+);
+
 const TodoModificationBoxStyle = Object.assign(
   {textDecoration: 'none'},
   TodoDoneStyle,
@@ -100,6 +109,7 @@ const TodoItem = (props, context)=> {
     dropped,
     createdAt,
     startedAt,
+    alertAt,
     uuid,
     listKey,
     style,
@@ -156,6 +166,13 @@ const TodoItem = (props, context)=> {
     </span>
   );
 
+  const AlertAtBox = (
+    <span style={TodoAlertAtBoxStyle}
+      title={`reminder set at ${new Date(alertAt)}`}>
+      提
+    </span>
+  );
+
   const TextBox = (
     <span style={[TodoTextStyle, TodoDoingTextStyle, TodoDoneTextStyle, TodoRejectedTextStyle][done]}
       className='hover-default'>
@@ -184,6 +201,7 @@ const TodoItem = (props, context)=> {
 
   const OperationBox = (
     <span style={TodoOperationBoxStyle}>
+      {alertAt && AlertAtBox}
       {ModificationBox}
       {RemoveBox}
       {TimeBox}

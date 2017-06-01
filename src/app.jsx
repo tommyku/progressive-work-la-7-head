@@ -145,7 +145,8 @@ class App extends React.Component {
     const now = new Date();
     const shouldAlert = (alertAt)=> {
       const alertDate = new Date(alertAt);
-      return now.getTime() - alertDate.getTime() < 10000;
+      const diff = now.getTime() - alertDate.getTime();
+      return diff < 10000 && diff > 0;
     };
 
     const expiredAlert = (alertAt)=> {
@@ -157,7 +158,9 @@ class App extends React.Component {
       this.state.notifications[key].forEach((uuid)=> {
         const todo = this.state.todo[key][uuid];
         const showAlert = todo.alertAt && shouldAlert(todo.alertAt);
-        if (showAlert || expiredAlert(todo.alertAt)) {
+        const removeExpiredAlert = todo.alertAt && expiredAlert(todo.alertAt);
+        console.log(showAlert, removeExpiredAlert);
+        if (showAlert || removeExpiredAlert) {
           this.update('update', {
             text: todo.text,
             details: todo.details,
@@ -165,7 +168,16 @@ class App extends React.Component {
             key: key,
             uuid: todo.uuid,
           });
-          showAlert && Push.create(todo.text);
+          showAlert && Push.create('做成點', {
+            body: todo.text,
+            vibrate: true,
+            icon: {
+              x16: 'res/ic_launcher.png',
+              x32: 'res/ic_launcher.png',
+            },
+            timeout: 120000,
+            link: `/list/${key}`,
+          });
         }
       });
     });
