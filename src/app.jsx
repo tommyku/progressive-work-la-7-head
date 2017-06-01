@@ -42,7 +42,8 @@ class App extends React.Component {
   getChildContext() {
     return {
       update: this.update.bind(this),
-      history: history
+      history: history,
+      listOrders: this.state.listOrders
     }
   }
 
@@ -494,12 +495,16 @@ class App extends React.Component {
 
     const renderListEditPage = ({match})=> {
       const { params: { list } } = match;
+      const listDisplayName = this.state.lists.hasOwnProperty(list) ? this.state.lists[list].name : ''
       return (this.state.login !== true) ? (
         <Redirect to='/' />
       ) : (
         <div>
           <AppBar
-            homeName='要做的野' />
+            homeName='要做的野'
+            home='/'
+            locationName={listDisplayName}
+            location={`/list/${list}`} />
           <ListEditPage list={this.state.lists[list]} listKey={list} />
         </div>
       )
@@ -525,7 +530,8 @@ App.childContextTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired
-  })
+  }),
+  listOrders: PropTypes.array.isRequired
 };
 
 export default App;

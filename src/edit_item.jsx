@@ -77,7 +77,7 @@ class EditItem extends React.Component {
       ...other
     } = this.props;
 
-    const { update } = this.context;
+    const { update, listOrders } = this.context;
 
     let editText, editDetails;
 
@@ -128,7 +128,7 @@ class EditItem extends React.Component {
         <h3>移去第度</h3>
         <ul>
           {
-            Object.keys(lists).map((key, index)=> {
+            listOrders.map((key, index)=> {
               let displayName = lists[key].name;
               let canMove = listKey !== key;
               return MoveOption({
@@ -179,6 +179,7 @@ class EditItem extends React.Component {
 
 EditItem.contextTypes = {
   update: PropTypes.func,
+  listOrders: PropTypes.array
 }
 
 export default EditItem;
