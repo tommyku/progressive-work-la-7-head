@@ -53,11 +53,13 @@ const TodoList = (props, context)=> {
   });
 
   const handleSortEnd = ({oldIndex, newIndex})=> {
-    let newValues = arrayMove(orders, oldIndex, newIndex);
-    context.update('reorder', {
-      key: listKey,
-      uuids: newValues
-    });
+    if (oldIndex !== newIndex) {
+      let newValues = arrayMove(orders, oldIndex, newIndex);
+      context.update('reorder', {
+        key: listKey,
+        uuids: newValues
+      });
+    }
   };
 
   let todoStyle = Object.assign({}, TodoStyle, style);

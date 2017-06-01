@@ -35,10 +35,12 @@ const IndexPage = (props, context)=> {
   ));
 
   const handleSortEnd = ({oldIndex, newIndex})=> {
-    const newValues = arrayMove(orders, oldIndex, newIndex);
-    update('reorder_list', {
-      orders: newValues
-    });
+    if (oldIndex !== newIndex) {
+      const newValues = arrayMove(orders, oldIndex, newIndex);
+      update('reorder_list', {
+        orders: newValues
+      });
+    }
   };
 
   return (
