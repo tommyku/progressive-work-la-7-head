@@ -6,6 +6,7 @@ import Todo from './data/todo.js'
 import List from './data/list.js'
 import LoginPage from './pages/login_page.jsx'
 import IndexPage from './pages/index_page.jsx'
+import ListEditPage from './pages/list_edit_page.jsx'
 import Spinner from './components/spinner.jsx'
 import PropTypes from 'prop-types'
 import LocalStorage from 'store'
@@ -249,6 +250,15 @@ class App extends React.Component {
     return {}; // force afterUpdate
   }
 
+  handleUpdateList({key, name, redirectTo}) {
+    const newLists = Object.assign({}, this.state.lists);
+    const newList = new List(newLists[key]);
+    newList.name = name;
+    newLists[key] = newList;
+    redirectTo && history.replace(redirectTo);
+    return {lists: newLists};
+  }
+
   handleToggle({uuid, key}) {
     let newTodo = this.state.todo;
     let updatedTodo = newTodo[key][uuid];
@@ -365,6 +375,9 @@ class App extends React.Component {
       case 'update':
         newState = this.handleUpdate(payload);
         break;
+      case 'update_list':
+        newState = this.handleUpdateList(payload);
+        break;
       case 'toggle':
         newState = this.handleToggle(payload);
         break;
@@ -479,12 +492,26 @@ class App extends React.Component {
       )
     );
 
+    const renderListEditPage = ({match})=> {
+      const { params: { list } } = match;
+      return (this.state.login !== true) ? (
+        <Redirect to='/' />
+      ) : (
+        <div>
+          <AppBar
+            homeName='要做的野' />
+          <ListEditPage list={this.state.lists[list]} listKey={list} />
+        </div>
+      )
+    };
+
     return (
       <Router history={history}>
         <div style={appStyle}>
           <Route exact path="/login" render={renderLoginPage} />
           <Route exact path="/" render={Index} />
           <Route exact path="/list/:list" render={List} />
+          <Route exact path="/list/:list/edit" render={renderListEditPage} />
           <Route exact path="/list/:list/item/:uuid" render={EditPage} />
           <Spinner visible={this.state.loading} />
         </div>

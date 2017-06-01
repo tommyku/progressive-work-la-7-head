@@ -11,15 +11,19 @@ const TodoDoneBase = {
   background: 'none',
   border: 'none',
   lineHeight: '1.42857',
+  color: '#fff',
   userSelect: 'none'
 };
 
 const TodoRemoveBoxStyle = Object.assign(
+  {},
+  TodoDoneBase,
   {color: '#f66'},
-  TodoDoneBase
 );
 
 const TodoMoveBoxStyle = TodoDoneBase;
+
+const TodoModifyBoxStyle = TodoDoneBase;
 
 const TodoTextStyle = {
   color: '#990',
@@ -43,7 +47,7 @@ const ListItem = (props, context)=> {
     ...others
   } = props;
 
-  const { update } = context;
+  const { update, history } = context;
 
   const DoneBox = (
     <span style={TodoDoneBase}
@@ -67,6 +71,10 @@ const ListItem = (props, context)=> {
     }
   }
 
+  const handleModifyBoxClick = (e)=> {
+    history.push(`/list/${list.key}/edit`);
+  }
+
   const MoveBox = SortableHandle(()=> {
     return (
       <span className='hover-pointer' style={TodoMoveBoxStyle}>移</span>
@@ -81,8 +89,17 @@ const ListItem = (props, context)=> {
     </button>
   );
 
+  const ModifyBox = (
+    <button style={TodoModifyBoxStyle}
+      onClick={handleModifyBoxClick}
+      className='hover-pointer'>
+      改
+    </button>
+  );
+
   const OperationBox = (
     <span style={TodoOperationBoxStyle}>
+      {ModifyBox}
       <MoveBox />
       {RemoveBox}
     </span>
@@ -104,7 +121,10 @@ const ListItem = (props, context)=> {
 };
 
 ListItem.contextTypes = {
-  update: PropTypes.func
+  update: PropTypes.func,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  })
 }
 
 export default ListItem;
