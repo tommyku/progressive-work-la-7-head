@@ -147,12 +147,12 @@ class App extends React.Component {
     const shouldAlert = (alertAt)=> {
       const alertDate = new Date(alertAt);
       const diff = now.getTime() - alertDate.getTime();
-      return diff < 10000 && diff > 0;
+      return diff < 60000 && diff > 0;
     };
 
     const expiredAlert = (alertAt)=> {
       const alertDate = new Date(alertAt);
-      return now.getTime() - alertDate.getTime() > 10000;
+      return now.getTime() - alertDate.getTime() > 60000;
     };
 
     Object.keys(this.state.notifications).forEach((key)=> {
@@ -169,7 +169,7 @@ class App extends React.Component {
             key: key,
             uuid: todo.uuid,
           });
-          showAlert && Push.create('做成點', {
+          Push.create('做成點', {
             body: todo.text,
             vibrate: true,
             icon: {
