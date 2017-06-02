@@ -168,8 +168,9 @@ class App extends React.Component {
             key: key,
             uuid: todo.uuid,
           });
-          Push.create('做成點', {
-            body: todo.text,
+          const displayText = `${todo.text.substring(0, 32)}${(todo.text.length > 32) ? '...' : ''}`;
+          Push.create(displayText, {
+            body: `來自 ${this.state.lists[key].name}`,
             vibrate: true,
             icon: {
               x16: 'res/ic_launcher.png',
