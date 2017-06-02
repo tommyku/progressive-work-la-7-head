@@ -177,7 +177,8 @@ class App extends React.Component {
               x32: 'res/ic_launcher.png',
             },
             timeout: 120000,
-            link: `/list/${key}`,
+            link: `#/list/${key}`,
+            serviceWorker: 'service-worker.js'
           });
         }
       });
