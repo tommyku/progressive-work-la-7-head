@@ -86,7 +86,7 @@ class EditItem extends Component {
     this.state = {
       text: item ? item.text : '',
       details: item ? item.details : '',
-      mode: this.modes.EDIT,
+      mode: (item.details && item.details.length) ? this.modes.PREVIEW : this.modes.EDIT,
       alertAt: this.formatDateToDatePickerFormat(item.alertAt ? new Date(item.alertAt) : null)
     }
     this.handleTextChange = this.handleTextChange.bind(this);
