@@ -160,7 +160,6 @@ class App extends React.Component {
         const todo = this.state.todo[key][uuid];
         const showAlert = todo.alertAt && shouldAlert(todo.alertAt);
         const removeExpiredAlert = todo.alertAt && expiredAlert(todo.alertAt);
-        console.log(showAlert, removeExpiredAlert);
         if (showAlert || removeExpiredAlert) {
           this.update('update', {
             text: todo.text,

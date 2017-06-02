@@ -3,6 +3,7 @@ import AutoLinkText from 'react-autolink-text2'
 import PropTypes from 'prop-types'
 import Todo from './data/todo.js'
 import Push from 'push.js'
+import TimeAgo from 'timeago-react'
 
 const MoveItemButtonBase = {
   padding: 0,
@@ -78,6 +79,11 @@ const TodoShowDetailsStyle = {
   overflowX: 'auto',
   boxSizing: 'border-box'
 };
+
+const EditAlertPreviewStyle = {
+  color: '#999',
+  fontSize: 'small'
+}
 
 class EditItem extends Component {
   constructor(props) {
@@ -275,6 +281,10 @@ class EditItem extends Component {
             onChange={this.handleAlertChange}
             value={this.state.alertAt} />)
         }
+        { this.state.alertAt &&
+            <span style={EditAlertPreviewStyle}>
+              <TimeAgo datetime={this.state.alertAt} locale='zh_TW' />提醒
+            </span> }
       </section>
     );
 
