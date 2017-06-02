@@ -36,7 +36,8 @@ const history = createHashHistory();
 
 const appStyle = {
   margin: 0,
-  padding: 0
+  padding: 0,
+  marginBottom: '20px'
 }
 
 class App extends React.Component {
