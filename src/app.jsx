@@ -415,10 +415,7 @@ class App extends React.Component {
       categorizedOrder[done].push(uuid);
     });
     // swap 0 and 1 for 'doing' and 'default' tasks
-    let tmp;
-    tmp = categorizedOrder[0];
-    categorizedOrder[0] = categorizedOrder[1];
-    categorizedOrder[1] = tmp;
+    [categorizedOrder[0], categorizedOrder[1]] = [categorizedOrder[1], categorizedOrder[0]]
     newOrders[key] = categorizedOrder.reduce((sum, val)=> {
       return sum.concat(val);
     }, []);
