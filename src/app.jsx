@@ -7,9 +7,11 @@ import List from './data/list.js'
 import LoginPage from './pages/login_page.jsx'
 import IndexPage from './pages/index_page.jsx'
 import ListEditPage from './pages/list_edit_page.jsx'
+import ManagePage from './pages/manage_page.jsx'
 import Spinner from './components/spinner.jsx'
 import PropTypes from 'prop-types'
 import LocalStorage from 'store'
+import FileSaver from 'file-saver'
 import {
   HashRouter as Router,
   Route,
@@ -45,6 +47,7 @@ class App extends React.Component {
     return {
       update: this.update.bind(this),
       history: history,
+      manage: this.manage.bind(this),
       listOrders: this.state.listOrders
     }
   }
@@ -428,18 +431,38 @@ class App extends React.Component {
     return {lists: newLists};
   }
 
+  stateDataDump() {
+    return {
+      orders: this.state.orders,
+      lists: this.state.lists,
+      todo: this.state.todo,
+      notifications: this.state.notifications,
+      listOrders: this.state.listOrders
+    }
+  }
+
+  manage(action, payload) {
+    switch (action) {
+      case 'logout':
+        hoodie.account.signOut().then(()=> this.setState({login: false}))
+        break;
+      case 'dump_data':
+        const blob = new Blob([JSON.stringify(this.stateDataDump())], {type: 'application/json;charset=utf-8'});
+        FileSaver.saveAs(blob, '要做的野的.json');
+        break;
+      default:
+        return;
+    }
+  }
+
   update(action, payload) {
     const afterUpdate = ()=> {
       this.setState({loading: true});
-      hoodie.store.updateOrAdd('state', {
-        orders: this.state.orders,
-        lists: this.state.lists,
-        todo: this.state.todo,
-        notifications: this.state.notifications,
-        listOrders: this.state.listOrders
-      }).catch((c)=> {
+      hoodie.store.updateOrAdd('state', this.stateDataDump())
+      .catch((c)=> {
         alert('can\'t update');
-      }).then(()=> setTimeout(()=> {
+      })
+      .then(()=> setTimeout(()=> {
         this.setState({loading: false})
       }, 250));
       LocalStorage.set('stateBackup', this.state)
@@ -591,10 +614,23 @@ class App extends React.Component {
       )
     };
 
+    const renderManagePage = ()=> (
+      (this.state.login !== true) ? (
+        <Redirect to='/login' />
+      ) : (
+        <div>
+          <AppBar
+            homeName='要做的野' />
+          <ManagePage />
+        </div>
+      )
+    )
+
     return (
       <Router history={history}>
         <div style={appStyle}>
           <Route exact path="/login" render={renderLoginPage} />
+          <Route exact path="/manage" render={renderManagePage} />
           <Route exact path="/" render={Index} />
           <Route exact path="/list/:list" render={List} />
           <Route exact path="/list/:list/edit" render={renderListEditPage} />
@@ -608,6 +644,7 @@ class App extends React.Component {
 
 App.childContextTypes = {
   update: PropTypes.func,
+  manage: PropTypes.func,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired
