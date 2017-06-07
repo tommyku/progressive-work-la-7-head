@@ -19,15 +19,17 @@ class List {
     this.constructAsObject(list.serialize());
   }
 
-  constructAsObject({name, showAll}) {
+  constructAsObject({name, showAll, archived}) {
     this.name = name;
     this.showAll = showAll === true;
+    this.archived = archived === true;
   }
 
   serialize() {
     return {
       name: this.name,
       showAll: this.showAll,
+      archived: this.archived
     };
   }
 }

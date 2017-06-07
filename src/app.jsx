@@ -58,7 +58,8 @@ class App extends React.Component {
       lists: {
         'default': {
           name: '做咩啫你',
-          showAll: true
+          showAll: true,
+          archived: false
         },
       },
       todo: {
@@ -72,7 +73,8 @@ class App extends React.Component {
         'default': []
       },
       login: false,
-      loading: false
+      loading: false,
+      migration: '@init'
     };
     this.state = stateTemplate;
   }
@@ -222,7 +224,7 @@ class App extends React.Component {
           }
         });
       });
-      this.setState({todo: todo}, ()=> {
+      this.setState({todo: todo, migration: 'migrateDoneValue'}, ()=> {
         LocalStorage.set('afterMigration', this.state);
       });
     }
@@ -242,7 +244,7 @@ class App extends React.Component {
           orders[key] = todos.map(item => item.uuid);
         }
       });
-      this.setState({todo: todo, orders: orders}, ()=> {
+      this.setState({todo: todo, orders: orders, migration: 'migrateOrders'}, ()=> {
         LocalStorage.set('afterMigration', this.state);
       });
     }
@@ -251,7 +253,7 @@ class App extends React.Component {
       if (!this.state.listOrders || this.state.listOrders.length != Object.keys(this.state.lists).length) {
         const lists = this.state.lists;
         const listOrders = Object.keys(lists);
-        this.setState({listOrders: listOrders}, ()=> {
+        this.setState({listOrders: listOrders, migration: 'migrateListOrders'}, ()=> {
           LocalStorage.set('afterMigration', this.state);
         });
       }
@@ -262,16 +264,44 @@ class App extends React.Component {
       if (!this.state.notifications || containsAllLists) {
         const notifications = {};
         Object.keys(this.state.lists).forEach((key)=> notifications[key] = []);
-        this.setState({notifications: notifications}, ()=> {
+        this.setState({notifications: notifications, migration: 'migrateNotifications'}, ()=> {
           LocalStorage.set('afterMigration', this.state);
         });
+      } else {
+        this.setState({migration: 'migrateNotifications'});
       }
     };
 
-    migrateDoneValue();
-    migrateOrders();
-    migrateListOrders();
-    migrateNotifications();
+    const migrateArchiveOption = ()=> {
+      const newLists = Object.assign({}, this.state.lists);
+      Object.keys(newLists).forEach((key)=> {
+        newLists[key].archived = (newLists[key].hasOwnProperty('archived')) ? newLists[key].archived : false;
+      });
+      this.setState({lists: newLists, migration: 'migrateArchiveOption'}, ()=> {
+        LocalStorage.set('afterMigration', this.state);
+      });
+    }
+
+    const migrations = {
+      migrateDoneValue: migrateDoneValue,
+      migrateOrders, migrateOrders,
+      migrateListOrders: migrateListOrders,
+      migrateNotifications, migrateNotifications,
+      migrateArchiveOption: migrateArchiveOption
+    };
+
+    const migrationsSteps = [
+      'migrateDoneValue',
+      'migrateOrders',
+      'migrateListOrders',
+      'migrateNotifications',
+      'migrateArchiveOption'
+    ];
+
+    let migrationHead = migrationsSteps.indexOf(this.state.migration) + 1;
+    for (let i = migrationHead; i < migrationsSteps.length; ++i) {
+      migrations[migrationsSteps[i]]();
+    }
   }
 
   getTodoList(key) {
@@ -336,6 +366,12 @@ class App extends React.Component {
     newList.name = name;
     newLists[key] = newList;
     redirectTo && history.replace(redirectTo);
+    return {lists: newLists};
+  }
+
+  handleToggleListArchive({key}) {
+    const newLists = Object.assign({}, this.state.lists);
+    newLists[key].archived = !newLists[key].archived;
     return {lists: newLists};
   }
 
@@ -494,6 +530,9 @@ class App extends React.Component {
         break;
       case 'toggle':
         newState = this.handleToggle(payload);
+        break;
+      case 'toggle_list_archive':
+        newState = this.handleToggleListArchive(payload);
         break;
       case 'new_list':
         newState = this.handleNewList(payload);

@@ -28,7 +28,8 @@ const IndexPage = (props, context)=> {
       {(orders || []).map((key, index)=> (
         <SortableItem key={`item-${key}`} index={index} list={{
           key: key,
-          displayName: lists[key].name
+          displayName: lists[key].name,
+          archived: lists[key].archived
         }} />
       ))}
     </div>

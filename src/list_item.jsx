@@ -25,6 +25,8 @@ const TodoMoveBoxStyle = TodoDoneBase;
 
 const TodoModifyBoxStyle = TodoDoneBase;
 
+const TodoArchiveBoxStyle = TodoRemoveBoxStyle;
+
 const TodoTextStyle = {
   color: '#990',
   wordBreak: 'break-word'
@@ -58,9 +60,11 @@ const ListItem = (props, context)=> {
 
   const TextBox = (
     <span style={TodoTextStyle}>
-      <Link to={`/list/${list.key}`}>
-        {list.displayName}
-      </Link>
+      {!list.archived &&
+       <Link to={`/list/${list.key}`}>
+         {list.displayName}
+       </Link>}
+      {list.archived && list.displayName}
     </span>
   );
 
@@ -73,6 +77,10 @@ const ListItem = (props, context)=> {
 
   const handleModifyBoxClick = (e)=> {
     history.push(`/list/${list.key}/edit`);
+  }
+
+  const handleArchiveBoxClick = (e)=> {
+    update('toggle_list_archive', {key: list.key});
   }
 
   const MoveBox = SortableHandle(()=> {
@@ -97,11 +105,33 @@ const ListItem = (props, context)=> {
     </button>
   );
 
-  const OperationBox = (
-    <span style={TodoOperationBoxStyle}>
+  const ArchiveBox = (
+    <button style={TodoArchiveBoxStyle}
+      onClick={handleArchiveBoxClick}
+      className='hover-pointer'>
+      {list.archived ? '解' : '封'}
+    </button>
+  );
+
+  const OperationWhenArchived = (
+    <span>
+      {ArchiveBox}
+    </span>
+  );
+
+  const OperationWhenNotArchived = (
+    <span>
       {ModifyBox}
       <MoveBox />
+      {ArchiveBox}
       {RemoveBox}
+    </span>
+  );
+
+  const OperationBox = (
+    <span style={TodoOperationBoxStyle}>
+      {list.archived && OperationWhenArchived}
+      {!list.archived && OperationWhenNotArchived}
     </span>
   );
 
