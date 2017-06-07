@@ -381,12 +381,19 @@ class App extends React.Component {
     return {listOrders: orders};
   }
 
+  handleForceRemoveList({key}) {
+    let newState = Object.assign({}, this.state);
+    Object.keys(this.state.todo[key]).forEach(({uuid})=> {
+      Object.assign(newState, this.handleRemove({uuid, key}));
+    });
+    return newState;
+  }
+
   handleRemoveList({key}) {
-    if (Object.keys(this.state.todo[key]).length > 0) {
-      alert(`${this.state.lists[key].name}仲有野唔刪得喎`);
-      return null;
-    } else {
-      let newState = this.state;
+    const emptyList = Object.keys(this.state.todo[key]).length === 0;
+    const canDelete = emptyList || confirm(`${this.state.lists[key].name}仲有野唔刪得喎，真係要咁做？`);
+    if (canDelete) {
+      let newState = emptyList ? Object.assign({}, this.state) : this.handleForceRemoveList({key});
       let orderIndex = newState.listOrders.indexOf(key);
       delete newState.todo[key];
       delete newState.lists[key];
@@ -394,6 +401,8 @@ class App extends React.Component {
       delete newState.notifications[key];
       newState.listOrders.splice(orderIndex, 1);
       return newState;
+    } else {
+      return null;
     }
   }
 
