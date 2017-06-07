@@ -3241,12 +3241,6 @@ rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-autolink-text2@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/react-autolink-text2/-/react-autolink-text2-2.0.2.tgz#6641087972a42dcafe20cdf9c9976f6f6539b524"
-  dependencies:
-    react-pure-render "^1.0.2"
-
 react-dom@^15.5.4:
   version "15.5.4"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.5.4.tgz#ba0c28786fd52ed7e4f2135fe0288d462aef93da"
@@ -3264,10 +3258,6 @@ react-event-listener@^0.4.5:
     fbjs "^0.8.4"
     prop-types "^15.5.4"
     warning "^3.0.0"
-
-react-pure-render@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-pure-render/-/react-pure-render-1.0.2.tgz#9d8a928c7f2c37513c2d064e57b3e3c356e9fabb"
 
 react-router-dom@^4.1.1:
   version "4.1.1"

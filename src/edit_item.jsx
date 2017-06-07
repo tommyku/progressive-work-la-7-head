@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import AutoLinkText from 'react-autolink-text2'
+import marked from './config/marked.js'
 import PropTypes from 'prop-types'
 import Todo from './data/todo.js'
 import Push from 'push.js'
@@ -220,7 +220,7 @@ class EditItem extends Component {
 
     const ShowDetails = (
       <div style={TodoShowDetailsStyle}>
-        <AutoLinkText text={this.state.details} />
+        <span dangerouslySetInnerHTML={{__html: marked(this.state.details)}}></span>
       </div>
     );
 
