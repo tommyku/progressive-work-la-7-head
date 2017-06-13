@@ -136,6 +136,10 @@ const TodoItem = (props, context)=> {
     history.push(`/list/${listKey}/item/${uuid}`)
   }
 
+  const handleAlertBoxClick = (e)=> {
+    update('disable_notification', {uuid: uuid, key: listKey});
+  }
+
   const DoneBox = (
     <button style={[TodoDoneStyle, TodoDoingStyle, TodoNotDoneStyle, TodoRejectedStyle][done]}
       onClick={handleDoneBoxClick}
@@ -167,10 +171,12 @@ const TodoItem = (props, context)=> {
   );
 
   const AlertAtBox = (
-    <span style={TodoAlertAtBoxStyle}
+    <button style={TodoAlertAtBoxStyle}
+      onClick={handleAlertBoxClick}
+      className='hover-pointer'
       title={`reminder set at ${new Date(alertAt)}`}>
       提
-    </span>
+    </button>
   );
 
   const TextBox = (

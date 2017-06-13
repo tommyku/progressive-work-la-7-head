@@ -49,6 +49,9 @@ class Todo {
       case 1:
         this.startedAt = (new Date()).toString();
         break;
+      case 2:
+        this.alertAt = null;
+        break;
       default:
         this.startAt = null;
     }

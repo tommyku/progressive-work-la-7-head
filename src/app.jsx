@@ -74,7 +74,8 @@ class App extends React.Component {
       },
       login: false,
       loading: false,
-      migration: '@init'
+      migration: '@init',
+      notified: []
     };
     this.state = stateTemplate;
   }
@@ -160,20 +161,17 @@ class App extends React.Component {
       return now.getTime() - alertDate.getTime() > 60000;
     };
 
+    const newNotified = [].concat(this.state.notified);
+
     Object.keys(this.state.notifications).forEach((key)=> {
       this.state.notifications[key].forEach((uuid)=> {
         const todo = this.state.todo[key][uuid];
+        const shown = this.state.notified.indexOf(todo.uuid) !== -1;
         const showAlert = todo.alertAt && shouldAlert(todo.alertAt);
         const removeExpiredAlert = todo.alertAt && expiredAlert(todo.alertAt);
-        if (showAlert || removeExpiredAlert) {
-          this.update('update', {
-            text: todo.text,
-            details: todo.details,
-            alertAt: null,
-            key: key,
-            uuid: todo.uuid,
-          });
+        if (!shown && (showAlert || removeExpiredAlert)) {
           const displayText = `${todo.text.substring(0, 32)}${(todo.text.length > 32) ? '...' : ''}`;
+          newNotified.push(todo.uuid);
           Push.create(displayText, {
             body: `來自 ${this.state.lists[key].name}`,
             vibrate: true,
@@ -188,6 +186,7 @@ class App extends React.Component {
         }
       });
     });
+    this.setState({notified: newNotified});
   }
 
   transformListCollection(lists) {
@@ -358,6 +357,18 @@ class App extends React.Component {
       redirectTo && history.replace(redirectTo);
     });
     return {notifications: newNotifications};
+  }
+
+  handleDisableNotification({uuid, key}) {
+    const todo = this.state.todo[key][uuid];
+    return this.handleUpdate({
+      uuid,
+      key,
+      text: todo.text,
+      details: todo.details,
+      alertAt: null,
+      redirectTo: null
+    });
   }
 
   handleUpdateList({key, name, redirectTo}) {
@@ -533,6 +544,9 @@ class App extends React.Component {
         break;
       case 'toggle_list_archive':
         newState = this.handleToggleListArchive(payload);
+        break;
+      case 'disable_notification':
+        newState = this.handleDisableNotification(payload);
         break;
       case 'new_list':
         newState = this.handleNewList(payload);
