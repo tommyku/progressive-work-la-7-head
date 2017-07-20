@@ -9,9 +9,6 @@ render(<App/>, document.getElementById('app'));
 if(typeof navigator['serviceWorker'] != 'undefined') {
   window.addEventListener('load', ()=> {
     navigator.serviceWorker
-      .register('./service-worker.js')
-      .then(()=> {
-        console.log('Service Worker Registered')
-      });
+      .register('./service-worker.js');
   });
-};
+}

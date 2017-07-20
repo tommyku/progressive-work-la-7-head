@@ -1,9 +1,9 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import TodoItem from './todo_item.jsx'
-import TodoNewItem from './todo_new_item.jsx'
-import TodoNewList from './todo_new_list.jsx'
-import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc'
+import React from 'react';
+import PropTypes from 'prop-types';
+import TodoItem from './todo_item.jsx';
+import TodoNewItem from './todo_new_item.jsx';
+import TodoNewList from './todo_new_list.jsx';
+import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
 
 const TodoStyle = {
   marginBottom: '20px'
@@ -81,10 +81,10 @@ const TodoList = (props, context)=> {
         lockAxis='y' />
     </section>
   );
-}
+};
 
 TodoList.contextTypes = {
   update: PropTypes.func
-}
+};
 
 export default TodoList;

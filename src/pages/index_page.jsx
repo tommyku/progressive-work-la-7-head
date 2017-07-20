@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import ListNewList from '../list_new_list.jsx'
-import ListItem from '../list_item.jsx'
+import ListNewList from '../list_new_list.jsx';
+import ListItem from '../list_item.jsx';
 import {
   SortableContainer,
   SortableElement,
@@ -11,8 +11,7 @@ import {
 const IndexPage = (props, context)=> {
   const {
     lists,
-    orders,
-    ...others
+    orders
   } = props;
 
   const { update } = context;
@@ -58,10 +57,10 @@ const IndexPage = (props, context)=> {
       <ListNewList />
     </section>
   );
-}
+};
 
 IndexPage.contextTypes = {
   update: PropTypes.func
-}
+};
 
 export default IndexPage;

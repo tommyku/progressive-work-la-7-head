@@ -6,7 +6,7 @@ const spinnerBaseStyle = {
   right: '0.5em',
   color: '#338',
   fontStyle: 'italic',
-}
+};
 
 class Spinner extends Component {
   render() {

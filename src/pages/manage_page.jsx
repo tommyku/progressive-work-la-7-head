@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 const ButtonBaseStyle = {
@@ -11,23 +11,9 @@ const ButtonBaseStyle = {
   color: '#000'
 };
 
-const inputFieldLabelStyle = {
-  display: 'block'
-};
-
-const inputFieldInputStyle = {
-  color: '#999',
-  background: 'black',
-  border: 'none',
-  fontSize: 'medium',
-  padding: 0,
-  margin: '.5em 0',
-  width: '100%'
-};
-
 const SectionBaseStyle = {
   marginBottom: '1em'
-}
+};
 
 const Section = (props)=> {
   const { style, ...others } = props;
@@ -37,7 +23,7 @@ const Section = (props)=> {
       {props.children}
     </section>
   );
-}
+};
 
 const Button = (props)=> {
   const { style, ...others } = props;
@@ -47,7 +33,7 @@ const Button = (props)=> {
       {props.children}
     </button>
   );
-}
+};
 
 const SignOutSection = (props)=> (
   <Section>
@@ -55,7 +41,7 @@ const SignOutSection = (props)=> (
       登出
     </Button>
   </Section>
-)
+);
 
 const DumpDataSection = (props)=> (
   <Section>
@@ -63,7 +49,7 @@ const DumpDataSection = (props)=> (
       匯出到JSON
     </Button>
   </Section>
-)
+);
 
 class ManagePage extends Component {
   constructor(props) {
@@ -94,6 +80,6 @@ class ManagePage extends Component {
 
 ManagePage.contextTypes = {
   manage: PropTypes.func
-}
+};
 
 export default ManagePage;

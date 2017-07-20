@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 const buttonLoginStyle = {
@@ -30,7 +30,7 @@ const inputFieldStyle = {
 };
 
 class LoginPage extends PureComponent {
-  handleButtonLoginClick(e) {
+  handleButtonLoginClick() {
     const payload = {
       host: this.refs['hoodieHost'].value || '',
       user: this.refs['hoodieUser'].value || '',
@@ -100,6 +100,6 @@ class LoginPage extends PureComponent {
 
 LoginPage.contextTypes = {
   update: PropTypes.func,
-}
+};
 
 export default LoginPage;

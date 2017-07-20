@@ -18,7 +18,7 @@ const TodoDoneBase = {
 const TodoRemoveBoxStyle = Object.assign(
   {},
   TodoDoneBase,
-  {color: '#f66'},
+  {color: '#f66'}
 );
 
 const TodoMoveBoxStyle = TodoDoneBase;
@@ -45,8 +45,7 @@ const TodoOperationBoxStyle = {
 const ListItem = (props, context)=> {
   const {
     list,
-    style,
-    ...others
+    style
   } = props;
 
   const { update, history } = context;
@@ -68,20 +67,20 @@ const ListItem = (props, context)=> {
     </span>
   );
 
-  const handleRemoveBoxClick = (e)=> {
+  const handleRemoveBoxClick = ()=> {
     const displayName = `${list.displayName.substring(0, 32)}${(list.displayName.length > 32) ? '...' : ''}`;
     if (confirm(`真係要刪「${displayName}」？`)) {
       update('remove_list', {key: list.key});
     }
-  }
+  };
 
-  const handleModifyBoxClick = (e)=> {
+  const handleModifyBoxClick = ()=> {
     history.push(`/list/${list.key}/edit`);
-  }
+  };
 
-  const handleArchiveBoxClick = (e)=> {
+  const handleArchiveBoxClick = ()=> {
     update('toggle_list_archive', {key: list.key});
-  }
+  };
 
   const MoveBox = SortableHandle(()=> {
     return (
@@ -155,6 +154,6 @@ ListItem.contextTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   })
-}
+};
 
 export default ListItem;

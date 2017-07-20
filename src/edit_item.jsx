@@ -83,7 +83,7 @@ const TodoShowDetailsStyle = {
 const EditAlertPreviewStyle = {
   color: '#999',
   fontSize: 'small'
-}
+};
 
 class EditItem extends Component {
   constructor(props) {
@@ -94,7 +94,7 @@ class EditItem extends Component {
       details: item ? item.details : '',
       mode: (item.details && item.details.length) ? this.modes.PREVIEW : this.modes.EDIT,
       alertAt: this.formatDateToDatePickerFormat(item.alertAt ? new Date(item.alertAt) : null)
-    }
+    };
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleAlertChange = this.handleAlertChange.bind(this);
     this.handleTextareaChange = this.handleTextareaChange.bind(this);
@@ -126,18 +126,18 @@ class EditItem extends Component {
       lists,
       listKey,
       item,
-      ...other
     } = this.props;
 
     const { update, listOrders } = this.context;
 
+    // eslint-disable-next-line
     let editText, editDetails, editAlert;
 
     const handleMoveOptionClick = (e)=> {
       let from = listKey;
       let to = e.target.dataset.listKey;
       let uuid = item.uuid;
-      let redirectTo = `/list/${to}/item/${uuid}`
+      let redirectTo = `/list/${to}/item/${uuid}`;
       update('move', {
         from: from,
         to: to,
@@ -146,7 +146,7 @@ class EditItem extends Component {
       });
     };
 
-    const handleTextEditClick = (e)=> {
+    const handleTextEditClick = ()=> {
       let text = this.state.text.trim();
       if (text.length === 0) return;
       let details = this.state.details.trim();
@@ -302,11 +302,11 @@ class EditItem extends Component {
 EditItem.contextTypes = {
   update: PropTypes.func,
   listOrders: PropTypes.array
-}
+};
 
 EditItem.prototype.modes = {
   PREVIEW: 'preview',
   EDIT: 'edit'
-}
+};
 
 export default EditItem;

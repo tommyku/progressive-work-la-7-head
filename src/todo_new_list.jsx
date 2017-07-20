@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const TodoItemStyle = {
   clear: 'both',
@@ -30,9 +30,7 @@ const TodoTitleBoxStyle = {
 
 const TodoNewList = (props, context)=> {
   const {
-    placeholder,
-    style,
-    ...others
+    style
   } = props;
 
   const TitleBox = (
@@ -77,6 +75,6 @@ const TodoNewList = (props, context)=> {
 
 TodoNewList.contextTypes = {
   update: PropTypes.func
-}
+};
 
 export default TodoNewList;

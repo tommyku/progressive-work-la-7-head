@@ -3,14 +3,14 @@ import {v4 as guid} from 'uuid';
 class Todo {
   constructor(arg) {
     switch (typeof arg) {
-      case 'Todo':
-        this.constructAsTodo(arg);
-        break;
-      case 'object':
-        this.constructAsObject(arg);
-        break;
-      default:
-        this.constructAsObject({text: 'nothing'});
+    case 'Todo':
+      this.constructAsTodo(arg);
+      break;
+    case 'object':
+      this.constructAsObject(arg);
+      break;
+    default:
+      this.constructAsObject({text: 'nothing'});
     }
   }
 
@@ -46,14 +46,14 @@ class Todo {
     // 0: 未, 1: 做, 2: 完, 3: 算
     this.done = (this.done + 1) % 4;
     switch (this.done) {
-      case 1:
-        this.startedAt = (new Date()).toString();
-        break;
-      case 2:
-        this.alertAt = null;
-        break;
-      default:
-        this.startAt = null;
+    case 1:
+      this.startedAt = (new Date()).toString();
+      break;
+    case 2:
+      this.alertAt = null;
+      break;
+    default:
+      this.startAt = null;
     }
   }
 }

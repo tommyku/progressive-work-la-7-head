@@ -1,27 +1,26 @@
-import React from 'react'
-import TodoList from './todo_list.jsx'
-import AppBar from './app_bar.jsx'
-import EditItem from './edit_item.jsx'
-import Todo from './data/todo.js'
-import List from './data/list.js'
-import LoginPage from './pages/login_page.jsx'
-import IndexPage from './pages/index_page.jsx'
-import ListEditPage from './pages/list_edit_page.jsx'
-import ManagePage from './pages/manage_page.jsx'
-import Spinner from './components/spinner.jsx'
-import PropTypes from 'prop-types'
-import LocalStorage from 'store'
-import FileSaver from 'file-saver'
+import React from 'react';
+import TodoList from './todo_list.jsx';
+import AppBar from './app_bar.jsx';
+import EditItem from './edit_item.jsx';
+import Todo from './data/todo.js';
+import List from './data/list.js';
+import LoginPage from './pages/login_page.jsx';
+import IndexPage from './pages/index_page.jsx';
+import ListEditPage from './pages/list_edit_page.jsx';
+import ManagePage from './pages/manage_page.jsx';
+import Spinner from './components/spinner.jsx';
+import PropTypes from 'prop-types';
+import LocalStorage from 'store';
+import FileSaver from 'file-saver';
 import {
   HashRouter as Router,
   Route,
-  Link,
   Redirect
-} from 'react-router-dom'
+} from 'react-router-dom';
 import createHashHistory from 'history/createHashHistory';
-import Hoodie from '@hoodie/client'
-import Push from 'push.js'
-import './app.css'
+import Hoodie from '@hoodie/client';
+import Push from 'push.js';
+import './app.css';
 
 const hoodieHost = LocalStorage.get('hoodieHost') || 'localhost';
 
@@ -30,17 +29,13 @@ let hoodie = new Hoodie({
   PouchDB: require('pouchdb-browser')
 });
 
-const LinkStyle = {
-  color: '#999',
-};
-
 const history = createHashHistory();
 
 const appStyle = {
   margin: 0,
   padding: 0,
   marginBottom: '20px'
-}
+};
 
 class App extends React.Component {
   getChildContext() {
@@ -49,7 +44,7 @@ class App extends React.Component {
       history: history,
       manage: this.manage.bind(this),
       listOrders: this.state.listOrders
-    }
+    };
   }
 
   constructor(props) {
@@ -83,23 +78,23 @@ class App extends React.Component {
   componentWillMount() {
     setInterval(()=> this.notificationRun(), 5000);
 
-    const onSignInHandler = (a)=> {
+    const onSignInHandler = ()=> {
       this.setState({login: true});
-      hoodie.store.find('state').then(onPullHandler).catch((e)=>{
+      hoodie.store.find('state').then(onPullHandler).catch(()=>{
         hoodie.store.on('pull', onPullHandler);
       });
-    }
+    };
 
     const onSignOutHandler = ()=> {
       this.setState({login: false});
-    }
+    };
 
     const onPullHandler = (event, object)=> {
       if (typeof event === 'object' && typeof object === 'undefined') {
         object = event; // so that both store.change event and pull event can use
       }
       if (object._id !== 'state')
-        return
+        return;
       else
         hoodie.store.off('pull', onPullHandler);
       const {lists, orders, todo, listOrders, notifications} = Object.assign({}, this.state, object);
@@ -112,9 +107,9 @@ class App extends React.Component {
       }, ()=> {
         this.dataMigrations();
       });
-    }
+    };
 
-    let localStored = LocalStorage.get('state')
+    let localStored = LocalStorage.get('state');
     if (localStored) {
       const {lists, orders, todo} = localStored;
       this.setState({
@@ -226,7 +221,7 @@ class App extends React.Component {
       this.setState({todo: todo, migration: 'migrateDoneValue'}, ()=> {
         LocalStorage.set('afterMigration', this.state);
       });
-    }
+    };
 
     const migrateOrders = ()=> {
       let todo = this.state.todo;
@@ -246,7 +241,7 @@ class App extends React.Component {
       this.setState({todo: todo, orders: orders, migration: 'migrateOrders'}, ()=> {
         LocalStorage.set('afterMigration', this.state);
       });
-    }
+    };
 
     const migrateListOrders = ()=> {
       if (!this.state.listOrders || this.state.listOrders.length != Object.keys(this.state.lists).length) {
@@ -279,13 +274,13 @@ class App extends React.Component {
       this.setState({lists: newLists, migration: 'migrateArchiveOption'}, ()=> {
         LocalStorage.set('afterMigration', this.state);
       });
-    }
+    };
 
     const migrations = {
       migrateDoneValue: migrateDoneValue,
-      migrateOrders, migrateOrders,
+      migrateOrders: migrateOrders,
       migrateListOrders: migrateListOrders,
-      migrateNotifications, migrateNotifications,
+      migrateNotifications: migrateNotifications,
       migrateArchiveOption: migrateArchiveOption
     };
 
@@ -474,7 +469,7 @@ class App extends React.Component {
       categorizedOrder[done].push(uuid);
     });
     // swap 0 and 1 for 'doing' and 'default' tasks
-    [categorizedOrder[0], categorizedOrder[1]] = [categorizedOrder[1], categorizedOrder[0]]
+    [categorizedOrder[0], categorizedOrder[1]] = [categorizedOrder[1], categorizedOrder[0]];
     newOrders[key] = categorizedOrder.reduce((sum, val)=> {
       return sum.concat(val);
     }, []);
@@ -494,20 +489,20 @@ class App extends React.Component {
       todo: this.state.todo,
       notifications: this.state.notifications,
       listOrders: this.state.listOrders
-    }
+    };
   }
 
-  manage(action, payload) {
+  manage(action) {
     switch (action) {
-      case 'logout':
-        hoodie.account.signOut().then(()=> this.setState({login: false}))
-        break;
-      case 'dump_data':
-        const blob = new Blob([JSON.stringify(this.stateDataDump())], {type: 'application/json;charset=utf-8'});
-        FileSaver.saveAs(blob, '要做的野的.json');
-        break;
-      default:
-        return;
+    case 'logout':
+      hoodie.account.signOut().then(()=> this.setState({login: false}));
+      break;
+    case 'dump_data':
+      const blob = new Blob([JSON.stringify(this.stateDataDump())], {type: 'application/json;charset=utf-8'});
+      FileSaver.saveAs(blob, '要做的野的.json');
+      break;
+    default:
+      return;
     }
   }
 
@@ -515,63 +510,63 @@ class App extends React.Component {
     const afterUpdate = ()=> {
       this.setState({loading: true});
       hoodie.store.updateOrAdd('state', this.stateDataDump())
-      .catch((c)=> {
-        alert('can\'t update');
-      })
-      .then(()=> setTimeout(()=> {
-        this.setState({loading: false})
-      }, 250));
-      LocalStorage.set('stateBackup', this.state)
-    }
+        .catch(()=> {
+          alert('can\'t update');
+        })
+        .then(()=> setTimeout(()=> {
+          this.setState({loading: false});
+        }, 250));
+      LocalStorage.set('stateBackup', this.state);
+    };
 
     let newState = null;
 
     switch (action) {
-      case 'add':
-        newState = this.handleAdd(payload);
-        break;
-      case 'remove':
-        newState = this.handleRemove(payload);
-        break;
-      case 'update':
-        newState = this.handleUpdate(payload);
-        break;
-      case 'update_list':
-        newState = this.handleUpdateList(payload);
-        break;
-      case 'toggle':
-        newState = this.handleToggle(payload);
-        break;
-      case 'toggle_list_archive':
-        newState = this.handleToggleListArchive(payload);
-        break;
-      case 'disable_notification':
-        newState = this.handleDisableNotification(payload);
-        break;
-      case 'new_list':
-        newState = this.handleNewList(payload);
-        break;
-      case 'move':
-        newState = this.handleMove(payload);
-        break;
-      case 'reorder':
-        newState = this.handleReorder(payload);
-        break;
-      case 'reorder_list':
-        newState = this.handleReorderList(payload);
-        break;
-      case 'remove_list':
-        newState = this.handleRemoveList(payload);
-        break;
-      case 'login':
-        newState = this.handleLogin(payload);
-        break;
-      case 'sort':
-        newState = this.handleSort(payload);
-        break;
-      case 'toggle_showall':
-        newState = this.handleToggleShowAll(payload);
-        break;
+    case 'add':
+      newState = this.handleAdd(payload);
+      break;
+    case 'remove':
+      newState = this.handleRemove(payload);
+      break;
+    case 'update':
+      newState = this.handleUpdate(payload);
+      break;
+    case 'update_list':
+      newState = this.handleUpdateList(payload);
+      break;
+    case 'toggle':
+      newState = this.handleToggle(payload);
+      break;
+    case 'toggle_list_archive':
+      newState = this.handleToggleListArchive(payload);
+      break;
+    case 'disable_notification':
+      newState = this.handleDisableNotification(payload);
+      break;
+    case 'new_list':
+      newState = this.handleNewList(payload);
+      break;
+    case 'move':
+      newState = this.handleMove(payload);
+      break;
+    case 'reorder':
+      newState = this.handleReorder(payload);
+      break;
+    case 'reorder_list':
+      newState = this.handleReorderList(payload);
+      break;
+    case 'remove_list':
+      newState = this.handleRemoveList(payload);
+      break;
+    case 'login':
+      newState = this.handleLogin(payload);
+      break;
+    case 'sort':
+      newState = this.handleSort(payload);
+      break;
+    case 'toggle_showall':
+      newState = this.handleToggleShowAll(payload);
+      break;
     }
 
     if (newState) {
@@ -580,7 +575,7 @@ class App extends React.Component {
   }
 
   render() {
-    const Index = ({match})=> (
+    const Index = ()=> (
       (!this.state.login) ? (
         <Redirect to='/login' />
       ) : (
@@ -595,8 +590,8 @@ class App extends React.Component {
 
     const List = ({match})=> {
       let key = match.params.list;
-      let locationName = (this.state.lists[key]) ? this.state.lists[key].name : ''
-      let showAll = (this.state.lists[key]) ? this.state.lists[key].showAll : true
+      let locationName = (this.state.lists[key]) ? this.state.lists[key].name : '';
+      let showAll = (this.state.lists[key]) ? this.state.lists[key].showAll : true;
       return (
         <div>
           <AppBar
@@ -611,9 +606,9 @@ class App extends React.Component {
             persisted={this.state.lists.hasOwnProperty(key)} />
         </div>
       );
-    }
+    };
 
-    const EditPage = ({match, history}) => {
+    const EditPage = ({match}) => {
       const {
         list,
         uuid
@@ -661,7 +656,7 @@ class App extends React.Component {
 
     const renderListEditPage = ({match})=> {
       const { params: { list } } = match;
-      const listDisplayName = this.state.lists.hasOwnProperty(list) ? this.state.lists[list].name : ''
+      const listDisplayName = this.state.lists.hasOwnProperty(list) ? this.state.lists[list].name : '';
       return (this.state.login !== true) ? (
         <Redirect to='/' />
       ) : (
@@ -673,7 +668,7 @@ class App extends React.Component {
             location={`/list/${list}`} />
           <ListEditPage list={this.state.lists[list]} listKey={list} />
         </div>
-      )
+      );
     };
 
     const renderManagePage = ()=> (
@@ -686,7 +681,7 @@ class App extends React.Component {
           <ManagePage />
         </div>
       )
-    )
+    );
 
     return (
       <Router history={history}>

@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const TodoItemStyle = {
   clear: 'both',
@@ -51,8 +51,7 @@ class TodoNewItem extends React.PureComponent {
       placeholder,
       listKey,
       showAll,
-      style,
-      ...others
+      style
     } = this.props;
 
     const {update} = this.context;
@@ -72,13 +71,13 @@ class TodoNewItem extends React.PureComponent {
       }
     };
 
-    const handleSortButtonClick = (e)=> {
+    const handleSortButtonClick = ()=> {
       update('sort', {key: listKey});
-    }
+    };
 
-    const handleShowAllButtonClick = (e)=> {
+    const handleShowAllButtonClick = ()=> {
       update('toggle_showall', {key: listKey});
-    }
+    };
 
     const TextBox = (
       <input
@@ -129,6 +128,6 @@ class TodoNewItem extends React.PureComponent {
 
 TodoNewItem.contextTypes = {
   update: PropTypes.func
-}
+};
 
 export default TodoNewItem;

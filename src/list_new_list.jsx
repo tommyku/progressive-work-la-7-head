@@ -26,9 +26,7 @@ const TodoAddBase = {
 
 const ListNewList = (props, context)=> {
   const {
-    placeholder,
-    style,
-    ...others
+    style
   } = props;
 
   const AddBox = (
@@ -77,6 +75,6 @@ ListNewList.contextTypes = {
     push: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired
   })
-}
+};
 
 export default ListNewList;

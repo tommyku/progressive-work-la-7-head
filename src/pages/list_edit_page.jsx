@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const inputTextStyle = {
   color: '#999',
@@ -27,7 +27,7 @@ class ListEditPage extends React.Component {
     const { list } = this.props;
     this.state = {
       text: list ? list.name : '',
-    }
+    };
     this.handleTextChange = this.handleTextChange.bind(this);
   }
 
@@ -37,20 +37,18 @@ class ListEditPage extends React.Component {
 
   render() {
     const {
-      list,
-      listKey,
-      ...other
+      listKey
     } = this.props;
 
     const { update } = this.context;
 
+    // eslint-disable-next-line
     let editText;
 
-    const handleTextEditClick = (e)=> {
+    const handleTextEditClick = ()=> {
       let text = this.state.text.trim();
       if (text.length === 0) return;
-      console.log(text);
-      let redirectTo = `/`;
+      let redirectTo = '/';
       update('update_list', {
         key: listKey,
         name: text,
@@ -88,6 +86,6 @@ class ListEditPage extends React.Component {
 
 ListEditPage.contextTypes = {
   update: PropTypes.func,
-}
+};
 
 export default ListEditPage;

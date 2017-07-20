@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 const AppBarMinHeight = '40px';
 
@@ -14,7 +14,7 @@ const AppBarStyle = {
   minHeight: AppBarMinHeight,
   display: 'flex',
   alignItems: 'center',
-}
+};
 
 const HomeLinkStyle = {
   textDecoration: 'none',
@@ -38,7 +38,7 @@ const AppBarContainerStyle = {
   maxWidth: '48em',
   margin: 'auto',
   padding: '0 .5em',
-}
+};
 
 class AppBar extends React.PureComponent {
   render() {
@@ -60,7 +60,7 @@ class AppBar extends React.PureComponent {
 
     const HomeLink = (
       <Link to={home || '/'}
-         style={HomeLinkStyle}>
+        style={HomeLinkStyle}>
         {homeName}
       </Link>
     );
@@ -71,7 +71,7 @@ class AppBar extends React.PureComponent {
         {
           (location && locationName) &&
           <Link to={location}
-             style={LocationLinkStyle}>
+            style={LocationLinkStyle}>
             {locationName}
           </Link>
         }

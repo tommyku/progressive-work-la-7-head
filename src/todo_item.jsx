@@ -1,8 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import TimeAgo from 'timeago-react'
-import marked from './config/marked.js'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import PropTypes from 'prop-types';
+import TimeAgo from 'timeago-react';
+import marked from './config/marked.js';
 
 const TodoDoneBase = {
   marginRight: '.5em',
@@ -106,14 +105,12 @@ const TodoItem = (props, context)=> {
   const {
     text,
     done,
-    dropped,
     createdAt,
     startedAt,
     alertAt,
     uuid,
     listKey,
-    style,
-    ...others
+    style
   } = props;
 
   const {
@@ -121,24 +118,24 @@ const TodoItem = (props, context)=> {
     history
   } = context;
 
-  const handleDoneBoxClick = (e)=> {
+  const handleDoneBoxClick = ()=> {
     update('toggle', {uuid: uuid, key: listKey});
-  }
+  };
 
-  const handleRemoveBoxClick = (e)=> {
+  const handleRemoveBoxClick = ()=> {
     const displayName = `${text.substring(0, 32)}${(text.length > 32) ? '...' : ''}`;
     if (confirm(`真係要刪「${displayName}」？`)) {
       update('remove', {uuid: uuid, key: listKey});
     }
-  }
+  };
 
-  const handleModificationBoxClick = (e)=> {
-    history.push(`/list/${listKey}/item/${uuid}`)
-  }
+  const handleModificationBoxClick = ()=> {
+    history.push(`/list/${listKey}/item/${uuid}`);
+  };
 
-  const handleAlertBoxClick = (e)=> {
+  const handleAlertBoxClick = ()=> {
     update('disable_notification', {uuid: uuid, key: listKey});
-  }
+  };
 
   const DoneBox = (
     <button style={[TodoDoneStyle, TodoDoingStyle, TodoNotDoneStyle, TodoRejectedStyle][done]}
@@ -187,15 +184,6 @@ const TodoItem = (props, context)=> {
     </span>
   );
 
-  const lo = (num)=> {
-    return num < 10 ? `0${num}` : num.toString()
-  }
-
-  const humanizedTime = (createdAt)=> {
-    let date = new Date(createdAt);
-    return `${lo(date.getDate()+1)}/${lo(date.getMonth()+1)} ${lo(date.getHours())}:${lo(date.getMinutes())}`;
-  }
-
   const TimeBox = (
     <span style={TodoTimeStyle}>
       <TimeAgo
@@ -234,6 +222,6 @@ TodoItem.contextTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired
   })
-}
+};
 
 export default TodoItem;
