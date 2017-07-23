@@ -22,7 +22,7 @@ import Hoodie from '@hoodie/client';
 import Push from 'push.js';
 import './app.css';
 
-const hoodieHost = LocalStorage.get('hoodieHost') || 'localhost';
+let hoodieHost = LocalStorage.get('hoodieHost') || 'localhost';
 
 let hoodie = new Hoodie({
   url: hoodieHost,
@@ -70,44 +70,63 @@ class App extends React.Component {
       login: false,
       loading: false,
       migration: '@init',
-      notified: []
+      notified: [],
+      lastRecordTime: null
     };
+    this.registerHoodieHandlers = this.registerHoodieHandlers.bind(this);
     this.state = stateTemplate;
+  }
+
+  onSignInHandler() {
+    this.setState({login: true});
+    hoodie.store.find('state').then(this.onPullHandler.bind(this)).catch(()=>{
+      hoodie.store.on('pull', this.onPullHandler.bind(this));
+    });
+  }
+
+  onSignOutHandler() {
+    this.setState({login: false});
+  }
+
+  onPullHandler(event, object) {
+    if (typeof event === 'object' && typeof object === 'undefined') {
+      object = event; // so that both store.change event and pull event can use
+    }
+    if (object._id !== 'state') return;
+
+    let lastRecordTime = this.state.lastRecordTime;
+    let createdAt = new Date(object.hoodie.createdAt);
+    let updatedAt = new Date(object.hoodie.updatedAt);
+    if (!lastRecordTime || lastRecordTime < createdAt)
+      lastRecordTime = createdAt;
+    if (updatedAt !== 'Invalid Date' && lastRecordTime < updatedAt)
+      lastRecordTime = updatedAt;
+    else
+      return;
+    const {lists, orders, todo, listOrders, notifications} = Object.assign({}, this.state, object);
+    this.setState({
+      lists: this.transformListCollection(lists),
+      orders: orders,
+      todo: this.transformTodoCollection(todo),
+      notifications: notifications,
+      listOrders: listOrders,
+      lastRecordTime: lastRecordTime
+    }, ()=> {
+      this.dataMigrations();
+    });
+    hoodie.store.off('pull', this.onPullHandler);
+  }
+
+  registerHoodieHandlers() {
+    hoodie.account.on('unauthenticate', this.onSignOutHandler.bind(this));
+    hoodie.account.on('signout', this.onSignOutHandler.bind(this));
+    hoodie.account.on('reauthenticate', this.onSignInHandler.bind(this));
+    hoodie.account.on('signin', this.onSignInHandler.bind(this));
+    hoodie.store.on('change', this.onPullHandler.bind(this));
   }
 
   componentWillMount() {
     setInterval(()=> this.notificationRun(), 5000);
-
-    const onSignInHandler = ()=> {
-      this.setState({login: true});
-      hoodie.store.find('state').then(onPullHandler).catch(()=>{
-        hoodie.store.on('pull', onPullHandler);
-      });
-    };
-
-    const onSignOutHandler = ()=> {
-      this.setState({login: false});
-    };
-
-    const onPullHandler = (event, object)=> {
-      if (typeof event === 'object' && typeof object === 'undefined') {
-        object = event; // so that both store.change event and pull event can use
-      }
-      if (object._id !== 'state')
-        return;
-      else
-        hoodie.store.off('pull', onPullHandler);
-      const {lists, orders, todo, listOrders, notifications} = Object.assign({}, this.state, object);
-      this.setState({
-        lists: this.transformListCollection(lists),
-        orders: orders,
-        todo: this.transformTodoCollection(todo),
-        notifications: notifications,
-        listOrders: listOrders
-      }, ()=> {
-        this.dataMigrations();
-      });
-    };
 
     let localStored = LocalStorage.get('state');
     if (localStored) {
@@ -123,9 +142,8 @@ class App extends React.Component {
     } else {
       hoodie.account.get('session').then((session)=> {
         if (session) {
-          onSignInHandler();
+          this.onSignInHandler();
         } else {
-          hoodie.account.on('signin', onSignInHandler);
           hoodie.account.signIn({
             username: LocalStorage.get('hoodieUser'),
             password: LocalStorage.get('hoodiePass')
@@ -136,11 +154,7 @@ class App extends React.Component {
       });
     }
 
-    hoodie.account.on('unauthenticate', onSignOutHandler);
-    hoodie.account.on('signout', onSignOutHandler);
-    hoodie.account.on('reauthenticate', onSignInHandler);
-    hoodie.account.on('signin', onSignInHandler);
-    hoodie.store.on('change', onPullHandler);
+    if (hoodieHost !== 'localhost') this.registerHoodieHandlers();
   }
 
   notificationRun() {
@@ -449,15 +463,17 @@ class App extends React.Component {
   }
 
   handleLogin({host, user, pass}) {
+    hoodieHost = host;
     hoodie = new Hoodie({
-      url: host,
+      url: hoodieHost,
       PouchDB: require('pouchdb-browser')
     });
+    this.registerHoodieHandlers();
     hoodie.account.signIn({
       username: user,
       password: pass
     });
-    LocalStorage.set('hoodieHost', host);
+    LocalStorage.set('hoodieHost', hoodieHost);
     return null;
   }
 
@@ -497,10 +513,11 @@ class App extends React.Component {
     case 'logout':
       hoodie.account.signOut().then(()=> this.setState({login: false}));
       break;
-    case 'dump_data':
+    case 'dump_data': {
       const blob = new Blob([JSON.stringify(this.stateDataDump())], {type: 'application/json;charset=utf-8'});
       FileSaver.saveAs(blob, '要做的野的.json');
       break;
+    }
     default:
       return;
     }
@@ -508,6 +525,7 @@ class App extends React.Component {
 
   update(action, payload) {
     const afterUpdate = ()=> {
+      if (hoodieHost === 'localhost') return;
       this.setState({loading: true});
       hoodie.store.updateOrAdd('state', this.stateDataDump())
         .catch(()=> {
