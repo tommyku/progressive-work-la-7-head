@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
@@ -40,7 +40,7 @@ const AppBarContainerStyle = {
   padding: '0 .5em',
 };
 
-class AppBar extends React.PureComponent {
+class AppBar extends Component {
   render() {
     const {
       locationName,
@@ -87,6 +87,7 @@ class AppBar extends React.PureComponent {
             {HomeLink}
             {(location && locationName) && LocationLink}
             {extra}
+            {JSON.stringify(this.context.momentum)}
           </div>
         </header>
         <div style={AppBarPlaceholderStyle}></div>
@@ -102,6 +103,10 @@ AppBar.propTypes = {
   location: PropTypes.string,
   style: PropTypes.object,
   extra: PropTypes.node
+};
+
+AppBar.contextTypes = {
+  momentum: PropTypes.object
 };
 
 export default AppBar;

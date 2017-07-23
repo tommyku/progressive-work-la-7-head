@@ -43,7 +43,8 @@ class App extends React.Component {
       update: this.update.bind(this),
       history: history,
       manage: this.manage.bind(this),
-      listOrders: this.state.listOrders
+      listOrders: this.state.listOrders,
+      momentum: this.state.momentum
     };
   }
 
@@ -113,6 +114,7 @@ class App extends React.Component {
       lastRecordTime: lastRecordTime
     }, ()=> {
       this.dataMigrations();
+      this.updateMomentum();
     });
     hoodie.store.off('pull', this.onPullHandler);
   }
@@ -312,6 +314,31 @@ class App extends React.Component {
     for (let i = migrationHead; i < migrationsSteps.length; ++i) {
       migrations[migrationsSteps[i]]();
     }
+  }
+
+  updateMomentum() {
+    let results = {
+      created: 0,
+      doing: 0,
+      done: 0,
+      rejected: 0
+    };
+
+    const currentTime = new Date(Todo.datetimeNow()).getTime();
+    const twentyFourHours = 24*3600*1000;
+
+    Object.values(this.state.todo).forEach((todo)=> {
+      Object.values(todo).forEach((item)=> {
+        if (currentTime - new Date(item.createdAt).getTime() < twentyFourHours) {
+          ++results.created;
+        }
+        if (item.done === 1 && item.startedAt && currentTime - new Date(item.startedAt).getTime() < twentyFourHours) {
+          ++results.doing;
+        }
+      });
+    });
+
+    this.setState({ momentum: results });
   }
 
   getTodoList(key) {
@@ -537,6 +564,7 @@ class App extends React.Component {
           this.setState({loading: false});
         }, 250));
       LocalStorage.set('stateBackup', this.state);
+      this.updateMomentum();
     };
 
     let newState = null;
@@ -722,6 +750,7 @@ class App extends React.Component {
 App.childContextTypes = {
   update: PropTypes.func,
   manage: PropTypes.func,
+  momentum: PropTypes.object,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired
