@@ -3562,9 +3562,9 @@ punycode@^1.2.4, punycode@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
 
-push.js@^0.0.13:
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/push.js/-/push.js-0.0.13.tgz#05f3bf5c414e386b45f9f61a98f9e3ecc7a5f4b4"
+push.js@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/push.js/-/push.js-1.0.4.tgz#ebe590360329174150c724f71d6be57f9e84841d"
 
 q@^1.1.2:
   version "1.5.0"

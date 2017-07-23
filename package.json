@@ -32,7 +32,7 @@
     "preact": "^8.1.0",
     "preact-compat": "^3.16.0",
     "prop-types": "^15.5.8",
-    "push.js": "^0.0.13",
+    "push.js": "^1.0.4",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-router-dom": "^4.1.1",
