@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ListMomentum from '../list_momentum.jsx';
 import ListNewList from '../list_new_list.jsx';
 import ListItem from '../list_item.jsx';
 import {
@@ -54,6 +55,7 @@ const IndexPage = (props, context)=> {
         lockAxis='y'
         transitionDuration={0}
         onSortEnd={handleSortEnd} />
+      <ListMomentum />
       <ListNewList />
     </section>
   );
