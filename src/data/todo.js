@@ -24,9 +24,25 @@ class Todo {
     this.details = details || '';
     this.uuid = uuid || guid();
     this.status = status || '';
-    this.createdAt = createdAt || (new Date()).toString();
+    this.createdAt = createdAt || this.datetimeNow();
     this.startedAt = startedAt;
     this.alertAt = alertAt;
+  }
+
+  datetimeNow() {
+    let d = new Date();
+    let lo = (n)=> (n < 10) ? `0${n}` : n;
+    const [
+      year, month, day, hour, minute, second
+    ] = [
+      d.getFullYear(),
+      lo(d.getMonth()+1),
+      lo(d.getDate()),
+      lo(d.getHours()),
+      lo(d.getMinutes()),
+      lo(d.getSeconds())
+    ];
+    return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
   }
 
   serialize() {
@@ -47,7 +63,7 @@ class Todo {
     this.done = (this.done + 1) % 4;
     switch (this.done) {
     case 1:
-      this.startedAt = (new Date()).toString();
+      this.startedAt = this.datetimeNow();
       break;
     case 2:
       this.alertAt = null;

@@ -171,6 +171,7 @@ class App extends React.Component {
     };
 
     const newNotified = [].concat(this.state.notified);
+    let notifiedChanged = false;
 
     Object.keys(this.state.notifications).forEach((key)=> {
       this.state.notifications[key].forEach((uuid)=> {
@@ -181,6 +182,7 @@ class App extends React.Component {
         if (!shown && (showAlert || removeExpiredAlert)) {
           const displayText = `${todo.text.substring(0, 32)}${(todo.text.length > 32) ? '...' : ''}`;
           newNotified.push(todo.uuid);
+          notifiedChanged = true;
           Push.create(displayText, {
             body: `來自 ${this.state.lists[key].name}`,
             vibrate: true,
@@ -195,7 +197,7 @@ class App extends React.Component {
         }
       });
     });
-    this.setState({notified: newNotified});
+    if (notifiedChanged) this.setState({notified: newNotified});
   }
 
   transformListCollection(lists) {
