@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 const TodoItemStyle = {
@@ -45,7 +45,25 @@ const UtilityBarStyle = {
   textAlign: 'right'
 };
 
-class TodoNewItem extends React.PureComponent {
+class TodoNewItem extends Component {
+  constructor(props) {
+    super(props);
+    this.handleWindowKeypress = this.handleWindowKeypress.bind(this);
+  }
+
+  handleWindowKeypress() {
+    if (document.activeElement !== this.refs['newTask'])
+      this.refs['newTask'].focus();
+  }
+
+  componentWillMount() {
+    window.addEventListener('keypress', this.handleWindowKeypress);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keypress', this.handleWindowKeypress);
+  }
+
   render() {
     const {
       placeholder,
@@ -82,6 +100,7 @@ class TodoNewItem extends React.PureComponent {
     const TextBox = (
       <input
         id='new-task'
+        ref='newTask'
         type='text'
         placeholder={placeholder}
         autocapitalize='none'
