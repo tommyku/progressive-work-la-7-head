@@ -45,6 +45,10 @@ class Todo {
     this.alertAt = alertAt;
   }
 
+  datetimeNow() {
+    return this.constructor.datetimeNow();
+  }
+
   serialize() {
     return {
       text: this.text,

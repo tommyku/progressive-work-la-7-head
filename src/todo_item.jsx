@@ -106,6 +106,7 @@ const TodoItem = (props, context)=> {
   const {
     text,
     done,
+    details,
     createdAt,
     startedAt,
     alertAt,
@@ -181,6 +182,7 @@ const TodoItem = (props, context)=> {
     <span style={[TodoTextStyle, TodoDoingTextStyle, TodoDoneTextStyle, TodoRejectedTextStyle][done]}
       className='hover-default'>
       <span dangerouslySetInnerHTML={{__html: marked(text, { renderer: renderer })}}></span>
+      {details && details.length > 0 && ' (d'}
       {done == 1 && startedAt && DoingTextBox}
     </span>
   );
