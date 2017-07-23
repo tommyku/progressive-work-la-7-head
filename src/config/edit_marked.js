@@ -7,6 +7,6 @@ renderer.heading = (text)=> text;
 renderer.hr = ()=> '';
 renderer.list = (body)=> body;
 renderer.listitem = (text)=> text;
-renderer.paragraph = (text)=> `<span>${text}</span>`;
+renderer.paragraph = (text)=> `<p style='margin: 0.5em 0;'>${text}</p>`;
 
 export default renderer;

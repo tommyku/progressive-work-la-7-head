@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import marked from './config/marked.js'
-import PropTypes from 'prop-types'
-import Todo from './data/todo.js'
-import Push from 'push.js'
-import TimeAgo from 'timeago-react'
+import React, { Component } from 'react';
+import marked from 'marked';
+import renderer from './config/edit_marked.js';
+import PropTypes from 'prop-types';
+import Push from 'push.js';
+import TimeAgo from 'timeago-react';
 
 const MoveItemButtonBase = {
   padding: 0,
@@ -220,7 +220,7 @@ class EditItem extends Component {
 
     const ShowDetails = (
       <div style={TodoShowDetailsStyle}>
-        <span dangerouslySetInnerHTML={{__html: marked(this.state.details)}}></span>
+        <span dangerouslySetInnerHTML={{__html: marked(this.state.details, { renderer: renderer })}}></span>
       </div>
     );
 

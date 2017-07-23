@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TimeAgo from 'timeago-react';
-import marked from './config/marked.js';
+import marked from 'marked';
+import renderer from './config/marked.js';
 
 const TodoDoneBase = {
   marginRight: '.5em',
@@ -179,7 +180,7 @@ const TodoItem = (props, context)=> {
   const TextBox = (
     <span style={[TodoTextStyle, TodoDoingTextStyle, TodoDoneTextStyle, TodoRejectedTextStyle][done]}
       className='hover-default'>
-      <span dangerouslySetInnerHTML={{__html: marked(text)}}></span>
+      <span dangerouslySetInnerHTML={{__html: marked(text, { renderer: renderer })}}></span>
       {done == 1 && startedAt && DoingTextBox}
     </span>
   );
