@@ -87,6 +87,7 @@ class AppBar extends Component {
             {HomeLink}
             {(location && locationName) && LocationLink}
             {extra}
+            {JSON.stringify(this.context.momentum)}
           </div>
         </header>
         <div style={AppBarPlaceholderStyle}></div>
@@ -102,6 +103,10 @@ AppBar.propTypes = {
   location: PropTypes.string,
   style: PropTypes.object,
   extra: PropTypes.node
+};
+
+AppBar.contextTypes = {
+  momentum: PropTypes.object
 };
 
 export default AppBar;
