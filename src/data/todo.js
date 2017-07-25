@@ -1,22 +1,6 @@
 import {v4 as guid} from 'uuid';
 
 class Todo {
-  static datetimeNow() {
-    let d = new Date();
-    let lo = (n)=> (n < 10) ? `0${n}` : n;
-    const [
-      year, month, day, hour, minute, second
-    ] = [
-      d.getFullYear(),
-      lo(d.getMonth()+1),
-      lo(d.getDate()),
-      lo(d.getHours()),
-      lo(d.getMinutes()),
-      lo(d.getSeconds())
-    ];
-    return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
-  }
-
   constructor(arg) {
     switch (typeof arg) {
     case 'Todo':
@@ -40,13 +24,25 @@ class Todo {
     this.details = details || '';
     this.uuid = uuid || guid();
     this.status = status || '';
-    this.createdAt = createdAt || this.datetimeNow();
     this.startedAt = startedAt;
+    this.createdAt = createdAt || this.datetimeNow();
     this.alertAt = alertAt;
   }
 
   datetimeNow() {
-    return this.constructor.datetimeNow();
+    let d = new Date();
+    let lo = (n)=> (n < 10) ? `0${n}` : n;
+    const [
+      year, month, day, hour, minute, second
+    ] = [
+      d.getFullYear(),
+      lo(d.getMonth()+1),
+      lo(d.getDate()),
+      lo(d.getHours()),
+      lo(d.getMinutes()),
+      lo(d.getSeconds())
+    ];
+    return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
   }
 
   serialize() {
