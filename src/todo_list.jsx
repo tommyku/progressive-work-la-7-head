@@ -20,7 +20,7 @@ const TodoList = (props, context)=> {
     ...other
   } = props;
 
-  const SortableItem = SortableElement(({item})=> {
+  const SortableItem = SortableElement(({item, style})=> {
     const {
       text,
       done,
@@ -38,17 +38,22 @@ const TodoList = (props, context)=> {
         listKey={listKey}
         createdAt={createdAt}
         alertAt={alertAt}
+        style={style}
         {...other}
       />
     );
   });
 
+  const shouldShow = (uuid)=> (values[uuid].done <= 1 || showAll);
+
   const SortableList = SortableContainer(({values, orders})=> {
-    const listToShow = (orders || []).filter((uuid)=> (values[uuid].done <= 1 || showAll));
     return (
       <section>
-        {listToShow.map((item, index)=> (
-          <SortableItem key={`item-${index}`} item={values[item]} index={index} />
+        {(orders || []).map((item, index)=> (
+          <SortableItem key={`item-${index}`}
+            item={values[item]}
+            style={{display: (shouldShow(item) ? 'block' : 'none')}}
+            index={index} />
         ))}
       </section>
     );
