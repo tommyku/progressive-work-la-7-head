@@ -48,20 +48,22 @@ const UtilityBarStyle = {
 class TodoNewItem extends Component {
   constructor(props) {
     super(props);
-    this.handleWindowKeypress = this.handleWindowKeypress.bind(this);
+    this.handleWindowKeydown = this.handleWindowKeydown.bind(this);
   }
 
-  handleWindowKeypress() {
-    if (document.activeElement !== this.refs['newTask'])
+  handleWindowKeydown(e) {
+    if (e.key === 'Escape')
+      this.refs['newTask'].blur();
+    else if (document.activeElement !== this.refs['newTask'])
       this.refs['newTask'].focus();
   }
 
   componentWillMount() {
-    window.addEventListener('keypress', this.handleWindowKeypress);
+    window.addEventListener('keydown', this.handleWindowKeydown);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('keypress', this.handleWindowKeypress);
+    window.removeEventListener('keydown', this.handleWindowKeydown);
   }
 
   render() {
