@@ -2,8 +2,8 @@ var webpack = require('webpack');
 var path = require('path');
 var workboxPlugin = require('workbox-webpack-plugin');
 
-var BUILD_DIR = path.resolve(__dirname, '.');
-var APP_DIR = path.resolve(__dirname, 'src');
+var BUILD_DIR = path.resolve(__dirname, '.'); // eslint-disable-line
+var APP_DIR = path.resolve(__dirname, 'src'); // eslint-disable-line
 
 var config = {
   entry: [
@@ -40,6 +40,9 @@ var config = {
       staticFileGlobs: ['bundle.js', 'index.html'],
       swDest: path.join(BUILD_DIR, 'service-worker.js'),
     }),
+    new webpack.DefinePlugin({
+      buildNumber: JSON.stringify((new Date()).toString())
+    })
   ],
   resolve: {
     alias: {

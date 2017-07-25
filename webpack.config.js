@@ -1,7 +1,8 @@
 var path = require('path');
+var webpack = require('webpack');
 
-var BUILD_DIR = path.resolve(__dirname, 'public');
-var APP_DIR = path.resolve(__dirname, 'src');
+var BUILD_DIR = path.resolve(__dirname, 'public'); // eslint-disable-line
+var APP_DIR = path.resolve(__dirname, 'src'); // eslint-disable-line
 
 var config = {
   entry: [
@@ -34,6 +35,11 @@ var config = {
       }
     ]
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      buildNumber: JSON.stringify((new Date()).toString())
+    })
+  ],
   resolve: {
     alias: {
       'react': 'preact-compat',

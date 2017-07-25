@@ -14,11 +14,15 @@ class Spinner extends Component {
     const spinnerStyle = Object.assign(
       {},
       spinnerBaseStyle,
-      {display: (visible ? 'inline-block' : 'none')}
+      {color: (visible ? '#338' : '#0c0a66')}
     );
 
     return (
-      <span style={spinnerStyle} title='loading'>等陣</span>
+      <span style={spinnerStyle}
+        title='loading'
+        onClick={()=>{alert(`built at ${buildNumber}`);}}>
+        等陣
+      </span>
     );
   }
 }
