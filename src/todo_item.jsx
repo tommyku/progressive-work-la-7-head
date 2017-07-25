@@ -192,6 +192,7 @@ const TodoItem = (props, context)=> {
       <TimeAgo
         title={createdAt}
         datetime={createdAt}
+        live={false}
         locale='zh_TW' />
     </span>
   );

@@ -69,6 +69,7 @@ class App extends React.Component {
       },
       login: false,
       loading: false,
+      dirty: false,
       migration: '@init',
       notified: [],
       lastRecordTime: null
@@ -127,6 +128,7 @@ class App extends React.Component {
 
   componentWillMount() {
     setInterval(()=> this.notificationRun(), 5000);
+    setInterval(()=> this.hoodieUpdate(), 5000);
 
     let localStored = LocalStorage.get('state');
     if (localStored) {
@@ -525,20 +527,20 @@ class App extends React.Component {
     }
   }
 
-  update(action, payload) {
-    const afterUpdate = ()=> {
-      if (hoodieHost === 'localhost') return;
-      this.setState({loading: true});
-      hoodie.store.updateOrAdd('state', this.stateDataDump())
-        .catch(()=> {
-          alert('can\'t update');
-        })
-        .then(()=> setTimeout(()=> {
-          this.setState({loading: false});
-        }, 250));
-      LocalStorage.set('stateBackup', this.state);
-    };
+  hoodieUpdate() {
+    if (hoodieHost === 'localhost' || !this.state.dirty || !hoodie) return;
+    this.setState({loading: true});
+    hoodie.store.updateOrAdd('state', this.stateDataDump())
+      .catch(()=> {
+        alert('can\'t update');
+      })
+      .then(()=> setTimeout(()=> {
+        this.setState({loading: false, dirty: false});
+      }, 250));
+    LocalStorage.set('stateBackup', this.state);
+  }
 
+  update(action, payload) {
     let newState = null;
 
     switch (action) {
@@ -590,7 +592,8 @@ class App extends React.Component {
     }
 
     if (newState) {
-      this.setState(newState, afterUpdate);
+      newState.dirty = true;
+      this.setState(newState);
     }
   }
 
