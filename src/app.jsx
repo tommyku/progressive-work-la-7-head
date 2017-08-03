@@ -130,6 +130,13 @@ class App extends React.Component {
     setInterval(()=> this.notificationRun(), 5000);
     setInterval(()=> this.hoodieUpdate(), 5000);
 
+    window.onbeforeunload = ()=> {
+      if (this.state.dirty) {
+        this.hoodieUpdate();
+        return '認真？';
+      }
+    };
+
     let localStored = LocalStorage.get('state');
     if (localStored) {
       const {lists, orders, todo} = localStored;
