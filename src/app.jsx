@@ -69,6 +69,7 @@ class App extends React.Component {
       },
       login: false,
       loading: false,
+      pulling: false,
       dirty: false,
       migration: '@init',
       notified: [],
@@ -104,6 +105,10 @@ class App extends React.Component {
       lastRecordTime = updatedAt;
     else
       return;
+
+    this.setState({pulling: true});
+    setTimeout(()=> this.setState({pulling: false}), 500);
+
     const {lists, orders, todo, listOrders, notifications} = Object.assign({}, this.state, object);
     this.setState({
       lists: this.transformListCollection(lists),
@@ -548,6 +553,11 @@ class App extends React.Component {
   }
 
   update(action, payload) {
+    if (this.state.pulling) {
+      setTimeout(()=> this.update(action, payload), 500);
+      return;
+    }
+
     let newState = null;
 
     switch (action) {
