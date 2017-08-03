@@ -71,6 +71,7 @@ class App extends React.Component {
       loading: false,
       pulling: false,
       dirty: false,
+      firstPull: true,
       migration: '@init',
       notified: [],
       lastRecordTime: null
@@ -106,8 +107,12 @@ class App extends React.Component {
     else
       return;
 
-    this.setState({pulling: true});
-    setTimeout(()=> this.setState({pulling: false}), 500);
+    if (!this.state.firstPull) {
+      this.setState({pulling: true});
+      setTimeout(()=> this.setState({pulling: false}), 500);
+    } else {
+      this.setState({firstPull: false});
+    }
 
     const {lists, orders, todo, listOrders, notifications} = Object.assign({}, this.state, object);
     this.setState({
