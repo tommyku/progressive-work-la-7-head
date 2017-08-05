@@ -74,7 +74,6 @@ class App extends React.Component {
       },
       login: false,
       loading: false,
-      pulling: false,
       dirty: false,
       firstPull: true,
       migration: '@init',
@@ -113,8 +112,8 @@ class App extends React.Component {
       return;
 
     if (!this.state.firstPull) {
-      this.setState({pulling: true});
-      setTimeout(()=> this.setState({pulling: false}), 500);
+      this.setState({loading: true});
+      setTimeout(()=> this.setState({loading: false}), 500);
     } else {
       this.setState({firstPull: false});
     }
@@ -563,7 +562,7 @@ class App extends React.Component {
   }
 
   update(action, payload) {
-    if (this.state.pulling) {
+    if (this.state.loading) {
       setTimeout(()=> this.update(action, payload), 500);
       return;
     }
@@ -742,7 +741,9 @@ class App extends React.Component {
           <Route exact path="/list/:list" render={List} />
           <Route exact path="/list/:list/edit" render={renderListEditPage} />
           <Route exact path="/list/:list/item/:uuid" render={EditPage} />
-          <Spinner visible={this.state.loading} />
+          <Spinner loading={this.state.loading}
+            firstPull={this.state.firstPull}
+            dirty={this.state.dirty} />
         </div>
       </Router>
     );

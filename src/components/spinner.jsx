@@ -1,27 +1,32 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 const spinnerBaseStyle = {
   position: 'fixed',
   top: '0.5em',
   right: '0.5em',
-  color: '#338',
-  fontStyle: 'italic',
+  color: '#338'
 };
 
-class Spinner extends Component {
+class Spinner extends PureComponent {
   render() {
-    const { visible } = this.props;
+    const { loading, dirty, firstPull } = this.props;
     const spinnerStyle = Object.assign(
       {},
       spinnerBaseStyle,
-      {color: (visible ? '#338' : '#0c0a66')}
+      { color: (loading || dirty || !firstPull ? '#338' : '#0c0a66') }
     );
+
+    const displayText = ()=> {
+      if (loading) return '等陣';
+      if (dirty) return '改左';
+      if (!firstPull) return '用得';
+    }
 
     return (
       <span style={spinnerStyle}
         title='loading'
         onClick={()=>{alert(`built at ${buildNumber}`);}}>
-        等陣
+        { displayText() }
       </span>
     );
   }
