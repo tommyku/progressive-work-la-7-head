@@ -20,12 +20,13 @@ class Spinner extends PureComponent {
       if (loading) return '等陣';
       if (dirty) return '改左';
       if (!firstPull) return '用得';
-    }
+    };
 
     return (
       <span style={spinnerStyle}
         title='loading'
-        onClick={()=>{alert(`built at ${buildNumber}`);}}>
+        onClick={()=>{alert(`built at ${buildNumber}`);}} // eslint-disable-line
+      >
         { displayText() }
       </span>
     );

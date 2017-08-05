@@ -1,11 +1,6 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import TodoItem from '../todo_item.jsx';
-import { Link } from 'react-router-dom'
-
-const ListNameStyle = {
-  textDecoration: 'underline'
-};
+import { Link } from 'react-router-dom';
 
 class SearchResultPage extends PureComponent {
   constructor(props) {

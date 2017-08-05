@@ -82,7 +82,7 @@ class ManagePage extends Component {
   handleSearchButtonClick() {
     const value = this.refs['input'].value;
     if (!value || value.length == 0) return;
-    this.context.history.replace(`/search/${value}`)
+    this.context.history.replace(`/search/${value}`);
   }
 
   render() {
