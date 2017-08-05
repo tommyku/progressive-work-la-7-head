@@ -8,6 +8,7 @@ import LoginPage from './pages/login_page.jsx';
 import IndexPage from './pages/index_page.jsx';
 import ListEditPage from './pages/list_edit_page.jsx';
 import ManagePage from './pages/manage_page.jsx';
+import SearchResultPage from './pages/search_result_page.jsx';
 import Spinner from './components/spinner.jsx';
 import PropTypes from 'prop-types';
 import LocalStorage from 'store';
@@ -623,6 +624,19 @@ class App extends React.Component {
     }
   }
 
+  searchTodo(term) {
+    if (term === '') return;
+
+    const result = {};
+    Object.keys(this.state.lists).forEach((key)=> {
+      const list = this.state.orders[key];
+      const todo = this.state.todo[key];
+      result[key] = list.filter((uuid)=> todo[uuid].text.match(term))
+        .map((uuid)=> todo[uuid]);
+    });
+    return result;
+  }
+
   render() {
     const Index = ()=> (
       (!this.state.login) ? (
@@ -732,12 +746,25 @@ class App extends React.Component {
       )
     );
 
+    const renderSearchResultPage = ({match})=> {
+      const { params: { term } } = match;
+      return (
+        <div>
+          <AppBar
+            homeName='要做的野' />
+          <SearchResultPage results={ this.searchTodo(term) }
+            lists={ this.state.lists } />
+        </div>
+      )
+    };
+
     return (
       <Router history={history}>
         <div style={appStyle}>
           <Route exact path="/login" render={renderLoginPage} />
           <Route exact path="/manage" render={renderManagePage} />
           <Route exact path="/" render={Index} />
+          <Route exact path="/search/:term" render={renderSearchResultPage} />
           <Route exact path="/list/:list" render={List} />
           <Route exact path="/list/:list/edit" render={renderListEditPage} />
           <Route exact path="/list/:list/item/:uuid" render={EditPage} />

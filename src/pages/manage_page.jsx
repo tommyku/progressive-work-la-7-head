@@ -15,6 +15,16 @@ const SectionBaseStyle = {
   marginBottom: '1em'
 };
 
+const TextBoxBaseStyle = {
+  backgroundColor: 'black',
+  color: '#999',
+  border: 'none',
+  fontSize: 'medium',
+  padding: 0,
+  margin: 0,
+  lineHeight: '1.42857'
+};
+
 const Section = (props)=> {
   const { style, ...others } = props;
   return (
@@ -56,6 +66,7 @@ class ManagePage extends Component {
     super(props);
     this.handleSignOutButtonClick = this.handleSignOutButtonClick.bind(this);
     this.handleDumpDataButtonClick = this.handleDumpDataButtonClick.bind(this);
+    this.handleSearchButtonClick = this.handleSearchButtonClick.bind(this);
   }
 
   handleDumpDataButtonClick() {
@@ -68,9 +79,25 @@ class ManagePage extends Component {
     }
   }
 
+  handleSearchButtonClick() {
+    const value = this.refs['input'].value;
+    if (!value || value.length == 0) return;
+    this.context.history.replace(`/search/${value}`)
+  }
+
   render() {
+    const SearchSection = (props)=> (
+      <Section>
+        <input type='text' style={TextBoxBaseStyle} ref={(input)=> this.refs['input'] = input} />
+        <Button onClick={props.onClick}>
+          搵
+        </Button>
+      </Section>
+    );
+
     return (
       <div>
+        <SearchSection onClick={this.handleSearchButtonClick} />
         <DumpDataSection onClick={this.handleDumpDataButtonClick} />
         <SignOutSection onClick={this.handleSignOutButtonClick} />
       </div>
@@ -79,7 +106,11 @@ class ManagePage extends Component {
 }
 
 ManagePage.contextTypes = {
-  manage: PropTypes.func
+  manage: PropTypes.func,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired
+  })
 };
 
 export default ManagePage;
