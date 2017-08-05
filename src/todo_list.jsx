@@ -61,7 +61,14 @@ const TodoList = (props, context)=> {
 
   const handleSortEnd = ({oldIndex, newIndex})=> {
     if (oldIndex !== newIndex) {
-      let newValues = arrayMove(orders, oldIndex, newIndex);
+      // correct newIndex by subtracting # of hidden items
+      let countsBeforeIndex = 0;
+      if (oldIndex <= newIndex && !showAll && newIndex + 1 != orders.length) {
+        for (let i = oldIndex + 1; i < newIndex; ++i) {
+          countsBeforeIndex += shouldShow(orders[i]) ? 0 : 1;
+        }
+      }
+      let newValues = arrayMove(orders, oldIndex, newIndex - countsBeforeIndex);
       context.update('reorder', {
         key: listKey,
         uuids: newValues
