@@ -30,7 +30,8 @@ const inputFieldStyle = {
 };
 
 class LoginPage extends PureComponent {
-  handleButtonLoginClick() {
+  handleButtonLoginClick(e) {
+    e.preventDefault();
     const payload = {
       host: this.refs['hoodieHost'].value || '',
       user: this.refs['hoodieUser'].value || '',
@@ -81,9 +82,8 @@ class LoginPage extends PureComponent {
     );
 
     const buttonLogin = (
-      <button type='button'
-        style={buttonLoginStyle}
-        onClick={(e)=> this.handleButtonLoginClick(e)}>
+      <button type='submit'
+        style={buttonLoginStyle}>
         登入
       </button>
     );
@@ -91,8 +91,10 @@ class LoginPage extends PureComponent {
     return (
       <section>
         {Header}
-        {inputForm}
-        {buttonLogin}
+        <form onSubmit={(e)=> this.handleButtonLoginClick(e)}>
+          {inputForm}
+          {buttonLogin}
+        </form>
       </section>
     );
   }
