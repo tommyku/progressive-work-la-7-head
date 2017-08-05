@@ -52,6 +52,7 @@ const TodoList = (props, context)=> {
         {(orders || []).map((item, index)=> (
           <SortableItem key={`item-${index}`}
             item={values[item]}
+            disabled={!shouldShow(item)}
             style={{display: (shouldShow(item) ? 'block' : 'none')}}
             index={index} />
         ))}
