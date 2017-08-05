@@ -19,14 +19,19 @@ import {
 } from 'react-router-dom';
 import createHashHistory from 'history/createHashHistory';
 import Hoodie from '@hoodie/client';
+import PouchDB from 'pouchdb-browser';
 import Push from 'push.js';
 import './app.css';
+
+const hoodiePouch = PouchDB.defaults({
+  auto_compaction: true
+});
 
 let hoodieHost = LocalStorage.get('hoodieHost') || 'localhost';
 
 let hoodie = new Hoodie({
   url: hoodieHost,
-  PouchDB: require('pouchdb-browser')
+  PouchDB: hoodiePouch
 });
 
 const history = createHashHistory();
@@ -487,7 +492,7 @@ class App extends React.Component {
     hoodieHost = host;
     hoodie = new Hoodie({
       url: hoodieHost,
-      PouchDB: require('pouchdb-browser')
+      PouchDB: hoodiePouch
     });
     this.registerHoodieHandlers();
     hoodie.account.signIn({
