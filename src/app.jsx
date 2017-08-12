@@ -1,9 +1,10 @@
 import React from 'react';
 import TodoList from './todo_list.jsx';
-import AppBar from './app_bar.jsx';
+import PageBase from './page_base.jsx';
 import EditItem from './edit_item.jsx';
 import Todo from './data/todo.js';
 import List from './data/list.js';
+import AppBar from './components/app_bar.jsx';
 import LoginPage from './pages/login_page.jsx';
 import IndexPage from './pages/index_page.jsx';
 import ListEditPage from './pages/list_edit_page.jsx';
@@ -66,6 +67,7 @@ const stateTemplate = ()=> {
     loading: false,
     dirty: false,
     firstPull: true,
+    online: true,
     migration: '@init',
     notified: [],
     lastRecordTime: null
@@ -78,7 +80,8 @@ class App extends React.Component {
       update: this.update.bind(this),
       history: history,
       manage: this.manage.bind(this),
-      listOrders: this.state.listOrders
+      listOrders: this.state.listOrders,
+      getFlagData: this.getFlagData.bind(this)
     };
   }
 
@@ -144,6 +147,9 @@ class App extends React.Component {
     hoodie.account.on('reauthenticate', this.onSignInHandler.bind(this));
     hoodie.account.on('signin', this.onSignInHandler.bind(this));
     hoodie.store.on('change', this.onPullHandler.bind(this));
+    hoodie.connectionStatus.startChecking({interval: 8000});
+    hoodie.connectionStatus.on('disconnect', () => this.setState({ online: false }));
+    hoodie.connectionStatus.on('reconnect', () => this.setState({ online: true }));
   }
 
   componentWillMount() {
@@ -244,6 +250,15 @@ class App extends React.Component {
       });
     });
     return todos;
+  }
+
+  getFlagData(flag) {
+    switch (flag) {
+    case 'ONLINE':
+      return this.state.online;
+    default:
+      return null;
+    }
   }
 
   dataMigrations() {
@@ -648,12 +663,9 @@ class App extends React.Component {
       (!this.state.login) ? (
         <Redirect to='/login' />
       ) : (
-        <div>
-          <AppBar
-            homeName='要做的野'
-            home='/' />
+        <PageBase>
           <IndexPage lists={this.state.lists} orders={this.state.listOrders} />
-        </div>
+        </PageBase>
       )
     );
 
@@ -662,18 +674,20 @@ class App extends React.Component {
       let locationName = (this.state.lists[key]) ? this.state.lists[key].name : '';
       let showAll = (this.state.lists[key]) ? this.state.lists[key].showAll : true;
       return (
-        <div>
-          <AppBar
-            locationName={locationName}
-            location={`/list/${key}`}
-            homeName='要做的野'
-            home='/' />
+        <PageBase
+          appBar={
+            <AppBar
+              locationName={locationName}
+              location={`/list/${key}`}
+              homeName='要做的野'
+              home='/' />
+          }>
           <TodoList values={this.state.todo[key]}
             orders={this.state.orders[key]}
             listKey={key}
             showAll={showAll}
             persisted={this.state.lists.hasOwnProperty(key)} />
-        </div>
+        </PageBase>
       );
     };
 
@@ -691,23 +705,25 @@ class App extends React.Component {
         }
       }
       return (
-        <div>
-          <AppBar
-            locationName={this.state.lists[list].name}
-            location={`/list/${list}`}
-            homeName='要做的野'
-            home='/'
-            extra={(
-              <span>
-                <span style={{padding: '0 0.5em'}}>{'\u203A'}</span>
-                <span style={{padding: '0 0.5em'}}>改野</span>
-              </span>
-            )}/>
+        <PageBase
+          appBar={
+            <AppBar
+              locationName={this.state.lists[list].name}
+              location={`/list/${list}`}
+              homeName='要做的野'
+              home='/'
+              extra={(
+                <span>
+                  <span style={{padding: '0 0.5em'}}>{'\u203A'}</span>
+                  <span style={{padding: '0 0.5em'}}>改野</span>
+                </span>
+              )}/>
+          }>
           <EditItem
             item={item}
             lists={this.state.lists}
             listKey={list} />
-        </div>
+        </PageBase>
       );
     };
 
@@ -715,11 +731,9 @@ class App extends React.Component {
       (this.state.login === true) ? (
         <Redirect to='/' />
       ) : (
-        <div>
-          <AppBar
-            homeName='要做的野' />
+        <PageBase>
           <LoginPage />
-        </div>
+        </PageBase>
       )
     );
 
@@ -729,14 +743,16 @@ class App extends React.Component {
       return (this.state.login !== true) ? (
         <Redirect to='/' />
       ) : (
-        <div>
-          <AppBar
-            homeName='要做的野'
-            home='/'
-            locationName={listDisplayName}
-            location={`/list/${list}`} />
+        <PageBase
+          appBar={
+            <AppBar
+              homeName='要做的野'
+              home='/'
+              locationName={listDisplayName}
+              location={`/list/${list}`} />
+          }>
           <ListEditPage list={this.state.lists[list]} listKey={list} />
-        </div>
+        </PageBase>
       );
     };
 
@@ -744,23 +760,19 @@ class App extends React.Component {
       (this.state.login !== true) ? (
         <Redirect to='/login' />
       ) : (
-        <div>
-          <AppBar
-            homeName='要做的野' />
+        <PageBase>
           <ManagePage />
-        </div>
+        </PageBase>
       )
     );
 
     const renderSearchResultPage = ({match})=> {
       const { params: { term } } = match;
       return (
-        <div>
-          <AppBar
-            homeName='要做的野' />
+        <PageBase>
           <SearchResultPage results={ this.searchTodo(term) }
             lists={ this.state.lists } />
-        </div>
+        </PageBase>
       );
     };
 
@@ -790,7 +802,8 @@ App.childContextTypes = {
     push: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired
   }),
-  listOrders: PropTypes.array.isRequired
+  listOrders: PropTypes.array.isRequired,
+  getFlagData: PropTypes.func.isRequired
 };
 
 export default App;
