@@ -115,8 +115,10 @@ class App extends React.Component {
     if (!this.state.firstPull) {
       this.setState({loading: true});
       setTimeout(()=> this.setState({loading: false}), 500);
-    } else {
+    } else if (event === 'update') {
       this.setState({firstPull: false});
+    } else {
+      setTimeout(()=> this.setState({firstPull: false}), 500);
     }
 
     const {lists, orders, todo, listOrders, notifications} = Object.assign({}, this.state, object);
@@ -755,7 +757,7 @@ class App extends React.Component {
           <SearchResultPage results={ this.searchTodo(term) }
             lists={ this.state.lists } />
         </div>
-      )
+      );
     };
 
     return (

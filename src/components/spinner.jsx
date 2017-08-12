@@ -13,13 +13,14 @@ class Spinner extends PureComponent {
     const spinnerStyle = Object.assign(
       {},
       spinnerBaseStyle,
-      { color: (loading || dirty || !firstPull ? '#338' : '#0c0a66') }
+      { color: '#338' }
     );
 
     const displayText = ()=> {
       if (loading) return '等陣';
       if (dirty) return '改左';
       if (!firstPull) return '用得';
+      return '準備緊';
     };
 
     return (
