@@ -43,6 +43,35 @@ const appStyle = {
   marginBottom: '20px'
 };
 
+const stateTemplate = ()=> {
+  return {
+    lists: {
+      'default': {
+        name: '做咩啫你',
+        showAll: true,
+        archived: false
+      },
+    },
+    todo: {
+      'default': {}
+    },
+    orders: {
+      'default': []
+    },
+    listOrders: ['default'],
+    notifications: {
+      'default': []
+    },
+    login: false,
+    loading: false,
+    dirty: false,
+    firstPull: true,
+    migration: '@init',
+    notified: [],
+    lastRecordTime: null
+  };
+};
+
 class App extends React.Component {
   getChildContext() {
     return {
@@ -55,34 +84,8 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    const stateTemplate = {
-      lists: {
-        'default': {
-          name: '做咩啫你',
-          showAll: true,
-          archived: false
-        },
-      },
-      todo: {
-        'default': {}
-      },
-      orders: {
-        'default': []
-      },
-      listOrders: ['default'],
-      notifications: {
-        'default': []
-      },
-      login: false,
-      loading: false,
-      dirty: false,
-      firstPull: true,
-      migration: '@init',
-      notified: [],
-      lastRecordTime: null
-    };
     this.registerHoodieHandlers = this.registerHoodieHandlers.bind(this);
-    this.state = stateTemplate;
+    this.state = stateTemplate();
   }
 
   onSignInHandler() {
@@ -93,7 +96,7 @@ class App extends React.Component {
   }
 
   onSignOutHandler() {
-    this.setState({login: false});
+    this.setState({ ...stateTemplate(), login: true });
   }
 
   onPullHandler(event, object) {
@@ -496,6 +499,7 @@ class App extends React.Component {
       url: hoodieHost,
       PouchDB: hoodiePouch
     });
+    this.setState(stateTemplate());
     this.registerHoodieHandlers();
     hoodie.account.signIn({
       username: user,
