@@ -10,7 +10,6 @@ import IndexPage from './pages/index_page.jsx';
 import ListEditPage from './pages/list_edit_page.jsx';
 import ManagePage from './pages/manage_page.jsx';
 import SearchResultPage from './pages/search_result_page.jsx';
-import Spinner from './components/spinner.jsx';
 import PropTypes from 'prop-types';
 import LocalStorage from 'store';
 import FileSaver from 'file-saver';
@@ -256,6 +255,11 @@ class App extends React.Component {
     switch (flag) {
     case 'ONLINE':
       return this.state.online;
+    case 'AVAIL':
+      if (this.state.loading) return 0;
+      if (this.state.dirty) return 1;
+      if (!this.state.firstPull) return 2;
+      return 3;
     default:
       return null;
     }
@@ -786,9 +790,6 @@ class App extends React.Component {
           <Route exact path="/list/:list" render={List} />
           <Route exact path="/list/:list/edit" render={renderListEditPage} />
           <Route exact path="/list/:list/item/:uuid" render={EditPage} />
-          <Spinner loading={this.state.loading}
-            firstPull={this.state.firstPull}
-            dirty={this.state.dirty} />
         </div>
       </Router>
     );

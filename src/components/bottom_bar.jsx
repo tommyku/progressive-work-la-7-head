@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 const AppBarMinHeight = '20px';
 
@@ -22,15 +23,27 @@ const BottomBarContentStyle = {
   maxWidth: '48em'
 };
 
-const ConnectivityIndicator = (props)=> (
+const ConnectivityIndicator = ({ online })=> (
   <span style={ {
     marginRight: '1em',
-    color: props.online ? '#6f6' : '#f66'
+    color: online ? '#6f6' : '#f66'
   } }>
-    { '\u25cf ' }
-    { props.online ? '線上' : '斷線' }
+    { online ? '\u263a 線上' : '\u2639 斷線' }
   </span>
 );
+
+const AvailabilityIndicator = ({status})=> {
+  const COLORS = ['#ff6', '#990', '#090', '#999'];
+  const DESCRIPTION = ['等陣', '改左', '用得', '準備緊'];
+  return (
+    <span style={ {
+      marginRight: '1em',
+      color: COLORS[status]
+    } }>
+      { DESCRIPTION[status] }
+    </span>
+  );
+};
 
 class BottomBar extends Component {
   render() {
@@ -43,8 +56,13 @@ class BottomBar extends Component {
     return (
       <div name='bottom-bar' style={ bottomBarStyle }
         { ...others }>
-        <div nema='bottom-bar-content' style={ BottomBarContentStyle }>
+        <div name='bottom-bar-content' style={ BottomBarContentStyle }>
           <ConnectivityIndicator online={ this.context.getFlagData('ONLINE') }></ConnectivityIndicator>
+          <AvailabilityIndicator status={ this.context.getFlagData('AVAIL') }></AvailabilityIndicator>
+          <Link to='/manage'
+            style={ { textDecoration: 'none' } }>
+            設定
+          </Link>
         </div>
       </div>
     );

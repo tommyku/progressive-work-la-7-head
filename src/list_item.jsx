@@ -1,7 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
-import { SortableHandle } from 'react-sortable-hoc'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { SortableHandle } from 'react-sortable-hoc';
 
 const TodoDoneBase = {
   marginRight: '.25em',
