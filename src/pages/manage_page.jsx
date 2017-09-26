@@ -100,6 +100,9 @@ class ManagePage extends Component {
         <SearchSection onClick={this.handleSearchButtonClick} />
         <DumpDataSection onClick={this.handleDumpDataButtonClick} />
         <SignOutSection onClick={this.handleSignOutButtonClick} />
+        <Section>
+          { `Built at: ${buildNumber}` }
+        </Section>
       </div>
     );
   }
