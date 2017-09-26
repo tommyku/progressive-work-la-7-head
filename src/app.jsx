@@ -92,8 +92,10 @@ class App extends React.Component {
 
   onSignInHandler() {
     this.setState({login: true});
-    hoodie.store.find('state').then(this.onPullHandler.bind(this)).catch(()=>{
-      hoodie.store.on('pull', this.onPullHandler.bind(this));
+    hoodie.store.pull('state').then(() => {
+      hoodie.store.find('state').then(this.onPullHandler.bind(this)).catch(()=>{
+        hoodie.store.on('pull', this.onPullHandler.bind(this));
+      })
     });
   }
 
@@ -120,10 +122,8 @@ class App extends React.Component {
     if (!this.state.firstPull) {
       this.setState({loading: true});
       setTimeout(()=> this.setState({loading: false}), 500);
-    } else if (event === 'update') {
-      this.setState({firstPull: false});
     } else {
-      setTimeout(()=> this.setState({firstPull: false}), 500);
+      this.setState({firstPull: false});
     }
 
     const {lists, orders, todo, listOrders, notifications} = Object.assign({}, this.state, object);
