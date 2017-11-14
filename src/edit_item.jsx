@@ -283,7 +283,7 @@ class EditItem extends Component {
         }
         { this.state.alertAt &&
             <span style={EditAlertPreviewStyle}>
-              <TimeAgo datetime={this.state.alertAt} locale='zh_TW' />提醒
+              <TimeAgo datetime={this.state.alertAt} locale='zh_TW' live={false} />提醒
             </span> }
       </section>
     );
