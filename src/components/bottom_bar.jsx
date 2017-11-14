@@ -45,6 +45,20 @@ const AvailabilityIndicator = ({status})=> {
   );
 };
 
+const FirstPullIndicator = ({status})=> {
+  const COLORS = ['#ff6', '#090'];
+  const DESCRIPTION = ['未拉', '拉左'];
+  const index = status ? 1 : 0;
+  return (
+    <span style={ {
+      marginRight: '1em',
+      color: COLORS[index]
+    } }>
+      { DESCRIPTION[index] }
+    </span>
+  );
+};
+
 class BottomBar extends Component {
   render() {
     const { style, ...others } = this.props;
@@ -59,6 +73,7 @@ class BottomBar extends Component {
         <div name='bottom-bar-content' style={ BottomBarContentStyle }>
           <ConnectivityIndicator online={ this.context.getFlagData('ONLINE') }></ConnectivityIndicator>
           <AvailabilityIndicator status={ this.context.getFlagData('AVAIL') }></AvailabilityIndicator>
+          <FirstPullIndicator status={ this.context.getFlagData('FPULL') }></FirstPullIndicator>
           <Link to='/manage'
             style={ { textDecoration: 'none' } }>
             設定

@@ -65,7 +65,7 @@ const stateTemplate = ()=> {
     login: false,
     loading: false,
     dirty: false,
-    firstPull: true,
+    firstPull: false,
     online: true,
     migration: '@init',
     notified: [],
@@ -92,10 +92,11 @@ class App extends React.Component {
 
   onSignInHandler() {
     this.setState({login: true});
+    hoodie.store.find('state').then(this.onPullHandler.bind(this)).catch(()=>{
+      hoodie.store.on('pull', this.onPullHandler.bind(this));
+    });
     hoodie.store.pull('state').then(() => {
-      hoodie.store.find('state').then(this.onPullHandler.bind(this)).catch(()=>{
-        hoodie.store.on('pull', this.onPullHandler.bind(this));
-      })
+      this.setState({firstPull: true});
     });
   }
 
@@ -118,13 +119,6 @@ class App extends React.Component {
       lastRecordTime = updatedAt;
     else
       return;
-
-    if (!this.state.firstPull) {
-      this.setState({loading: true});
-      setTimeout(()=> this.setState({loading: false}), 500);
-    } else {
-      this.setState({firstPull: false});
-    }
 
     const {lists, orders, todo, listOrders, notifications} = Object.assign({}, this.state, object);
     this.setState({
@@ -258,8 +252,10 @@ class App extends React.Component {
     case 'AVAIL':
       if (this.state.loading) return 0;
       if (this.state.dirty) return 1;
-      if (!this.state.firstPull) return 2;
+      if (this.state.firstPull) return 2;
       return 3;
+    case 'FPULL':
+      return this.state.firstPull;
     default:
       return null;
     }
