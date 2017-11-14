@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import MobileDetect from 'mobile-detect';
 import TodoItem from './todo_item.jsx';
 import TodoNewItem from './todo_new_item.jsx';
 import TodoNewList from './todo_new_list.jsx';
@@ -47,12 +48,13 @@ const TodoList = (props, context)=> {
   const shouldShow = (uuid)=> (values[uuid].done <= 1 || showAll);
 
   const SortableList = SortableContainer(({values, orders})=> {
+    const mobileDetect = new MobileDetect(window.navigator.userAgent);
     return (
       <section>
         {(orders || []).map((item, index)=> (
           <SortableItem key={`item-${index}`}
             item={values[item]}
-            disabled={!shouldShow(item)}
+            disabled={!shouldShow(item) || mobileDetect.mobile()}
             style={{display: (shouldShow(item) ? 'block' : 'none')}}
             index={index} />
         ))}
