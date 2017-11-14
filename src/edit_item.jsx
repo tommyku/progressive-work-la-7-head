@@ -195,7 +195,7 @@ class EditItem extends Component {
         <h3>移去第度</h3>
         <ul>
           {
-            listOrders.map((key, index)=> {
+            listOrders.filter((key)=> !lists[key].archived).map((key, index)=> {
               let displayName = lists[key].name;
               let canMove = listKey !== key;
               return MoveOption({
