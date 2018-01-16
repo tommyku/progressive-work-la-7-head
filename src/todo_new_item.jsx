@@ -52,6 +52,7 @@ class TodoNewItem extends Component {
   }
 
   handleWindowKeydown(e) {
+    if (e.altKey || e.ctrlKey || e.shiftKey) { return; }
     if (e.key === 'Escape')
       this.refs['newTask'].blur();
     else if (document.activeElement !== this.refs['newTask'])
