@@ -23,6 +23,16 @@ const BottomBarContentStyle = {
   maxWidth: '48em'
 };
 
+const PersistenceIndicator = ({ persist })=> (
+  <span style= { {
+    marginRight: '1em',
+    color: '#6f6',
+    display: persist ? 'default' : 'none'
+  } }>
+    { persist ? '離線可用' : '' }
+  </span>
+);
+
 const ConnectivityIndicator = ({ online })=> (
   <span style={ {
     marginRight: '1em',
@@ -74,6 +84,7 @@ class BottomBar extends Component {
           <ConnectivityIndicator online={ this.context.getFlagData('ONLINE') }></ConnectivityIndicator>
           <AvailabilityIndicator status={ this.context.getFlagData('AVAIL') }></AvailabilityIndicator>
           <FirstPullIndicator status={ this.context.getFlagData('FPULL') }></FirstPullIndicator>
+          <PersistenceIndicator status={ this.context.getFlagData('PERSIST') }></PersistenceIndicator>
           <Link to='/manage'
             style={ { textDecoration: 'none' } }>
             設定

@@ -67,6 +67,7 @@ const stateTemplate = ()=> {
     dirty: false,
     firstPull: false,
     online: true,
+    persistence: false,
     migration: '@init',
     notified: [],
     lastRecordTime: null
@@ -87,7 +88,9 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.registerHoodieHandlers = this.registerHoodieHandlers.bind(this);
-    this.state = stateTemplate();
+    this.state = Object.assign(stateTemplate(), {
+      persistence: LocalStorage.get('storage.persist') || false
+    });
   }
 
   onSignInHandler() {
@@ -256,6 +259,8 @@ class App extends React.Component {
       return 3;
     case 'FPULL':
       return this.state.firstPull;
+    case 'PERSIST':
+      return this.state.persistence;
     default:
       return null;
     }
