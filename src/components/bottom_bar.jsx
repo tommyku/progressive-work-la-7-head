@@ -27,9 +27,9 @@ const PersistenceIndicator = ({ persist })=> (
   <span style= { {
     marginRight: '1em',
     color: '#6f6',
-    display: persist ? 'default' : 'none'
+    display: (persist ? 'inline' : 'none')
   } }>
-    { persist ? '離線可用' : '' }
+    { persist ? '離線可用' : '離線未必可用' }
   </span>
 );
 
@@ -84,7 +84,7 @@ class BottomBar extends Component {
           <ConnectivityIndicator online={ this.context.getFlagData('ONLINE') }></ConnectivityIndicator>
           <AvailabilityIndicator status={ this.context.getFlagData('AVAIL') }></AvailabilityIndicator>
           <FirstPullIndicator status={ this.context.getFlagData('FPULL') }></FirstPullIndicator>
-          <PersistenceIndicator status={ this.context.getFlagData('PERSIST') }></PersistenceIndicator>
+          <PersistenceIndicator persist={ this.context.getFlagData('PERSIST') }></PersistenceIndicator>
           <Link to='/manage'
             style={ { textDecoration: 'none' } }>
             設定
